@@ -45,3 +45,21 @@ NOTE: there can be multiple senders and receivers
 ### NACK
 
 ### MSG_PART
+
+
+__Packet Type Flags__
+
+| Hex value | Type name | Name | Description |
+| --- | --- | --- | --- |
+0x1 | BRO | Broadcast
+0x2 | REQ | Request
+0x3 | PRO | Propsition
+0x4 | PAC | Packet
+0x8 | ACK | Acknowledgement
+0xC | SEN | Send
+0xA | RES | Reset
+0x6 | PACREQ | Packet Request
+0x7 | PACPRO | Packet Proposition
+0xB | PROACK | Proposition Acknowledgement
+0xF | PACSEN | Packet Send
+0xD | PACRES | Packet Reset
