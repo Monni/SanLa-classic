@@ -40,16 +40,16 @@ __Packet Type Flags__
 
 __Field types__
 
-| Field | Type | Length |
-| --- | --- | --- |
+| Field | Type | Width (in bits) | Notes
+| --- | --- | --- | --- |
 | Flags | uint8_t | 8
-| PackageID | Char | 16
-| SenderID | Char | 16
-| RecipientID | Char | 16
+| PackageID | long | 32
+| SenderID | uint16_t | 16 |
+| RecipientID | char | 49 |  max name length can be 16 characters long
 | PackagePayloadLength | uint16_t | 16
-| PayloadChks | uint16_t | 16
+| PayloadChks | long | 32
 | PayloadSequence | uint8_t | 8
-| Payload | Char | x
+| Payload | char | rest of the available space in packet
 
 ## Broadcast BRO
 
