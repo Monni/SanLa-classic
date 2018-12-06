@@ -1,10 +1,12 @@
-# TCP Multipart SanlaMessage
+# Multipart SanlaMessage
 
 ## Glossary
 
 | Word | Explanation |
 | --- | --- |
 Package | Consists of multiple packets 
+
+## Packet 
 
 Multipart message would allow for a sending of larger than 100 byte packages. 
 100 bytes is the reliable max size for LoRa message, however 50 bytes is the recommended size. 
@@ -16,33 +18,6 @@ __Multipart package flow__
 ![alt text](https://raw.githubusercontent.com/Monni/SanLa-classic/docs/docs/specifications/initial_protocol_plan.png?token=AKDudAex8yQ0V2Px4xhSDnImX0EduHL4ks5cElT5wA%3D%3D "Packet flow")
 
 NOTE: there can be multiple senders and receivers
-
-## Messages
-
-| Message name | description |
-| --- | --- |
-| ACK | OK response to received hash value |
-| PACKET_BROADCAST | A message offering a first part of a packet group |
-| PACKET_REQUEST | Response to PACKET_BROADCAST |
-| PACKET_OFFER | Response to PACKET_REQUEST |
-| PACKET_RECV | Response sent to sender after receiving whole message|
-| NACK | Not OK response to received hash value |
-| MSG_PART | Part of message |
-
-### ACK
-
-### PACKET_BROADCAST
- 
-### PACKET_OFFER
-
-### PACKET_RECV
-
-### PACKET_REQUEST
-
-### NACK
-
-### MSG_PART
-
 
 __Packet Type Flags__
 
@@ -60,3 +35,63 @@ __Packet Type Flags__
 0xB | PROACK | Proposition Acknowledgement
 0xF | PACSEN | Packet Send
 0xD | PACRES | Packet Reset
+
+## Packet Messages
+
+__Field types__
+
+| Field | Type | Length |
+| --- | --- | --- |
+| Flags | uint8_t | 8
+| PackageID | Char | 16
+| SenderID | Char | 16
+| RecipientID | Char | 16
+| PackagePayloadLength | uint16_t | 16
+| PayloadChks | uint16_t | 16
+| PayloadSequence | uint8_t | 8
+| Payload | Char | x
+
+## Broadcast BRO
+
+- Flags
+- PackageID
+- SenderID
+- RecipientID
+- PackagePayloadLength
+
+### Packet Request PACREQ
+
+- Flags
+- PackageID
+- SenderID
+- PayloadSequence
+
+### Packet Proposition PACPRO
+
+- Flags
+- PackageID
+- SenderID
+- PayloadSequence
+
+### Proposition Acknowledgement PROACK
+
+- Flags
+- PackageID
+- SenderID
+- PayloadSequence
+
+### Packet Send PACSEN
+
+- Flags
+- PackageID
+- SenderID
+- PayloadSequence
+- Payload
+- PayloadChks
+
+### Packet Request
+
+- Flags
+- PackageID
+- SenderID
+- PayloadSequence
