@@ -1,22 +1,19 @@
 # TCP Multipart SanlaMessage
 
-Multipart message would allow for a sending of larger than 100 byte packages . 
-100 bytes is the recommended max size of LoRa message. 
+## Glossary
+
+| Word | Explanation |
+| --- | --- |
+Package | Consists of multiple packets 
+
+Multipart message would allow for a sending of larger than 100 byte packages. 
+100 bytes is the reliable max size for LoRa message, however 50 bytes is the recommended size. 
 Messages longer than that can be unreliable.
 In our case we would want to possibly send a message with a body of 2000 characters (16kB).
 
-Flow of multipart message would look something like this.
+__Multipart package flow__
 
-1. Sender broadcasts (PACKET_BROADCAST) offering a group of packages with id of X in N parts.
-1. Recipient sends an PACKET_REQUEST message, requesting the first packet of packet group X
-1. Sender responds to PACKET_REQUEST with PACKET_OFFER
-1. Receiver requests first part of X from the Sender.
-1. Sender sends the MSG_PART
-1. Recipient receives the MSG_PART
-1. Recipient calculates the MSG_PART hash and sends it to Sender
-1. Sender receives the calculated hash and sends ACK to Recipient if received hash was valid, otherwise sends NACK
-
-Steps 2 - 8 are repeated repeated for each part of the message. When Recipient receives the final part it sends PACKET_RECV signal to Sender.
+![alt text](https://raw.githubusercontent.com/Monni/SanLa-classic/docs/docs/specifications/initial_protocol_plan.png?token=AKDudAex8yQ0V2Px4xhSDnImX0EduHL4ks5cElT5wA%3D%3D "Packet flow")
 
 NOTE: there can be multiple senders and receivers
 
