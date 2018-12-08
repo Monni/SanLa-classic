@@ -15,8 +15,8 @@ Header consists of sender identifier, receiver's identifier, message length, and
 | Recipient ID | Recipient group id| char | TODO: To keep recipient groups with same name unique, do some hacky wacky hash('group name' + 'password') ? Also need to define max length.|
 | length | Payload length | uint16_t ||
 | PayloadChks | Checksum for payload validation | long ||
-
 | PayloadSeq | Identifies payload position in a package | uint8_t ||
+
 ## Body
 
 Body consists of a single element, message-content, which can contain 2000 characters.
