@@ -29,7 +29,7 @@ Body consists of a single element, message-content, which can contain 2000 chara
 | Payload | Message payload | char |
 
 JSON example of a fully constructed package with header and body:
-```json
+```javascript
 {
 	'data': {
 		'header': {
