@@ -7,22 +7,16 @@ Header consists of sender identifier, receiver's identifier, message length, and
 
 **Header elements**
 
-| name | description | type |
-| --- | --- | --- |
-| from | sender | string |
-| to | recipient | string |
-| length | message-length | int |
-| time | timestamp | long |
+| name | description | type | note |
+| --- | --- | --- | --- |
+| Flags | Identifies which transport method is in use | uint8_t | TODO: need a flag for fully constructed package? |
+| Package ID | Identifier to which package all packets belongs to | long ||
+| Sender ID | Sender machine id | uint16_t ||
+| Recipient ID | Recipient group id| char | TODO: To keep recipient groups with same name unique, do some hacky wacky hash('group name' + 'password') ? Also need to define max length.|
+| length | Payload length | uint16_t ||
+| PayloadChks | Checksum for payload validation | long ||
 
-In JSON the example message header would look like this
-```json
-{
-    from: 'SenderID',
-    to: 'RecipientID',
-    length: 2000,
-    time: 1543850646
-}
-```
+| PayloadSeq | Identifies payload position in a package | uint8_t ||
 ## Body
 
 Body consists of a single element, message-content, which can contain 2000 characters.
@@ -31,11 +25,29 @@ Body consists of a single element, message-content, which can contain 2000 chara
 
 | name | description | type |
 | --- | --- | --- |
-| msg | message content | string |
+| Sender | Human readable sender name (person) | char |
+| Payload | Message payload | char |
 
-In JSON the example message would look like this.
+JSON example of a fully constructed package with header and body:
 ```json
 {
-    msg: 'A really long message....'
+	'data': {
+		'header': {
+			'flags': 0x8,
+			'package_id': 12345678123456781234567812345678,
+			'sender_id': 1234567812345678,
+			'recipient_id': 'flj4390fk34k3ofö-l4-r0943k',
+			'length': 2000,
+			'payload_chks': '595f44fec1e92a71d3e9e77456ba80d1',
+			'payload_seq': 2000
+		},
+		'body' : {
+			'sender': 'Jaakko',
+			'payload': 'A foo walks into a bar baz qux moo.'
+		}
+	}
+	
+	
+    
 }
 ```
