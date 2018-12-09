@@ -16,9 +16,9 @@ Package is being broadcasted to nearby devices.
 #### Steps
 1. Person sends a message package.
 2. Device broadcasts the message, without any listening device to successfully reveive the message sent.
-..* Logic will be the same for both identified error cases.
+    * Logic will be the same for both identified error cases.
 3. Validate if remaining Time To Live exists and reduce.
-..* Loop steps 2 and 3 until Time To Live reaches zero.
+    * Loop steps 2 and 3 until Time To Live reaches zero.
 4. Display error message.
 5. Destroy package.
 
