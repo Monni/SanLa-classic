@@ -31,7 +31,7 @@ Packet is being requested from nearby devices.
 * Listening device does not have requested packet.
     * Is not an actual error, many devices will not have a packet.
 
-### Error case: No listening devices in range
+### Error Case: No listening devices in range
 
 A device requests around for a single packet belonging to a certain package, but no listening devices are in range of the transmission.
 
@@ -47,5 +47,19 @@ A device requests around for a single packet belonging to a certain package, but
 TODO:
 4. Blacklist package id to not care next time when broadcasted?
 
+#### Error Case: A device receives a request for a packet that doesn't exist.
+
+A device receives a request for a packet a requesting device has originally received by an other device's broadcast. The device which received the request does not have the requested packet.
+
+#### Sequence Diagram
+![alt text][err_pac_req_packet_not_exists]
+
+#### Steps
+1. Device receives a packet request.
+2. Validate if the device has the packet.
+    * Upon not having the packet, do nothing.
+
+
 [err_bro]: https://github.com/Monni/SanLa-classic/blob/docs/docs/sequence_diagrams/error_cases/err_bro.png "Error in BRO state"
 [err_pac_req]: https://github.com/Monni/SanLa-classic/blob/docs/docs/sequence_diagrams/error_cases/err_pac_req.png "Error in PAC-REQ state"
+[err_pac_req_packet_not_exists]: https://github.com/Monni/SanLa-classic/blob/docs/docs/sequence_diagrams/error_cases/err_pac_req_packet_not_exists.png "Error in PAC-REQ state, packet doesn't exist"
