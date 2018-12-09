@@ -28,8 +28,6 @@ Packet is being requested from nearby devices.
 **TODO:**
 * Listening device receives a distorted packet.
     * PAC-REQ does not contain payload, how to handle?
-* Listening device does not have requested packet.
-    * Is not an actual error, many devices will not have a packet.
 
 ### Error Case: No listening devices in range
 
