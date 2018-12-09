@@ -9,7 +9,7 @@ Header consists of sender identifier, receiver's identifier, message length, and
 
 | name | description | type | note |
 | --- | --- | --- | --- |
-| Flags | Identifies which transport method is in use | uint8_t | TODO: need a flag for fully constructed package? |
+| Flags | Identifies which transport method is in use | uint8_t | Specified in [Multipart Sanla-Message](MultipartSpec.md) TODO: need a flag for fully constructed package? |
 | Package ID | Identifier to which package all packets belongs to | long ||
 | Sender ID | Sender machine id | uint16_t ||
 | Recipient ID | Recipient group id| char | TODO: To keep recipient groups with same name unique, do some hacky wacky hash('group name' + 'password') ? Also need to define max length.|

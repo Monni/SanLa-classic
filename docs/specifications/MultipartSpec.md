@@ -23,18 +23,18 @@ __Packet Type Flags__
 
 | Hex value | Type name | Name | Description |
 | --- | --- | --- | --- |
-0x1 | BRO | Broadcast
-0x2 | REQ | Request
+0x1 | BRO | Broadcast | A short message from sender to possible recipients, informing of a new SanlaMessage
+0x2 | REQ | Request 
 0x3 | PRO | Propsition
 0x4 | PAC | Packet
 0x8 | ACK | Acknowledgement
 0xC | SEN | Send
 0xA | RES | Reset
-0x6 | PACREQ | Packet Request
-0x7 | PACPRO | Packet Proposition
-0xB | PROACK | Proposition Acknowledgement
-0xF | PACSEN | Packet Send
-0xD | PACRES | Packet Reset
+0x6 | PACREQ | Packet Request | A respose from recipient to sender, requesting the broadcasted package's part
+0x7 | PACPRO | Packet Proposition | A proposition to send a part of package (packet) to recipient
+0xB | PROACK | Proposition Acknowledgement | Respond to proposition PACPRO, accepting the packet
+0xF | PACSEN | Packet Send | Actual packet, consisting of headers and a payload (a piece of message)
+0xD | PACRES | Packet Reset | Sent from packet recipient to sender if payload hash didn't match
 
 ## Packet Messages
 
@@ -51,7 +51,7 @@ __Field types__
 | PayloadSequence | uint8_t | 8
 | Payload | char | rest of the available space in packet
 
-## Broadcast BRO
+### Broadcast BRO
 
 - Flags
 - PackageID
