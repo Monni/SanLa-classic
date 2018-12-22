@@ -2,7 +2,7 @@
 
 using namespace sanla::lora;
 
-LoRaModule::LoRaModule() {}
+LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
 // Startup the module
 void LoRaModule::begin() {
@@ -44,6 +44,19 @@ void LoRaModule::sendMessage(String message) {
 
     // Revert back to listening mode
     LoRa.receive();
+    LoRaModule::packageReceived(message);
+}
+
+void LoRaModule::onPackage(void(*callback)(String)) {
+    LoRaModule::_onReceive = callback;
+}
+
+void LoRaModule::packageReceived(String message) {
+    // TODO Validate if I'm recipient
+    if (LoRaModule::_onReceive) {
+        LoRaModule::_onReceive(message);
+    }
+
 }
 
 void LoRaModule::packetHeader() {

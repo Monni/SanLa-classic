@@ -4,3 +4,5 @@
 
 // General HW definitions
 #define BAUDRATE    115200
+
+void displayMessage(String message);

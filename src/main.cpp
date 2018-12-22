@@ -12,6 +12,7 @@ void setup() {
 
     SPI.begin(SCK,MISO,MOSI,SS);
     lora.begin();
+    lora.onPackage(displayMessage);
 
 }
 
@@ -22,4 +23,8 @@ void loop() {
         lastSendTime = millis();
         interval = random(4000) + 1000;
     }
+}
+
+void displayMessage(String message) {
+    Serial.println("Callback: " + message);
 }
