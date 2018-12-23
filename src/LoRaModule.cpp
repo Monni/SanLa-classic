@@ -3,6 +3,9 @@
 
 using namespace sanla::lora;
 
+// Namespace global pointer to specific LoRaModule object
+LoRaModule* ptrToLoraModule = NULL;
+
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
 // Startup the module
@@ -14,6 +17,7 @@ void LoRaModule::begin() {
     }
     setRadioParameters();
 
+    ptrToLoraModule = this;
     LoRa.onReceive(onMessage);
     //LoRa.receive();
     Serial.println("LoRaModule init succeeded.");
@@ -49,13 +53,13 @@ void LoRaModule::sendMessage(String message) {
 }
 
 void LoRaModule::onPackage(void(*callback)(String)) {
-    LoRaModule::_onReceive = callback;
+    _onReceive = callback;
 }
 
 void LoRaModule::packageReceived(String message) {
     // TODO Validate if I'm recipient and if:
-    if (LoRaModule::_onReceive) {
-        LoRaModule::_onReceive(message);
+    if (_onReceive) {
+        _onReceive(message);
     }
 
     // TODO Broadcast
@@ -71,9 +75,11 @@ void LoRaModule::onMessage(int packetSize) {
         incoming += (char)LoRa.read();      // add bytes one by one
     }
     Serial.println("Incoming: " + incoming);
-    LoRaModule::_onReceive(incoming);
-
-    // Some initial validation thingy. Checksum later
+    // Note: We should start writing unit tests for LoRaModule!
+    if (ptrToLoraModule)
+        ptrToLoraModule->_onReceive(incoming);
+    else
+        Serial.println("ptrToLoraModule is not set!");
     //if (inc_payload_length != incoming.length()) {
     //    Serial.println("error: message length does not match length");
     //    return;

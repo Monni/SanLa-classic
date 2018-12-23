@@ -5,6 +5,11 @@ long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 sanla::lora::LoRaModule lora;
 
+
+void displayMessage(String message) {
+    Serial.println("Callback: " + message);
+}
+
 void setup() {
     Serial.begin(BAUDRATE);
     while (!Serial);
@@ -25,6 +30,3 @@ void loop() {
     }
 }
 
-void displayMessage(String message) {
-    Serial.println("Callback: " + message);
-}

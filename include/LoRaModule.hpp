@@ -2,7 +2,7 @@
 #include <LoRa.h>
 #include <Arduino.h>
 #include <string>
-#include "common/SanLaMessage.hpp"
+#include "common/SanlaMessage.hpp"
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
