@@ -2,7 +2,7 @@
 #include <LoRa.h>
 #include <Arduino.h>
 #include <string>
-//#include "SanlaMessage.hpp"
+#include "common/SanLaMessage.hpp"
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
@@ -35,11 +35,8 @@ namespace sanla {
 
         private:
             void setRadioParameters();
-            void packetHeader();
             static void onMessage(int packetSize);
             void packageReceived(String message);
-
-        private:
             void (*_onReceive)(String);
         };
 

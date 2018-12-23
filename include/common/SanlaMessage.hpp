@@ -27,7 +27,7 @@ namespace sanla {
 
     struct MessageBody {
         char* sender; // TODO: use [max_size] instead of pointer, also define max_size
-        char* payload;
+        const char *payload;
     };
 
     struct MessageHeader {
@@ -54,7 +54,7 @@ namespace sanla {
         SanlaMessagePackage(const SanlaMessagePackage&) = delete;
         SanlaMessagePackage& operator=(const SanlaMessagePackage&) = delete;
 
-        ~SanlaMessagePackage();
+        ~SanlaMessagePackage(){};
 
         uint8_t GetPackageLength();
         uint16_t GetTotalPackageLength();
