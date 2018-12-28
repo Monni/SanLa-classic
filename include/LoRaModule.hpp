@@ -38,6 +38,7 @@ namespace sanla {
             static void onMessage(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
+            sanla::SanlaMessagePackage userInputPackage(String);
         };
 
     };

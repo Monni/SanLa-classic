@@ -1,12 +1,23 @@
 #include <stdint.h>
 #include <string>
 #include <cstddef>
+#include <sstream>
 
 
 #ifndef SANLACLASSIC_COMMON_SANLAMESSAGE_H_
 #define SANLACLASSIC_COMMON_SANLAMESSAGE_H_
 
 namespace sanla {
+
+    class Serializable
+    {
+    public:
+        Serializable(){}
+        virtual ~Serializable(){}
+
+        virtual void serialize(std::stringstream& stream) = 0;
+    };
+
     namespace sanlamessage {
         const uint8_t RECIPIENT_ID_MAX_SIZE {16};
         const u_char BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
@@ -30,13 +41,18 @@ namespace sanla {
         const char *payload;
     };
 
-    struct MessageHeader {
+    struct MessageHeader : public Serializable {
         u_char flags;
         uint8_t payload_seq;
         uint16_t length;
         uint64_t sender_id, payload_chks;
         uint32_t package_id;
         std::string recipient_id;
+
+        virtual void serialize(std::stringstream& stream) {
+            stream << flags << payload_seq << length << sender_id << payload_chks << package_id << recipient_id;
+        }
+
     };
 
     class SanlaMessagePackage {

@@ -1,5 +1,6 @@
 #include "LoRaModule.hpp"
-#include <thread>
+#include <sstream>
+#include <string>
 
 using namespace sanla::lora;
 
@@ -33,23 +34,47 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-void LoRaModule::sendMessage(String message) {
-    // TODO Temporary solution.
-    sanla::MessageHeader header = {
-            0x1,1,1,1,1,1,"asd"
-    };
-    sanla::MessageBody body = {"Foo", message.c_str()};
-    sanla::SanlaMessagePackage package(header, body);
+sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
 
-    Serial.println("Sending: " + message);
+    // Create header TODO figure out these values
+    sanla::MessageHeader header;
+    header.flags = 0x1;
+    header.payload_seq = 1;
+    header.length = 1;
+    header.sender_id = 1;
+    header.payload_chks = 1;
+    header.package_id = 1;
+    header.recipient_id = "foo";
+
+    // Create body
+    sanla::MessageBody body = {
+            "Foo",   // TODO instead of hard-coding, username should be used.
+            message.c_str()
+    };
+
+    // For some cucking reason return this.
+    return {header, body};
+}
+
+void LoRaModule::sendMessage(String message) {
+    // This method is only for generating a broadcast message based on user input.
+    // No other functions should use this one.
+
+    sanla::SanlaMessagePackage &&package = userInputPackage(message);
+
+    // TODO package should be sent to some handler which figures out what to do with it once it's done.
+    sanla::MessageHeader header = package.GetPackageHeader();
+    std::stringstream serializedHeader;
+    header.serialize(serializedHeader);
+
+    Serial.println("Sending message: " + message);
 
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)&package.GetPackageHeader(), sizeof(package.GetPackageHeader()));
+    LoRa.write((uint8_t*)serializedHeader.str().c_str(), sizeof(serializedHeader.str().c_str())); // TODO WHAT?
     LoRa.endPacket();
 
     // Revert back to listening mode
     LoRa.receive();
-    //LoRaModule::packageReceived(message); // TODO works here but not in onMessage
 }
 
 void LoRaModule::onPackage(void(*callback)(String)) {
@@ -69,12 +94,27 @@ void LoRaModule::packageReceived(String message) {
 void LoRaModule::onMessage(int packetSize) {
     if (packetSize == 0) return;
 
+    byte byteArray[packetSize];
+    for (int i = 0; i < packetSize; i++) {
+        byteArray[i] = (char)LoRa.read();
+    }
+    // TODO need to send as bytes, not characters.
+    uint8_t foo = (char)byteArray[2] + (char)byteArray[3];
+    Serial.print("FOO: "); Serial.println(foo);
+
+    // TODO something how to read packets.
+    //byte flags = LoRa.read();
+    //uint8_t payload_seq = LoRa.read();
+
     // Read packet payload
     String incoming = "";
     while (LoRa.available()) {              // can't use readString() in callback, so
         incoming += (char)LoRa.read();      // add bytes one by one
     }
     Serial.println("Incoming: " + incoming);
+    //Serial.print("Flags: 0x"); Serial.println(flags, HEX);
+    //Serial.println("Seq: " + payload_seq);
+
     // Note: We should start writing unit tests for LoRaModule!
     if (ptrToLoraModule)
         ptrToLoraModule->_onReceive(incoming);
