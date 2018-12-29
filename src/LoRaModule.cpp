@@ -7,8 +7,8 @@ LoRaModule* ptrToLoraModule = NULL;
 
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
-// Startup the module
 void LoRaModule::begin() {
+    // Startup the LoRa module
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
         Serial.println("LoRaModule init failed.");
@@ -33,8 +33,10 @@ void LoRaModule::setRadioParameters() {
 }
 
 sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
+    // Create a message package based on user input.
 
-    // Create header TODO figure out these values
+    // Create header
+    // TODO figure out these values
     sanla::MessageHeader header;
     header.flags = 0x1;
     header.payload_seq = 1;
@@ -56,7 +58,7 @@ sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
 
 void LoRaModule::sendMessage(String message) {
     // This method is only for generating a broadcast message based on user input.
-    // No other functions should use this one.
+    // No other functions should use this one. This should call the outward stream for packages.
 
     sanla::SanlaMessagePackage &&package = userInputPackage(message);
 
@@ -68,10 +70,10 @@ void LoRaModule::sendMessage(String message) {
     Serial.println("Sending message: " + message);
 
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)serializedHeader.str().c_str(), sizeof(serializedHeader.str().c_str())); // TODO WHAT?
+    LoRa.write((uint8_t*)serializedHeader.str().c_str(), sizeof(serializedHeader.str().c_str())); // TODO WHAT? Now this goes as characters and in receiving end ie. uint16_t translates as uint8_t if suitable value.
     LoRa.endPacket();
 
-    // Revert back to listening mode
+    // Revert back to listening mode.
     LoRa.receive();
 }
 
@@ -96,13 +98,6 @@ void LoRaModule::onMessage(int packetSize) {
     for (int i = 0; i < packetSize; i++) {
         byteArray[i] = (char)LoRa.read();
     }
-    // TODO need to send as bytes, not characters.
-    uint8_t foo = (char)byteArray[2] + (char)byteArray[3];
-    Serial.print("FOO: "); Serial.println(foo);
-
-    // TODO something how to read packets.
-    //byte flags = LoRa.read();
-    //uint8_t payload_seq = LoRa.read();
 
     // Read packet payload
     String incoming = "";
