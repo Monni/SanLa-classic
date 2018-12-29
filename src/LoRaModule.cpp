@@ -18,7 +18,7 @@ void LoRaModule::begin() {
 
     ptrToLoraModule = this;
     LoRa.onReceive(onMessage);
-    //LoRa.receive();
+    LoRa.receive();
     Serial.println("LoRaModule init succeeded.");
 }
 
