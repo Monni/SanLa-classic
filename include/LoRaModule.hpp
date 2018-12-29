@@ -2,6 +2,7 @@
 #include <LoRa.h>
 #include <Arduino.h>
 #include <string>
+#include <sstream>
 #include "common/SanlaMessage.hpp"
 
 // LoRa HW definitions

@@ -1,6 +1,4 @@
 #include "LoRaModule.hpp"
-#include <sstream>
-#include <string>
 
 using namespace sanla::lora;
 
