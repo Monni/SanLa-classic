@@ -1,6 +1,7 @@
 #include "LoRaModule.hpp"
 
-using namespace sanla::lora;
+namespace sanla {
+namespace lora {
 
 // Namespace global pointer to specific LoRaModule object
 LoRaModule* ptrToLoraModule = NULL;
@@ -118,3 +119,6 @@ void LoRaModule::onMessage(int packetSize) {
     //    return;
     //}
 }
+
+} // lora
+} // sanla

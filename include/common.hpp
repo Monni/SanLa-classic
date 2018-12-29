@@ -2,7 +2,10 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-// General HW definitions
-#define BAUDRATE    115200
-
-void displayMessage(String message);
+namespace sanla {
+    namespace common {
+    // General HW definitions
+    const long BAUDRATE = 115200;
+    void displayMessage(String message);
+    };
+};

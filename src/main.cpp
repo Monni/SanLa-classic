@@ -5,19 +5,23 @@ long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 sanla::lora::LoRaModule lora;
 
+namespace sanla {
+namespace common {
+    void displayMessage(String message) {
+        Serial.println("Callback: " + message);
+        }
+} // common
+} // sanla
 
-void displayMessage(String message) {
-    Serial.println("Callback: " + message);
-}
 
 void setup() {
-    Serial.begin(BAUDRATE);
+    Serial.begin(sanla::common::BAUDRATE);
     while (!Serial);
     Serial.println("Booting SanLa classic..");
 
     SPI.begin(SCK,MISO,MOSI,SS);
     lora.begin();
-    lora.onPackage(displayMessage);
+    lora.onPackage(sanla::common::displayMessage);
 
 }
 
