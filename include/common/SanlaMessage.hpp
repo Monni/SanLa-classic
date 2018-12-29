@@ -1,12 +1,23 @@
 #include <stdint.h>
 #include <string>
 #include <cstddef>
+#include <sstream>
 
 
 #ifndef SANLACLASSIC_COMMON_SANLAMESSAGE_H_
 #define SANLACLASSIC_COMMON_SANLAMESSAGE_H_
 
 namespace sanla {
+
+    class Serializable
+    {
+    public:
+        Serializable(){}
+        virtual ~Serializable(){}
+
+        virtual void serialize(std::stringstream& stream) = 0;
+    };
+
     namespace sanlamessage {
         const uint8_t RECIPIENT_ID_MAX_SIZE {16};
         const u_char BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
@@ -27,16 +38,21 @@ namespace sanla {
 
     struct MessageBody {
         char* sender; // TODO: use [max_size] instead of pointer, also define max_size
-        char* payload;
+        const char *payload;
     };
 
-    struct MessageHeader {
+    struct MessageHeader : public Serializable {
         u_char flags;
         uint8_t payload_seq;
         uint16_t length;
         uint64_t sender_id, payload_chks;
         uint32_t package_id;
         std::string recipient_id;
+
+        virtual void serialize(std::stringstream& stream) {
+            stream << flags << payload_seq << length << sender_id << payload_chks << package_id << recipient_id;
+        }
+
     };
 
     class SanlaMessagePackage {
@@ -54,7 +70,7 @@ namespace sanla {
         SanlaMessagePackage(const SanlaMessagePackage&) = delete;
         SanlaMessagePackage& operator=(const SanlaMessagePackage&) = delete;
 
-        ~SanlaMessagePackage();
+        ~SanlaMessagePackage(){};
 
         uint8_t GetPackageLength();
         uint16_t GetTotalPackageLength();
