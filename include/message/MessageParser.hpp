@@ -1,28 +1,32 @@
+#include "common/SanlaMessage.hpp"
 
 namespace sanla {
     namespace sanlamessage {
         namespace {
             using SanlaPacket = sanla::sanlamessage::SanlaPacket;
+            typedef void (*FuncPtr)(SanlaPacket);
+        }; // anonymous
 
-            struct MessageActionStruct {
+        struct MessageActionStruct {
                 void (*drop)(SanlaPacket);
-                bool (*store)(SanlaPacket);
+                void (*store)(SanlaPacket);
                 void (*respond)(SanlaPacket);
             };
-        }; // anonymous
 
         class MessageParser {
             public:
-            MessageParser() = delete;
-            MessageParser(void (*drop_func)(SanlaPacket),
-                        bool (*store_func)(SanlaPacket), 
-                        void (*respond_func)(SanlaPacket));
+            MessageParser();
             ~MessageParser();
 
-            void ParseMessage(SanlaPacket);
+            void setDropAction(FuncPtr);
+            void setStoreAction(FuncPtr);
+            void setRespondAction(FuncPtr);
+
+            FuncPtr ParseMessage(SanlaPacket);
 
             private:
             MessageActionStruct actions;
+            bool initCompelete = false;
         };
     }; // sanlamessage
 }; // sanla
