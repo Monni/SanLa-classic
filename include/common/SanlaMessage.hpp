@@ -45,7 +45,8 @@ namespace sanla {
         u_char flags;
         uint8_t payload_seq;
         uint16_t length;
-        uint64_t sender_id, payload_chks;
+        uint16_t sender_id;
+        long payload_chks;
         uint32_t package_id;
         std::string recipient_id;
 
@@ -61,7 +62,7 @@ namespace sanla {
 
         public:
         SanlaMessagePackage(u_char, uint8_t, uint16_t, 
-        uint64_t, uint64_t, uint32_t, std::string, MessageBody);
+        uint16_t, long, uint32_t, std::string, MessageBody);
         SanlaMessagePackage(MessageHeader, MessageBody);
         // This class is not moveable
         SanlaMessagePackage(SanlaMessagePackage&&) = delete;
