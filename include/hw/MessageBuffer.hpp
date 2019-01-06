@@ -6,6 +6,7 @@ namespace sanla {
         namespace mq {
             using SanlaPacket = sanla::sanlamessage::SanlaPacket;
             using SanlaPackage = sanla::SanlaMessagePackage;
+            using PacketVector = std::vector<SanlaPacket>;
 
             class MessageBuffer {
                 public:

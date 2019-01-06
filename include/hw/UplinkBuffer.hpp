@@ -7,6 +7,7 @@ namespace sanla {
                 public:
                 std::vector<SanlaPacket> packetBuffer;
                 bool send(SanlaPacket);
+                PacketVector splitPackage(SanlaPackage);
             };
         }; // mq
     }; // hw_interfaces

@@ -11,11 +11,11 @@ namespace sanla {
             LoraMessageIntepreter();
             ~LoraMessageIntepreter();
 
-            std::vector<char> buffer;
+            std::vector<u_char> buffer;
 
-            bool CheckMessage(const char);
-            SanlaPacket ValidateMessage(const char);
-            char SerializePacket(SanlaPacket);
+            bool CheckMessage(const u_char);
+            SanlaPacket ValidateMessage(const u_char);
+            u_char SerializePacket(SanlaPacket);
 
         };
     }; // hw_interfaces
