@@ -1,7 +1,6 @@
 #include "LoRaModule.hpp"
 
-namespace sanla {
-namespace lora {
+using namespace sanla::lora;
 
 // Namespace global pointer to specific LoRaModule object
 LoRaModule* ptrToLoraModule = NULL;
@@ -106,19 +105,10 @@ void LoRaModule::onMessage(int packetSize) {
         incoming += (char)LoRa.read();      // add bytes one by one
     }
     Serial.println("Incoming: " + incoming);
-    //Serial.print("Flags: 0x"); Serial.println(flags, HEX);
-    //Serial.println("Seq: " + payload_seq);
 
     // Note: We should start writing unit tests for LoRaModule!
     if (ptrToLoraModule)
         ptrToLoraModule->_onReceive(incoming);
     else
         Serial.println("ptrToLoraModule is not set!");
-    //if (inc_payload_length != incoming.length()) {
-    //    Serial.println("error: message length does not match length");
-    //    return;
-    //}
 }
-
-} // lora
-} // sanla
