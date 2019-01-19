@@ -25,13 +25,13 @@ PacketVector UplinkBuffer::splitPackage(SanlaPackage package){
     strcpy(recipient_id, package_h.recipient_id.c_str());
     for (uint32_t i = 0; i <= no_packets; i++) {
         SanlaPacket packet{};
-        packet.flags = sanla::sanlamessage::PACSEN;
-        packet.package_id = package_h.package_id;
-        packet.sender_id = package_h.sender_id;
-        strcpy(packet.recipient_id, recipient_id);
-        packet.payload_seq = i;
-        packet.payload_chks = 1449; // TODO: replace this with a function calculating a hash of payload
-        strcpy(packet.recipient_id, package.GetPackageBody().payload); // TODO: replace this with a function splitting payload
+        packet.header.flags = sanla::sanlamessage::PACSEN;
+        packet.header.package_id = package_h.package_id;
+        packet.header.sender_id = package_h.sender_id;
+        strcpy(packet.header.recipient_id, recipient_id);
+        packet.header.payload_seq = i;
+        packet.header.payload_chks = 1449; // TODO: replace this with a function calculating a hash of payload
+        strcpy(packet.header.recipient_id, package.GetPackageBody().payload); // TODO: replace this with a function splitting payload
         output.push_back(packet);
     }
 

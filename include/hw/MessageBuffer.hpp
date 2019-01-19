@@ -1,5 +1,6 @@
 #include <vector>
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 #ifndef SANLACLASSIC_HW_MESSAGEBUFFER_H_
 #define SANLACLASSIC_HW_MESSAGEBUFFER_H_

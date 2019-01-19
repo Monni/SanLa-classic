@@ -66,7 +66,7 @@ void LoRaModule::sendMessage(String message) {
     // TODO package should be sent to some handler which figures out what to do with it once it's done.
     sanla::MessageHeader header = package.GetPackageHeader();
     std::stringstream serializedHeader;
-    header.serialize(serializedHeader);
+    
 
     Serial.println("Sending message: " + message);
 

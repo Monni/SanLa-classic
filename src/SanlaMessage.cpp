@@ -4,7 +4,7 @@
 using namespace sanla;
 
 SanlaMessagePackage::SanlaMessagePackage(u_char _flags, uint8_t _payload_seq, 
-uint16_t _length, uint16_t _sender_id, long _payload_chks, uint32_t _package_id,
+uint16_t _length, uint16_t _sender_id, uint32_t _payload_chks, uint32_t _package_id,
 std::string _recipient_id, const MessageBody _body ) {
     header.flags = _flags;
     header.payload_seq = _payload_seq;
