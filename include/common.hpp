@@ -1,9 +1,9 @@
+#ifndef SANLACLASSIC_COMMON_H_
+#define SANLACLASSIC_COMMON_H_
+
 #include <string>
 #include <Arduino.h>
 #include <SPI.h>
-
-#ifndef SANLACLASSIC_COMMON_H_
-#define SANLACLASSIC_COMMON_H_
 
 namespace sanla {
     namespace common {

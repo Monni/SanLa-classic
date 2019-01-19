@@ -1,11 +1,10 @@
+#ifndef SANLACLASSIC_COMMON_SANLAMESSAGE_H_
+#define SANLACLASSIC_COMMON_SANLAMESSAGE_H_
+
 #include <stdint.h>
 #include <string>
 #include <cstddef>
 #include <sstream>
-
-
-#ifndef SANLACLASSIC_COMMON_SANLAMESSAGE_H_
-#define SANLACLASSIC_COMMON_SANLAMESSAGE_H_
 
 namespace sanla {
 

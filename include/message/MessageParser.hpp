@@ -1,12 +1,11 @@
-#include "common/SanlaMessage.hpp"
-
 #ifndef SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
 #define SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
+
+#include "common/SanlaMessage.hpp"
 
 namespace sanla {
     namespace sanlamessage {
         namespace {
-            using SanlaPacket = sanla::sanlamessage::SanlaPacket;
             typedef void (*FuncPtr)(SanlaPacket);
         }; // anonymous
 
