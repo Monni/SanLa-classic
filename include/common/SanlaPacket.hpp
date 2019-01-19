@@ -25,7 +25,7 @@ namespace sanla {
                 long payload_chks;
             };
 
-            void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[sizeof(SanlaPacketHeader)]) {
+            inline void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[sizeof(SanlaPacketHeader)]) {
                 u_char flags;
                 flags = htons(header.flags);
                 memcpy(buffer+0, &flags, sizeof(u_char));
@@ -55,7 +55,7 @@ namespace sanla {
                 // TODO human readable sender name?
             };
 
-            void htonSanlaPacketBody(SanlaPacketBody body, char buffer[PACKET_BODY_MAX_SIZE]) {
+            inline void htonSanlaPacketBody(SanlaPacketBody body, char buffer[PACKET_BODY_MAX_SIZE]) {
                 char payload[PACKET_BODY_MAX_SIZE];
                 memcpy(buffer+0, &payload, PACKET_BODY_MAX_SIZE);
             };
@@ -65,7 +65,7 @@ namespace sanla {
                 SanlaPacketBody body;
             };
 
-            void htonSanlaPacket(SanlaPacketHeader header, SanlaPacketBody body, char buffer[41]) {
+            inline void htonSanlaPacket(SanlaPacketHeader header, SanlaPacketBody body, char buffer[41]) {
                 htonSanlaPacketHeader(header, buffer+0);
                 htonSanlaPacketBody(body, buffer+21);
             };
