@@ -2,6 +2,9 @@
 #include <Arduino.h>
 #include <SPI.h>
 
+#ifndef SANLACLASSIC_COMMON_H_
+#define SANLACLASSIC_COMMON_H_
+
 namespace sanla {
     namespace common {
     // General HW definitions
@@ -9,3 +12,4 @@ namespace sanla {
     void displayMessage(String message);
     };
 };
+#endif

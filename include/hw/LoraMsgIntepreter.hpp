@@ -1,6 +1,9 @@
 #include <vector>
 #include "common/SanlaMessage.hpp"
 
+#ifndef SANLACLASSIC_HW_LORAMSGINTEPRETER_H_
+#define SANLACLASSIC_HW_LORAMSGINTEPRETER_H_
+
 namespace sanla {
     namespace hw_interfaces {
 
@@ -20,3 +23,4 @@ namespace sanla {
         };
     }; // hw_interfaces
 }; // sanla
+#endif

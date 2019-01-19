@@ -1,5 +1,8 @@
 #include "hw/MessageBuffer.hpp"
 
+#ifndef SANLACLASSIC_HW_DOWNLINKBUFFER_H_
+#define SANLACLASSIC_HW_DOWNLINKBUFFER_H_
+
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
@@ -11,3 +14,4 @@ namespace sanla {
         }; // mq
     }; // hw_interfaces
 }; // sanla
+#endif

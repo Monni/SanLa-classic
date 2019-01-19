@@ -5,6 +5,9 @@
 #include <sstream>
 #include "common/SanlaMessage.hpp"
 
+#ifndef SANLA_CLASSIC_LORAMODULE_H
+#define SANLA_CLASSIC_LORAMODULE_H
+
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
 #define MISO    19   // GPIO19 -- SX1278's MISnO
@@ -20,9 +23,6 @@
 #define CODING_RATE 5       // Supports values between 5 and 8
 #define PREAMBL_LEN 6
 #define SYNC_WORD   0x12
-
-#ifndef SANLA_CLASSIC_LORAMODULE_H
-#define SANLA_CLASSIC_LORAMODULE_H
 
 namespace sanla {
     namespace lora {

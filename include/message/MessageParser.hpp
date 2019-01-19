@@ -1,5 +1,8 @@
 #include "common/SanlaMessage.hpp"
 
+#ifndef SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
+#define SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
+
 namespace sanla {
     namespace sanlamessage {
         namespace {
@@ -30,3 +33,4 @@ namespace sanla {
         };
     }; // sanlamessage
 }; // sanla
+#endif
