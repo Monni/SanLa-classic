@@ -4,6 +4,7 @@
 #include <string>
 #include <sstream>
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 #ifndef SANLA_CLASSIC_LORAMODULE_H
 #define SANLA_CLASSIC_LORAMODULE_H

@@ -16,38 +16,36 @@ namespace sanla {
             PACSEN {0xF}, PACRES {0xD};
 
             struct SanlaPacketHeader {
-                u_char flags;
+                uint8_t flags;
                 uint32_t package_id;
                 uint16_t sender_id;
                 char recipient_id[RECIPIENT_ID_MAX_SIZE];
                 uint16_t package_payload_length;
-                uint8_t payload_seq;
-                long payload_chks;
+                uint16_t payload_seq;
+                uint32_t payload_chks;
             };
 
-            inline void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[sizeof(SanlaPacketHeader)]) {
-                u_char flags;
-                flags = htons(header.flags);
-                memcpy(buffer+0, &flags, sizeof(u_char));
-
-                uint32_t package_id;
-                package_id = htonl(header.package_id);
-                memcpy(buffer+1, &package_id, sizeof(uint32_t));
+            inline void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[23]) {
+                memcpy(buffer+0, &header.flags, 1);
+                
+                uint32_t package_id = htonl(header.package_id);
+                memcpy(buffer+1, &package_id, 4);
 
                 uint16_t sender_id;
                 sender_id = htons(header.sender_id);
-                memcpy(buffer+5, &sender_id, sizeof(uint16_t));
+                memcpy(buffer+5, &sender_id, 2);
                 
-                char recipient_id[RECIPIENT_ID_MAX_SIZE];
-                memcpy(buffer+7, &recipient_id, RECIPIENT_ID_MAX_SIZE);
+                char recipient_id[RECIPIENT_ID_MAX_SIZE]{};
+                memcpy(buffer+7, &recipient_id, 8); // TODO this may or may not work
 
-                uint16_t package_payload_length;
-                package_payload_length = htons(header.package_payload_length);
-                memcpy(buffer+17, &package_payload_length, sizeof(uint16_t));
+                uint16_t package_payload_length = htons(header.package_payload_length);
+                memcpy(buffer+15, &package_payload_length, 2);
 
-                uint8_t payload_seq;
-                package_id = htons(header.payload_seq);
-                memcpy(buffer+19, &payload_seq, sizeof(uint16_t));
+                uint16_t payload_seq = htons(header.payload_seq);
+                memcpy(buffer+17, &payload_seq, 2);
+
+                uint32_t payload_chks = htonl(header.payload_chks);
+                memcpy(buffer+19, &payload_chks, 4);
             };
 
             struct SanlaPacketBody {

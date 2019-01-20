@@ -61,17 +61,66 @@ void LoRaModule::sendMessage(String message) {
     // This method is only for generating a broadcast message based on user input.
     // No other functions should use this one. This should call the outward stream for packages.
 
+    sanla:sanlamessage::SanlaPacket packet;
+    packet.header.flags = sanla::sanlamessage::PRO;
+    packet.header.package_id = 4294967295;
+    packet.header.sender_id = 65535;
+    strncpy(packet.header.recipient_id, "asdfasdf", sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
+    packet.header.package_payload_length = 65535;
+    packet.header.payload_seq = 65535;
+    packet.header.payload_chks = 4294967295;
+    strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
+    
+
+    char buffer[23]{};
+    sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
+    
+    // TODO Debugging prints for serialization
+    Serial.println("");
+    Serial.println(buffer[0], BIN);
+    for (int x=1; x<5; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+    for (int x=5; x<7; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+    for (int x=7; x<15; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+    // payload length
+    for (int x=15; x<17; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+    // payload seq
+    for (int x=17; x<19; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+    // payload chks
+    for (int x=19; x<23; x++) {
+        Serial.print(buffer[x], BIN);
+    };
+    Serial.println("");
+
+
     sanla::SanlaMessagePackage &&package = userInputPackage(message);
 
     // TODO package should be sent to some handler which figures out what to do with it once it's done.
     sanla::MessageHeader header = package.GetPackageHeader();
     std::stringstream serializedHeader;
-    
 
-    Serial.println("Sending message: " + message);
 
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)serializedHeader.str().c_str(), sizeof(serializedHeader.str().c_str())); // TODO WHAT? Now this goes as characters and in receiving end ie. uint16_t translates as uint8_t if suitable value.
+    LoRa.write((uint8_t*)buffer, 23);
     LoRa.endPacket();
 
     // Revert back to listening mode.
