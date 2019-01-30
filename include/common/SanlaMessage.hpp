@@ -5,8 +5,19 @@
 #include <string>
 #include <cstddef>
 #include <sstream>
+#include "constants.hpp"
 
 namespace sanla {
+
+    using PackageId_t = uint32_t;
+    using PayloadSeq_t = uint8_t;
+    using PayloadLength_t = uint16_t;
+    using SenderId_t = uint16_t;
+    using RecipientId_t = uint16_t;
+    using PayloadChecksum_t = uint32_t;
+    using flag_t = u_char;
+    using payload_t = char[lora::MAX_PACKET_PAYLOAD_SIZE];
+
 
     class Serializable
     {
@@ -19,19 +30,19 @@ namespace sanla {
 
     namespace sanlamessage {
         const uint8_t RECIPIENT_ID_MAX_SIZE {16};
-        const u_char BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
+        const flag_t BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
         SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},
         PACSEN {0xF}, PACRES {0xD};
 
         struct SanlaPacket {
-            u_char flags;
-            long package_id;
-            uint16_t sender_id;
+            flag_t flags;
+            PackageId_t package_id;
+            SenderId_t sender_id;
             char recipient_id[RECIPIENT_ID_MAX_SIZE];
-            uint16_t package_payload_length;
+            PayloadLength_t package_payload_length;
             uint8_t payload_seq;
-            long payload_chks;
-            char* payload;
+            PayloadChecksum_t payload_chks;
+            payload_t payload;
         };
     };
 
@@ -41,12 +52,12 @@ namespace sanla {
     };
 
     struct MessageHeader : public Serializable {
-        u_char flags;
+        flag_t flags;
         uint8_t payload_seq;
-        uint16_t length;
-        uint16_t sender_id;
-        long payload_chks;
-        uint32_t package_id;
+        PayloadLength_t length;
+        SenderId_t sender_id;
+        PayloadChecksum_t payload_chks;
+        PackageId_t package_id;
         std::string recipient_id;
 
         virtual void serialize(std::stringstream& stream) {

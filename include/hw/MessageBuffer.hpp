@@ -18,7 +18,6 @@ namespace sanla {
 
                 virtual uint32_t GetBufferLength();
 
-                std::vector<SanlaPackage> packageQueue;
             };
         }; // mq
     }; // hw_interfaces

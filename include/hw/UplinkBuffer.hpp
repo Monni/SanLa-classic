@@ -12,8 +12,6 @@ namespace sanla {
                 
                 bool send(SanlaPacket);
                 
-                PacketVector splitPackage(SanlaPackage);
-
                 virtual uint32_t GetBufferLength() override;
             };
         }; // mq
