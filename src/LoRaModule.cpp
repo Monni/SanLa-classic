@@ -70,7 +70,6 @@ void LoRaModule::sendMessage(String message) {
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
     strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
-    
 
     char buffer[23]{};
     sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
@@ -110,6 +109,11 @@ void LoRaModule::sendMessage(String message) {
         Serial.print(buffer[x], BIN);
     };
     Serial.println("");
+
+    sanla::sanlamessage::SanlaPacketHeader ntohtest;
+    ntohtest = sanla::sanlamessage::ntohSanlaPacketHeader(buffer);
+    Serial.println("Ntoh: ");
+    Serial.println(ntohtest.package_id);
 
 
     sanla::SanlaMessagePackage &&package = userInputPackage(message);
