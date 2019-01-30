@@ -3,3 +3,7 @@
 .piolibdeps
 .idea
 .vscode
+CMakeFiles
+Makefile
+CMakeCache.txt
+*.cmake

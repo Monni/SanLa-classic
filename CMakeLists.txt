@@ -1,0 +1,10 @@
+cmake_minimum_required (VERSION 3.12.1)
+project (SANLACLASSIC)
+
+if(MSVC)
+    add_custom_target(pio_build ALL COMMAND ps "pio run")
+else()
+    add_custom_target(pio_build ALL COMMAND bash -c "pio run")
+endif()
+include_directories("include")
+add_subdirectory(testrunner)
