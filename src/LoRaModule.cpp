@@ -33,19 +33,21 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
+/**
+ * @brief Construct SanlaMessage package based on user input
+ * 
+ * @param message User typed message.
+ * @return sanla::SanlaMessagePackage Constructed package. 
+ */
 sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
     // Create a message package based on user input.
 
     // Create header
-    // TODO figure out these values
     sanla::MessageHeader header;
-    header.flags = 0x1;
-    header.payload_seq = 1;
-    header.length = 1;
-    header.sender_id = 1;
-    header.payload_chks = 1;
-    header.package_id = 1;
-    header.recipient_id = "foo";
+    header.sender_id = 1; // TODO figure out method for sender_id
+    header.payload_chks = 1; // TODO method for calculating payload_chks
+    header.package_id = 1; // TODO generate package_id
+    header.recipient_id = "Foo"; // TODO this needs to come from somewhere
 
     // Create body
     sanla::MessageBody body = {
@@ -57,10 +59,14 @@ sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
     return {header, body};
 }
 
+/**
+ * @brief Method for constructing a full package based on user input, ready for broadcasting.
+ * 
+ * @param message User typed input message.
+ */
 void LoRaModule::sendMessage(String message) {
-    // This method is only for generating a broadcast message based on user input.
-    // No other functions should use this one. This should call the outward stream for packages.
 
+    // TODO remove below test packet.
     sanla:sanlamessage::SanlaPacket packet;
     packet.header.flags = sanla::sanlamessage::PRO;
     packet.header.package_id = 4294967295;
@@ -74,55 +80,9 @@ void LoRaModule::sendMessage(String message) {
     char buffer[23]{};
     sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
     
-    // TODO Debugging prints for serialization
-    Serial.println("");
-    Serial.println(buffer[0], BIN);
-    for (int x=1; x<5; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    for (int x=5; x<7; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    for (int x=7; x<15; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    // payload length
-    for (int x=15; x<17; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    // payload seq
-    for (int x=17; x<19; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    // payload chks
-    for (int x=19; x<23; x++) {
-        Serial.print(buffer[x], BIN);
-    };
-    Serial.println("");
-
-    sanla::sanlamessage::SanlaPacketHeader ntohtest;
-    ntohtest = sanla::sanlamessage::ntohSanlaPacketHeader(buffer);
-    Serial.println("Ntoh: ");
-    Serial.println(ntohtest.package_id);
-
-
     sanla::SanlaMessagePackage &&package = userInputPackage(message);
 
-    // TODO package should be sent to some handler which figures out what to do with it once it's done.
-    sanla::MessageHeader header = package.GetPackageHeader();
-    std::stringstream serializedHeader;
-
-
+    // Send    
     LoRa.beginPacket();
     LoRa.write((uint8_t*)buffer, 23);
     LoRa.endPacket();
@@ -154,23 +114,18 @@ void LoRaModule::onMessage(int packetSize) {
     }
 
     // Read packet payload
+    // TODO this needs to be forwarded into DownlinkBuffer.
     String incoming = "";
     while (LoRa.available()) {              // can't use readString() in callback, so
         incoming += (char)LoRa.read();      // add bytes one by one
     }
     Serial.println("Incoming: " + incoming);
-    //Serial.print("Flags: 0x"); Serial.println(flags, HEX);
-    //Serial.println("Seq: " + payload_seq);
 
     // Note: We should start writing unit tests for LoRaModule!
     if (ptrToLoraModule)
         ptrToLoraModule->_onReceive(incoming);
     else
         Serial.println("ptrToLoraModule is not set!");
-    //if (inc_payload_length != incoming.length()) {
-    //    Serial.println("error: message length does not match length");
-    //    return;
-    //}
 }
 
 } // lora

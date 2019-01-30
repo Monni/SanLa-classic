@@ -15,11 +15,9 @@ namespace sanla {
     };
 
     struct MessageHeader {
-        u_char flags;
-        uint8_t payload_seq;
-        uint16_t length;
-        uint64_t sender_id, payload_chks;
         uint32_t package_id;
+        uint16_t sender_id;
+        uint32_t payload_chks;
         std::string recipient_id;
     };
 
@@ -28,8 +26,7 @@ namespace sanla {
         MessageBody body;
 
         public:
-        SanlaMessagePackage(u_char, uint8_t, uint16_t, 
-        uint16_t, uint32_t, uint32_t, std::string, MessageBody);
+        SanlaMessagePackage(uint32_t, uint16_t, uint32_t, std::string, MessageBody);
         SanlaMessagePackage(MessageHeader, MessageBody);
         // This class is not moveable
         SanlaMessagePackage(SanlaMessagePackage&&) = delete;
@@ -41,7 +38,6 @@ namespace sanla {
         ~SanlaMessagePackage(){};
 
         uint8_t GetPackageLength();
-        uint16_t GetTotalPackageLength();
         MessageHeader& GetPackageHeader();
         MessageBody& GetPackageBody();
     };

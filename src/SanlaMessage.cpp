@@ -3,18 +3,12 @@
 
 using namespace sanla;
 
-SanlaMessagePackage::SanlaMessagePackage(u_char _flags, uint8_t _payload_seq, 
-uint16_t _length, uint16_t _sender_id, uint32_t _payload_chks, uint32_t _package_id,
-std::string _recipient_id, const MessageBody _body ) {
-    header.flags = _flags;
-    header.payload_seq = _payload_seq;
-    header.length = _length;
+SanlaMessagePackage::SanlaMessagePackage(uint32_t _package_id, uint16_t _sender_id, uint32_t _payload_chks, std::string _recipient_id, const MessageBody _body ) {
+    header.package_id = _package_id;
     header.sender_id = _sender_id;
     header.payload_chks = _payload_chks;
-    header.package_id = _package_id;
     header.recipient_id = _recipient_id;
     body = _body;
-
 }
 
 SanlaMessagePackage::SanlaMessagePackage(MessageHeader _header, MessageBody _body) {
@@ -23,11 +17,8 @@ SanlaMessagePackage::SanlaMessagePackage(MessageHeader _header, MessageBody _bod
 }
 
 uint8_t SanlaMessagePackage::GetPackageLength() {
-    return header.payload_seq;
-}
-
-uint16_t SanlaMessagePackage::GetTotalPackageLength() {
-    return header.length;
+    // TODO calculate real payload length
+    return 123;
 }
 
 MessageHeader& SanlaMessagePackage::GetPackageHeader() {
