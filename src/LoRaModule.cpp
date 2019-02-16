@@ -34,39 +34,48 @@ void LoRaModule::setRadioParameters() {
 }
 
 /**
- * @brief Construct SanlaMessage package based on user input
+ * @brief Build a message header based on user input.
  * 
- * @param message User typed message.
- * @return sanla::SanlaMessagePackage Constructed package. 
+ * @param _recipient_id Recipient group id.
+ * @return sanla::MessageHeader Complete message header.
  */
-sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
-    // Create a message package based on user input.
-
-    // Create header
+sanla::MessageHeader buildUserInputHeader(uint16_t _recipient_id) {
     sanla::MessageHeader header;
-    header.sender_id = 1; // TODO figure out method for sender_id
-    header.payload_chks = 1; // TODO method for calculating payload_chks
-    header.package_id = 1; // TODO generate package_id
-    header.recipient_id = "Foo"; // TODO this needs to come from somewhere
+    header.package_id = 1; // TODO generate. UUID?
+    header.sender_id = 65535; // TODO generate. MAC?
+    header.payload_chks = 1; // TODO calculate. Given as input?
 
-    // Create body
-    sanla::MessageBody body = {
-            "Foo",   // TODO instead of hard-coding, username should be used.
-            message.c_str()
-    };
-
-    // For some cucking reason return this.
-    return {header, body};
+    return header;
 }
 
 /**
- * @brief Method for constructing a full package based on user input, ready for broadcasting.
+ * @brief Build a message body based on user input.
+ * 
+ * @param _payload User input text.
+ * @return sanla::MessageBody Complete message body.
+ */
+sanla::MessageBody buildUserInputBody(String _payload) {
+    sanla::MessageBody body;
+    strncpy(body.sender, "foo", sizeof("foo")); // TODO how to get this?
+    strncpy(body.payload, _payload.c_str(), sizeof(_payload));
+
+    return body;
+}
+
+/**
+ * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
  * 
  * @param message User typed input message.
  */
-void LoRaModule::sendMessage(String message) {
+void LoRaModule::sendMessage(String _user_input) {
 
-    // TODO remove below test packet.
+    sanla::MessageHeader header = sanla::lora::buildUserInputHeader((uint16_t)65535); // TODO where to get recipient id?
+    sanla::MessageBody body = sanla::lora::buildUserInputBody(_user_input);
+    sanla::SanlaMessagePackage package(header, body);
+
+    // TODO send package to MessageStore for broadcasting.
+
+    // TODO may be removed from here
     sanla:sanlamessage::SanlaPacket packet;
     packet.header.flags = sanla::sanlamessage::PRO;
     packet.header.package_id = 4294967295;
@@ -77,17 +86,17 @@ void LoRaModule::sendMessage(String message) {
     packet.header.payload_chks = 4294967295;
     strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
 
+    // TODO may be removed from here.
     char buffer[23]{};
     sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
     
-    sanla::SanlaMessagePackage &&package = userInputPackage(message);
-
-    // Send    
+    
+    // Send. TODO to be moved into uplinkbuffer.
     LoRa.beginPacket();
     LoRa.write((uint8_t*)buffer, 23);
     LoRa.endPacket();
 
-    // Revert back to listening mode.
+    // Revert back to listening mode. TODO Dunno who should handle this.
     LoRa.receive();
 }
 
@@ -96,16 +105,14 @@ void LoRaModule::onPackage(void(*callback)(String)) {
 }
 
 void LoRaModule::packageReceived(String message) {
-    // TODO Validate if I'm recipient and if:
+    // TODO Move to handler or interpreter and finish this method.
     if (_onReceive) {
         _onReceive(message);
     }
-
-    // TODO Broadcast
-
 }
 
 void LoRaModule::onMessage(int packetSize) {
+    Serial.println("onMessage");
     if (packetSize == 0) return;
 
     byte byteArray[packetSize];

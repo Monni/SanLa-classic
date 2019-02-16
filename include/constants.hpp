@@ -10,6 +10,8 @@ namespace sanla {
     namespace sanlamessage {
         constexpr size_t RECIPIENT_ID_MAX_SIZE{8};
         constexpr size_t PACKET_BODY_MAX_SIZE{20};
+        constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12};
+        constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};
     }
 }
 #endif

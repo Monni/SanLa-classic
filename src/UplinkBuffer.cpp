@@ -22,7 +22,7 @@ PacketVector UplinkBuffer::splitPackage(SanlaPackage package){
     PacketVector output{};
     output.reserve(no_packets);
     char recipient_id[sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE];
-    strcpy(recipient_id, package_h.recipient_id.c_str());
+    //strcpy(recipient_id, package_h.recipient_id.c_str());
     for (uint32_t i = 0; i <= no_packets; i++) {
         SanlaPacket packet{};
         packet.header.flags = sanla::sanlamessage::PACSEN;

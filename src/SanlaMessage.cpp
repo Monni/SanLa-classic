@@ -3,11 +3,11 @@
 
 using namespace sanla;
 
-SanlaMessagePackage::SanlaMessagePackage(uint32_t _package_id, uint16_t _sender_id, uint32_t _payload_chks, std::string _recipient_id, const MessageBody _body ) {
+SanlaMessagePackage::SanlaMessagePackage(uint32_t _package_id, uint16_t _sender_id, uint32_t _payload_chks, const MessageBody _body ) {
     header.package_id = _package_id;
     header.sender_id = _sender_id;
     header.payload_chks = _payload_chks;
-    header.recipient_id = _recipient_id;
+    //header.recipient_id = _recipient_id;
     body = _body;
 }
 
