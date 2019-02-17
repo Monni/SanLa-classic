@@ -8,8 +8,13 @@ LoRaModule* ptrToLoraModule = NULL;
 
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
+/**
+ * @brief Initial boot function of a LoRa-module.
+ * Sets the module into corresponding pins in ESP32 and handles the bootup routine.
+ * Leaves the module into a state ready to receive messages.
+ * 
+ */
 void LoRaModule::begin() {
-    // Startup the LoRa module
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
         Serial.println("LoRaModule init failed.");
@@ -23,8 +28,12 @@ void LoRaModule::begin() {
     Serial.println("LoRaModule init succeeded.");
 }
 
+/**
+ * @brief Setup LoRa-radio with custom parameters.
+ * The function is called during bootup routine.
+ * 
+ */
 void LoRaModule::setRadioParameters() {
-    // Set custom radio parameters.
     LoRa.setTxPower(TX_POWER);
     LoRa.setSpreadingFactor(S_FACTOR);
     LoRa.setSignalBandwidth(SIG_BNDWDTH);
@@ -89,14 +98,14 @@ void LoRaModule::sendMessage(String _user_input) {
     // TODO may be removed from here.
     char buffer[23]{};
     sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
-    
-    
-    // Send. TODO to be moved into uplinkbuffer.
+
+    // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
+    // Send.
     LoRa.beginPacket();
     LoRa.write((uint8_t*)buffer, 23);
     LoRa.endPacket();
 
-    // Revert back to listening mode. TODO Dunno who should handle this.
+    // Revert back to listening mode.
     LoRa.receive();
 }
 
