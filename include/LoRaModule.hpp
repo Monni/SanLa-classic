@@ -1,3 +1,6 @@
+#ifndef SANLA_CLASSIC_LORAMODULE_H
+#define SANLA_CLASSIC_LORAMODULE_H
+
 #include <SPI.h>
 #include <LoRa.h>
 #include <Arduino.h>
@@ -20,9 +23,6 @@
 #define CODING_RATE 5       // Supports values between 5 and 8
 #define PREAMBL_LEN 6
 #define SYNC_WORD   0x12
-
-#ifndef SANLA_CLASSIC_LORAMODULE_H
-#define SANLA_CLASSIC_LORAMODULE_H
 
 namespace sanla {
     namespace lora {

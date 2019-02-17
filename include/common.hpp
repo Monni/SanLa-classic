@@ -1,3 +1,6 @@
+#ifndef SANLACLASSIC_COMMON_H_
+#define SANLACLASSIC_COMMON_H_
+
 #include <string>
 #include <Arduino.h>
 #include <SPI.h>
@@ -9,3 +12,4 @@ namespace sanla {
     void displayMessage(String message);
     };
 };
+#endif
