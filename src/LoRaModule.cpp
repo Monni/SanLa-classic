@@ -48,7 +48,7 @@ void LoRaModule::setRadioParameters() {
  * @param _recipient_id Recipient group id.
  * @return sanla::MessageHeader Complete message header.
  */
-sanla::MessageHeader buildUserInputHeader(uint16_t _recipient_id) {
+sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     sanla::MessageHeader header;
     header.package_id = 1; // TODO generate. UUID?
     header.sender_id = 65535; // TODO generate. MAC?
@@ -96,13 +96,13 @@ void LoRaModule::sendMessage(String _user_input) {
     strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
-    char buffer[23]{};
-    sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
+    char buffer[41]{};
+    //sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
 
     // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
     // Send.
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)buffer, 23);
+    LoRa.write((uint8_t*)buffer, 41);
     LoRa.endPacket();
 
     // Revert back to listening mode.

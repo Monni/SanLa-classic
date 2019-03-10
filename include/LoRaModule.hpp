@@ -40,7 +40,7 @@ namespace sanla {
             static void onMessage(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
-            sanla::MessageHeader buildUserInputHeader(uint16_t);
+            sanla::MessageHeader buildUserInputHeader(RecipientId_t);
             sanla::MessageBody buildUserInputBody(String);
         };
 
