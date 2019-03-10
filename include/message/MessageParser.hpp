@@ -1,8 +1,8 @@
-#include "common/SanlaMessage.hpp"
-#include "common/SanlaPacket.hpp"
-
 #ifndef SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
 #define SANLACLASSIC_MESSAGE_MESSAGEPARSER_H_
+
+#include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 namespace sanla {
     namespace sanlamessage {

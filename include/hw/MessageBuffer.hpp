@@ -1,9 +1,9 @@
+#ifndef SANLACLASSIC_HW_MESSAGEBUFFER_H_
+#define SANLACLASSIC_HW_MESSAGEBUFFER_H_
+
 #include <vector>
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
-
-#ifndef SANLACLASSIC_HW_MESSAGEBUFFER_H_
-#define SANLACLASSIC_HW_MESSAGEBUFFER_H_
 
 namespace sanla {
     namespace hw_interfaces {
@@ -19,7 +19,6 @@ namespace sanla {
 
                 virtual uint32_t GetBufferLength();
 
-                std::vector<SanlaPackage> packageQueue;
             };
         }; // mq
     }; // hw_interfaces

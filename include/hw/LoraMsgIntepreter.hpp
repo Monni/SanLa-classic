@@ -1,8 +1,8 @@
-#include <vector>
-#include "common/SanlaMessage.hpp"
-
 #ifndef SANLACLASSIC_HW_LORAMSGINTEPRETER_H_
 #define SANLACLASSIC_HW_LORAMSGINTEPRETER_H_
+
+#include <vector>
+#include "common/SanlaMessage.hpp"
 
 namespace sanla {
     namespace hw_interfaces {

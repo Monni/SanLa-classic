@@ -1,3 +1,6 @@
+#ifndef SANLA_CLASSIC_LORAMODULE_H
+#define SANLA_CLASSIC_LORAMODULE_H
+
 #include <SPI.h>
 #include <LoRa.h>
 #include <Arduino.h>
@@ -5,9 +8,6 @@
 #include <sstream>
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
-
-#ifndef SANLA_CLASSIC_LORAMODULE_H
-#define SANLA_CLASSIC_LORAMODULE_H
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
