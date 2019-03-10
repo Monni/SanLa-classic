@@ -13,7 +13,7 @@ namespace sanla {
             actions.store = func;
         }
         FuncPtr MessageParser::ParseMessage(SanlaPacket packet){
-            switch(packet.flags){
+            switch(packet.header.flags){
 
                 case sanlamessage::BRO:
                     return actions.respond;

@@ -7,6 +7,7 @@
 #include <string>
 #include <sstream>
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
@@ -39,7 +40,8 @@ namespace sanla {
             static void onMessage(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
-            sanla::SanlaMessagePackage userInputPackage(String);
+            sanla::MessageHeader buildUserInputHeader(RecipientId_t);
+            sanla::MessageBody buildUserInputBody(String);
         };
 
     };

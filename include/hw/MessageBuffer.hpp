@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 namespace sanla {
     namespace hw_interfaces {

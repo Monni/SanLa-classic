@@ -8,8 +8,13 @@ LoRaModule* ptrToLoraModule = NULL;
 
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
+/**
+ * @brief Initial boot function of a LoRa-module.
+ * Sets the module into corresponding pins in ESP32 and handles the bootup routine.
+ * Leaves the module into a state ready to receive messages.
+ * 
+ */
 void LoRaModule::begin() {
-    // Startup the LoRa module
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
         Serial.println("LoRaModule init failed.");
@@ -23,8 +28,12 @@ void LoRaModule::begin() {
     Serial.println("LoRaModule init succeeded.");
 }
 
+/**
+ * @brief Setup LoRa-radio with custom parameters.
+ * The function is called during bootup routine.
+ * 
+ */
 void LoRaModule::setRadioParameters() {
-    // Set custom radio parameters.
     LoRa.setTxPower(TX_POWER);
     LoRa.setSpreadingFactor(S_FACTOR);
     LoRa.setSignalBandwidth(SIG_BNDWDTH);
@@ -33,45 +42,67 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-sanla::SanlaMessagePackage LoRaModule::userInputPackage(String message) {
-    // Create a message package based on user input.
-
-    // Create header
-    // TODO figure out these values
+/**
+ * @brief Build a message header based on user input.
+ * 
+ * @param _recipient_id Recipient group id.
+ * @return sanla::MessageHeader Complete message header.
+ */
+sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     sanla::MessageHeader header;
-    header.flags = 0x1;
-    header.payload_seq = 1;
-    header.length = 1;
-    header.sender_id = 1;
-    header.payload_chks = 1;
-    header.package_id = 1;
-    header.recipient_id = "foo";
+    header.package_id = 1; // TODO generate. UUID?
+    header.sender_id = 65535; // TODO generate. MAC?
+    header.payload_chks = 1; // TODO calculate. Given as input?
 
-    // Create body
-    sanla::MessageBody body = {
-            "Foo",   // TODO instead of hard-coding, username should be used.
-            message.c_str()
-    };
-
-    // For some cucking reason return this.
-    return {header, body};
+    return header;
 }
 
-void LoRaModule::sendMessage(String message) {
-    // This method is only for generating a broadcast message based on user input.
-    // No other functions should use this one. This should call the outward stream for packages.
+/**
+ * @brief Build a message body based on user input.
+ * 
+ * @param _payload User input text.
+ * @return sanla::MessageBody Complete message body.
+ */
+sanla::MessageBody buildUserInputBody(String _payload) {
+    sanla::MessageBody body;
+    strncpy(body.sender, "foo", sizeof("foo")); // TODO how to get this?
+    strncpy(body.payload, _payload.c_str(), sizeof(_payload));
 
-    sanla::SanlaMessagePackage &&package = userInputPackage(message);
+    return body;
+}
 
-    // TODO package should be sent to some handler which figures out what to do with it once it's done.
-    sanla::MessageHeader header = package.GetPackageHeader();
-    std::stringstream serializedHeader;
-    header.serialize(serializedHeader);
+/**
+ * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
+ * 
+ * @param message User typed input message.
+ */
+void LoRaModule::sendMessage(String _user_input) {
 
-    Serial.println("Sending message: " + message);
+    sanla::MessageHeader header = sanla::lora::buildUserInputHeader((uint16_t)65535); // TODO where to get recipient id?
+    sanla::MessageBody body = sanla::lora::buildUserInputBody(_user_input);
+    sanla::SanlaMessagePackage package(header, body);
 
+    // TODO send package to MessageStore for broadcasting.
+
+    // TODO may be removed from here
+    sanla:sanlamessage::SanlaPacket packet;
+    packet.header.flags = sanla::sanlamessage::PRO;
+    packet.header.package_id = 4294967295;
+    packet.header.sender_id = 65535;
+    strncpy(packet.header.recipient_id, "asdfasdf", sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
+    packet.header.package_payload_length = 65535;
+    packet.header.payload_seq = 65535;
+    packet.header.payload_chks = 4294967295;
+    strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
+
+    // TODO may be removed from here.
+    char buffer[41]{};
+    //sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
+
+    // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
+    // Send.
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)serializedHeader.str().c_str(), sizeof(serializedHeader.str().c_str())); // TODO WHAT? Now this goes as characters and in receiving end ie. uint16_t translates as uint8_t if suitable value.
+    LoRa.write((uint8_t*)buffer, 41);
     LoRa.endPacket();
 
     // Revert back to listening mode.
@@ -83,16 +114,14 @@ void LoRaModule::onPackage(void(*callback)(String)) {
 }
 
 void LoRaModule::packageReceived(String message) {
-    // TODO Validate if I'm recipient and if:
+    // TODO Move to handler or interpreter and finish this method.
     if (_onReceive) {
         _onReceive(message);
     }
-
-    // TODO Broadcast
-
 }
 
 void LoRaModule::onMessage(int packetSize) {
+    Serial.println("onMessage");
     if (packetSize == 0) return;
 
     byte byteArray[packetSize];
@@ -101,23 +130,18 @@ void LoRaModule::onMessage(int packetSize) {
     }
 
     // Read packet payload
+    // TODO this needs to be forwarded into DownlinkBuffer.
     String incoming = "";
     while (LoRa.available()) {              // can't use readString() in callback, so
         incoming += (char)LoRa.read();      // add bytes one by one
     }
     Serial.println("Incoming: " + incoming);
-    //Serial.print("Flags: 0x"); Serial.println(flags, HEX);
-    //Serial.println("Seq: " + payload_seq);
 
     // Note: We should start writing unit tests for LoRaModule!
     if (ptrToLoraModule)
         ptrToLoraModule->_onReceive(incoming);
     else
         Serial.println("ptrToLoraModule is not set!");
-    //if (inc_payload_length != incoming.length()) {
-    //    Serial.println("error: message length does not match length");
-    //    return;
-    //}
 }
 
 } // lora

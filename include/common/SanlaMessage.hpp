@@ -10,35 +10,16 @@
 
 namespace sanla {
 
-    using payload_t = char[lora::MAX_PACKET_PAYLOAD_SIZE];
-
-    class Serializable
-    {
-    public:
-        Serializable(){}
-        virtual ~Serializable(){}
-
-        virtual void serialize(std::stringstream& stream) = 0;
-    };
-
     struct MessageBody {
-        char* sender; // TODO: use [max_size] instead of pointer, also define max_size
-        const char *payload;
+        char sender[sanla::sanlamessage::MESSAGE_BODY_SENDER_MAX_SIZE];
+        char payload[sanla::sanlamessage::MESSAGE_BODY_PAYLOAD_MAX_SIZE];
     };
 
-    struct MessageHeader : public Serializable {
-        Flag_t flags;
-        PayloadSeq_t payload_seq;
-        PayloadLength_t length;
+    struct MessageHeader {
+        PackageId_t package_id;
         SenderId_t sender_id;
         PayloadChecksum_t payload_chks;
-        PackageId_t package_id;
         std::string recipient_id;
-
-        virtual void serialize(std::stringstream& stream) {
-            stream << flags << payload_seq << length << sender_id << payload_chks << package_id << recipient_id;
-        }
-
     };
 
     class SanlaMessagePackage {
@@ -46,8 +27,7 @@ namespace sanla {
         MessageBody body;
 
         public:
-        SanlaMessagePackage(u_char, uint8_t, uint16_t, 
-        uint16_t, long, uint32_t, std::string, MessageBody);
+        SanlaMessagePackage(uint32_t, uint16_t, uint32_t, MessageBody);
         SanlaMessagePackage(MessageHeader, MessageBody);
         // This class is not moveable
         SanlaMessagePackage(SanlaMessagePackage&&) = delete;
@@ -59,25 +39,8 @@ namespace sanla {
         ~SanlaMessagePackage(){};
 
         uint8_t GetPackageLength();
-        uint16_t GetTotalPackageLength();
         MessageHeader& GetPackageHeader();
         MessageBody& GetPackageBody();
-    };
-
-    namespace sanlamessage {
-
-        struct SanlaPacket {
-            Flag_t flags;
-            PackageId_t package_id;
-            SenderId_t sender_id;
-            char recipient_id[RECIPIENT_ID_MAX_SIZE];
-            PayloadLength_t package_payload_length;
-            uint8_t payload_seq;
-            PayloadChecksum_t payload_chks;
-            payload_t payload;
-            
-            void copy_headers_from_message(MessageHeader, MessageBody);
-        };
     };
 };
 #endif
