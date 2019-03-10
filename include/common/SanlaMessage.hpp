@@ -16,7 +16,7 @@ namespace sanla {
     };
 
     struct MessageHeader {
-        PackageId_t packageId;
+        PackageId_t package_id;
         SenderId_t sender_id;
         PayloadChecksum_t payload_chks;
         std::string recipient_id;

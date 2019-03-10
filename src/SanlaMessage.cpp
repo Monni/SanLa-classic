@@ -1,6 +1,7 @@
 #include <string.h>
 #include <sstream>
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 namespace sanla {
 
@@ -32,13 +33,12 @@ MessageBody& SanlaMessagePackage::GetPackageBody() {
 
 namespace sanlamessage{
     void SanlaPacket::copy_headers_from_message(MessageHeader header, MessageBody body) {
-        flags = header.flags;
-        package_id = header.package_id;
-        sender_id = header.sender_id;
+        PackageId_t package_id = header.package_id;
+        SenderId_t sender_id = header.sender_id;
+        PayloadChecksum_t payload_chks = header.payload_chks;
+        char recipient_id[header.recipient_id.length()+1];
         strcpy(recipient_id, header.recipient_id.c_str());
-        package_payload_length = strlen(body.payload); // Possible segfault due to non Null terminated string
-        payload_seq = header.payload_seq;
-        payload_chks = header.payload_chks;
+        uint16_t package_payload_length = strlen(body.payload); // Possible segfault due to non Null terminated string
 
     }
 } // sanlamessage

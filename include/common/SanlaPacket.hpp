@@ -11,9 +11,6 @@
 
 namespace sanla {
     namespace sanlamessage {
-            const u_char BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
-            SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},
-            PACSEN {0xF}, PACRES {0xD};
 
             struct SanlaPacketHeader {
                 uint8_t flags;
@@ -87,6 +84,8 @@ namespace sanla {
             struct SanlaPacket {
                 SanlaPacketHeader header;
                 SanlaPacketBody body;
+                
+                void copy_headers_from_message(MessageHeader, MessageBody);
             };
 
             inline void htonSanlaPacket(SanlaPacketHeader header, SanlaPacketBody body, char buffer[41]) {
