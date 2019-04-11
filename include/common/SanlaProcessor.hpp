@@ -14,6 +14,9 @@ namespace sanla {
 
 class SanlaProcessor {
 
+public:
+SanlaProcessor(): m_dbuffer(), m_ubuffer(), m_mstore() {};
+
 private:
 DownlinkBuffer m_dbuffer;
 UplinkBuffer m_ubuffer;
