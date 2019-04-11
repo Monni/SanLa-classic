@@ -38,6 +38,9 @@ bool UplinkBuffer::addPacket(SanlaPacket packet){
     return false;
 }
 
+uint32_t UplinkBuffer::GetBufferLength() {
+    return packetBuffer.size();
+}
 
 } // mq
 } // hw_interfaces
