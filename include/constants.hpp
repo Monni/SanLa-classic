@@ -19,11 +19,8 @@ namespace sanla {
 
     namespace hw_interfaces {
         namespace mq {
-<<<<<<< Updated upstream
             constexpr size_t UPLINKBUFFER_MAX_SIZE{50};
-=======
             constexpr size_t DOWNLINKBUFFER_MAX_SIZE{50};
->>>>>>> Stashed changes
         };
     };
 };
