@@ -43,7 +43,7 @@ namespace sanla {
             inline void htonSanlaPacketHeader(SanlaPacketHeader, char[23]);
             inline SanlaPacketHeader ntohSanlaPacketHeader(char[23]);
             inline void htonSanlaPacketBody(SanlaPacketBody, char[PACKET_BODY_MAX_SIZE]);
-            inline void htonSanlaPacket(SanlaPacketHeader, SanlaPacketBody, char[41]);
+            inline void htonSanlaPacket(SanlaPacket, char[41]);
 
         };
 };

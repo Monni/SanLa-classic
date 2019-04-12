@@ -78,7 +78,7 @@ sanla::MessageBody buildUserInputBody(String _payload) {
  */
 void LoRaModule::sendMessage(String _user_input) {
 
-    sanla::MessageHeader header = sanla::lora::buildUserInputHeader((uint16_t)65535); // TODO where to get recipient id?
+    sanla::MessageHeader header = sanla::lora::buildUserInputHeader("12345678"); // TODO where to get recipient id?
     sanla::MessageBody body = sanla::lora::buildUserInputBody(_user_input);
     sanla::SanlaMessagePackage package(header, body);
 

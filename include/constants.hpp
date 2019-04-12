@@ -16,5 +16,11 @@ namespace sanla {
         constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12};
         constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};
     };
+
+    namespace hw_interfaces {
+        namespace mq {
+            constexpr size_t UPLINKBUFFER_MAX_SIZE{50};
+        };
+    };
 };
 #endif

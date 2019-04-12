@@ -2,7 +2,7 @@
 #define SANLACLASSIC_HW_LORAMSGINTEPRETER_H_
 
 #include <vector>
-#include "common/SanlaMessage.hpp"
+#include "common/SanlaPacket.hpp"
 
 namespace sanla {
     namespace hw_interfaces {
