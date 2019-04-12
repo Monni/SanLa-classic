@@ -3,41 +3,32 @@
 namespace sanla {
     namespace sanlamessage {
 
-        void MessageParser::setDropAction(FuncPtr func){
-            actions.drop = func;
-        }
-        void MessageParser::setRespondAction(FuncPtr func){
-            actions.respond = func;
-        }
-        void MessageParser::setStoreAction(FuncPtr func){
-            actions.store = func;
-        }
-        FuncPtr MessageParser::ParseMessage(SanlaPacket packet){
+        uint32_t MessageParser::ParseMessage(SanlaPacket packet){
             switch(packet.header.flags){
 
                 case sanlamessage::BRO:
-                    return actions.respond;
+                    return RESPOND;
                 
                 case sanlamessage::ACK:
-                    return actions.store;
+                    return STORE;
                 
                 case sanlamessage::PACPRO:
-                    return actions.respond;
+                    return RESPOND;
                 
                 case sanlamessage::PACRES:
-                    return actions.respond;
+                    return RESPOND;
 
                 case sanlamessage::PACSEN:
-                    return actions.store;
+                    return STORE;
                 
                 case sanlamessage::PACREQ:
-                    return actions.respond;
+                    return RESPOND;
 
                 case sanlamessage::PROACK:
-                    return actions.respond;
+                    return RESPOND;
 
                 default:
-                    return actions.drop;
+                    return DROP;
             }
         }
 
