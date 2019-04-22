@@ -54,7 +54,7 @@ namespace sanla {
     
         void htonSanlaPacket(SanlaPacket packet, char buffer[41]) {
             htonSanlaPacketHeader(packet.header, buffer+0);
-            memcpy(packet.body, buffer+21, PACKET_BODY_MAX_SIZE);
+            memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
         };
 
         inline SanlaPacket ntohSanlaPacket(char buffer[41]) {
