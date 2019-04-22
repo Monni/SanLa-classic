@@ -52,12 +52,12 @@ namespace sanla {
             return tmp;
         };
     
-        void htonSanlaPacket(SanlaPacket packet, char buffer[41]) {
+        void htonSanlaPacket(SanlaPacket packet, sanlapacket::Packet_t buffer) {
             htonSanlaPacketHeader(packet.header, buffer+0);
             memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
         };
 
-        inline SanlaPacket ntohSanlaPacket(char buffer[41]) {
+        inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t buffer) {
             SanlaPacket sanlapacket;
 
             char headerArr[23];

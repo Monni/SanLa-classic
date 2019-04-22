@@ -15,7 +15,8 @@ namespace sanla {
         constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};
 
         namespace sanlapacket {
-            constexpr size_t PACKET_BODY_MAX_SIZE{20};
+            constexpr size_t PACKET_MAX_SIZE{53}; // TODO define suitable packet size by determined LoRa SF-value. Probably increase a bit?
+            constexpr size_t PACKET_BODY_MAX_SIZE{33};
         };
     };
 

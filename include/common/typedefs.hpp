@@ -16,5 +16,11 @@ namespace sanla
     using PayloadChecksum_t = uint32_t;
     using Flag_t = u_char;
     using Payload_t = char[sanlamessage::sanlapacket::PACKET_BODY_MAX_SIZE];
+
+    namespace sanlamessage {
+        namespace sanlapacket {
+            using Packet_t = char[PACKET_MAX_SIZE];
+        };
+    };
 }; // sanla
 #endif

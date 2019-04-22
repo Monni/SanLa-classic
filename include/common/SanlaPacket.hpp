@@ -37,8 +37,8 @@ namespace sanla {
 
             inline void htonSanlaPacketHeader(SanlaPacketHeader, char[23]);
             inline SanlaPacketHeader ntohSanlaPacketHeader(char[23]);
-            inline void htonSanlaPacket(SanlaPacket, char[41]);
-            inline SanlaPacket ntohSanlaPacket(char[41]);
+            inline void htonSanlaPacket(SanlaPacket, sanlapacket::Packet_t);
+            inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t);
 
         };
 };
