@@ -93,7 +93,7 @@ void LoRaModule::sendMessage(String _user_input) {
     packet.header.package_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
-    strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
+    strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
     char buffer[41]{};
