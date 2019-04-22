@@ -93,16 +93,16 @@ void LoRaModule::sendMessage(String _user_input) {
     packet.header.message_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
-    strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
+    strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
-    char buffer[41]{};
+    sanla::sanlamessage::sanlapacket::Packet_t buffer{};
     //sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
 
     // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
     // Send.
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)buffer, 41);
+    LoRa.write((uint8_t*)buffer, sanla::sanlamessage::sanlapacket::PACKET_MAX_SIZE);
     LoRa.endPacket();
 
     // Revert back to listening mode.

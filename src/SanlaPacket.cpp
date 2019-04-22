@@ -51,16 +51,25 @@ namespace sanla {
 
             return tmp;
         };
-
-        void htonSanlaPacketBody(SanlaPacketBody body, char buffer[PACKET_BODY_MAX_SIZE]) {
-            char payload[PACKET_BODY_MAX_SIZE];
-            memcpy(buffer+0, &payload, PACKET_BODY_MAX_SIZE);
-        };
     
-        void htonSanlaPacket(SanlaPacket packet, char buffer[41]) {
+        void htonSanlaPacket(SanlaPacket packet, sanlapacket::Packet_t buffer) {
             htonSanlaPacketHeader(packet.header, buffer+0);
-            htonSanlaPacketBody(packet.body, buffer+21);
+            memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
         };
+
+        inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t buffer) {
+            SanlaPacket sanlapacket;
+
+            char headerArr[23];
+            for(int i = 0; i < 23; i++) {
+                headerArr[i] = buffer[i];
+            };
+            sanlapacket.header = sanla::sanlamessage::ntohSanlaPacketHeader(headerArr);
+
+            memcpy(sanlapacket.body, buffer+23, sizeof(Payload_t));
+
+            return sanlapacket;
+        }
 
     }
 }
