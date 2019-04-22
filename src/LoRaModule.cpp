@@ -50,7 +50,7 @@ void LoRaModule::setRadioParameters() {
  */
 sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     sanla::MessageHeader header;
-    header.package_id = 1; // TODO generate. UUID?
+    header.message_id = 1; // TODO generate. UUID?
     header.sender_id = 65535; // TODO generate. MAC?
     header.payload_chks = 1; // TODO calculate. Given as input?
 
@@ -87,10 +87,10 @@ void LoRaModule::sendMessage(String _user_input) {
     // TODO may be removed from here
     sanla:sanlamessage::SanlaPacket packet;
     packet.header.flags = sanla::sanlamessage::PRO;
-    packet.header.package_id = 4294967295;
+    packet.header.message_id = 4294967295;
     packet.header.sender_id = 65535;
     strncpy(packet.header.recipient_id, "asdfasdf", sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
-    packet.header.package_payload_length = 65535;
+    packet.header.message_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
     strncpy(packet.body.payload, "12345678901234567890", sizeof("12345678901234567890"));
