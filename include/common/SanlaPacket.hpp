@@ -28,22 +28,17 @@ namespace sanla {
                 PayloadChecksum_t payload_chks;
             };
 
-            struct SanlaPacketBody {
-                char payload[PACKET_BODY_MAX_SIZE];
-                // TODO human readable sender name?
-            };
-
             struct SanlaPacket {
                 SanlaPacketHeader header;
-                SanlaPacketBody body;
+                Payload_t body;
                 
                 void copy_headers_from_message(MessageHeader, MessageBody);
             };
 
             inline void htonSanlaPacketHeader(SanlaPacketHeader, char[23]);
             inline SanlaPacketHeader ntohSanlaPacketHeader(char[23]);
-            inline void htonSanlaPacketBody(SanlaPacketBody, char[PACKET_BODY_MAX_SIZE]);
-            inline void htonSanlaPacket(SanlaPacket, char[41]);
+            inline void htonSanlaPacket(SanlaPacket, sanlapacket::Packet_t);
+            inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t);
 
         };
 };
