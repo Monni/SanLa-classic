@@ -29,6 +29,15 @@ namespace sanla {
                  * @return DownlinkPacket for storage.
                  */
                 DownlinkPacket PacketToDownlinkPacket(SanlaPacket);
+
+                /**
+                 * @brief Validate stored DownlinkPacket is ready to be parsed into
+                 * a message and to be sent into MessageStore.
+                 * 
+                 * @return true if message is ready.
+                 * @return false if message is not ready.
+                 */
+                bool validateMessageReady(DownlinkPacket);
                 
                 void DropPacket(SanlaPacket);
                 bool StorePacket(SanlaPacket);
