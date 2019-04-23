@@ -27,7 +27,7 @@ namespace sanla {
             }
 
             uint32_t DownlinkBuffer::GetBufferLength() {
-                return packetBuffer.size();
+                return downlinkPacketBuffer.size();
             }
 
             void DownlinkBuffer::DropPacket(SanlaPacket packet){
@@ -35,12 +35,34 @@ namespace sanla {
             }
 
             bool DownlinkBuffer::StorePacket(SanlaPacket packet) {
-                if (packetBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
+                if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
                     DropPacket(packet);
                     return false;
                 }
-                packetBuffer.push_back(packet);
+
+                try {
+                    auto *downlinkPacket = downlinkPacketBuffer.at(packet.header.message_id);
+                    std::string body_string(packet.body);
+                    downlinkPacket->payloadBuffer.push_back(body_string);
+                } catch(const std::out_of_range& e) {
+                    DownlinkPacket downlinkPacket = PacketToDownlinkPacket(packet);
+                    downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
+                }
+
                 return true;
+            }
+
+            DownlinkPacket PacketToDownlinkPacket(SanlaPacket packet) {
+                DownlinkPacket downlinkPacket;
+
+                downlinkPacket.message_id = packet.header.message_id;
+                memcpy(&downlinkPacket.recipient_id, packet.header.recipient_id, sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
+                downlinkPacket.message_payload_length = packet.header.message_payload_length;
+                downlinkPacket.payload_chks = packet.header.payload_chks;                
+                std::string body_string(packet.body);
+                downlinkPacket.payloadBuffer.push_back(body_string);
+
+                return downlinkPacket;
             }
 
             void DownlinkBuffer::RespondPacket(SanlaPacket packet) {

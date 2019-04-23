@@ -33,7 +33,7 @@ MessageBody& SanlaMessagePackage::GetPackageBody() {
 
 namespace sanlamessage{
     void SanlaPacket::copy_headers_from_message(MessageHeader header, MessageBody body) {
-        PackageId_t package_id = header.message_id;
+        PackageId_t message_id = header.message_id;
         SenderId_t sender_id = header.sender_id;
         PayloadChecksum_t payload_chks = header.payload_chks;
         char recipient_id[header.recipient_id.length()+1];

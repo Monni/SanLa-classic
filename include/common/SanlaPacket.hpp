@@ -1,3 +1,6 @@
+#ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
+#define SANLACLASSIC_COMMON_SANLAPACKET_H_
+
 #include <netinet/in.h>
 #include <stdint.h>
 #include <string>
@@ -7,9 +10,6 @@
 #include <cstdint>
 #include <cstring>
 #include "common/SanlaMessage.hpp"
-
-#ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
-#define SANLACLASSIC_COMMON_SANLAPACKET_H_
 
 namespace sanla {
     namespace sanlamessage {
