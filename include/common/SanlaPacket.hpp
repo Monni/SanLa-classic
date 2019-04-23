@@ -20,7 +20,7 @@ namespace sanla {
 
             struct SanlaPacketHeader {
                 Flag_t flags;
-                PackageId_t message_id;
+                MessageId_t message_id;
                 SenderId_t sender_id;
                 RecipientId_t recipient_id;
                 PayloadLength_t message_payload_length;

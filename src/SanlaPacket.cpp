@@ -6,7 +6,7 @@ namespace sanla {
         void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[23]) {
             memcpy(buffer+0, &header.flags, sizeof(header.flags));
             
-            PackageId_t message_id = htonl(header.message_id);
+            MessageId_t message_id = htonl(header.message_id);
             memcpy(buffer+1, &message_id, sizeof(message_id));
 
             SenderId_t sender_id;

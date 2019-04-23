@@ -8,7 +8,7 @@
 
 namespace sanla
 {
-    using PackageId_t = uint32_t;
+    using MessageId_t = uint32_t;
     using PayloadSeq_t = uint8_t;
     using PayloadLength_t = uint16_t;
     using SenderId_t = uint16_t;

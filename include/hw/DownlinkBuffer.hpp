@@ -10,7 +10,7 @@ namespace sanla {
     namespace hw_interfaces {
         namespace mq {
             using MessageParser = sanlamessage::MessageParser;
-            using DownlinkPacketMap = std::map<PackageId_t, DownlinkPacket*>;
+            using DownlinkPacketMap = std::map<MessageId_t, DownlinkPacket*>;
 
             class DownlinkBuffer:MessageBuffer {
                 public:

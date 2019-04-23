@@ -11,7 +11,7 @@ namespace sanla {
         namespace mq {
 
             struct DownlinkPacket {
-                PackageId_t message_id;
+                MessageId_t message_id;
                 RecipientId_t recipient_id;
                 PayloadLength_t message_payload_length;
                 PayloadChecksum_t payload_chks;
