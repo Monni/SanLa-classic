@@ -36,6 +36,7 @@ namespace sanla {
 
             bool DownlinkBuffer::StorePacket(SanlaPacket packet) {
                 if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
+                    // TODO add debug line here.
                     DropPacket(packet);
                     return false;
                 }
@@ -69,12 +70,13 @@ namespace sanla {
                 return downlinkPacket;
             }
 
-            bool validateMessageReady(DownlinkPacket downLinkPacket) {
+            bool validateMessageReady(DownlinkPacket downlinkPacket) {
                 std::string downlinkPayload;
-                for (std::vector<std::string>::iterator it = downLinkPacket.payloadBuffer.begin() ; it != downLinkPacket.payloadBuffer.end(); ++it)
-                    downlinkPayload += *it;
+                for (auto const& str : downlinkPacket.payloadBuffer) {
+                    downlinkPayload += str;
+                }
                 
-                if (downlinkPayload.length() == downLinkPacket.message_payload_length) {
+                if (downlinkPayload.length() == downlinkPacket.message_payload_length) {
                     return true; // TODO if length matches, calculate checksum to verify integrity of the message.
                 }
                 return false;
