@@ -46,7 +46,7 @@ namespace sanla {
                     std::string body_string(packet.body);
                     downlinkPacket->payloadBuffer.push_back(body_string);
                 } catch(const std::out_of_range& e) {
-                    DownlinkPacket downlinkPacket = PacketToDownlinkPacket(packet);
+                    DownlinkPacket downlinkPacket(packet);
                     downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
                 }
 
@@ -55,19 +55,6 @@ namespace sanla {
                 }
 
                 return true;
-            }
-
-            DownlinkPacket PacketToDownlinkPacket(SanlaPacket packet) {
-                DownlinkPacket downlinkPacket;
-
-                downlinkPacket.message_id = packet.header.message_id;
-                memcpy(&downlinkPacket.recipient_id, packet.header.recipient_id, sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
-                downlinkPacket.message_payload_length = packet.header.message_payload_length;
-                downlinkPacket.payload_chks = packet.header.payload_chks;                
-                std::string body_string(packet.body);
-                downlinkPacket.payloadBuffer.push_back(body_string);
-
-                return downlinkPacket;
             }
 
             bool validateMessageReady(DownlinkPacket downlinkPacket) {

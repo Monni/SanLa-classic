@@ -24,13 +24,6 @@ namespace sanla {
                 MessageParser parser;
 
                 /**
-                 * @brief Parse SanlaPacket into smaller format for storing incoming packets.
-                 * 
-                 * @return DownlinkPacket for storage.
-                 */
-                DownlinkPacket PacketToDownlinkPacket(SanlaPacket);
-
-                /**
                  * @brief Validate stored DownlinkPacket is ready to be parsed into
                  * a message and to be sent into MessageStore.
                  * 
