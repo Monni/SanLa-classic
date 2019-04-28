@@ -1,3 +1,6 @@
+#ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
+#define SANLACLASSIC_COMMON_SANLAPACKET_H_
+
 #include <netinet/in.h>
 #include <stdint.h>
 #include <string>
@@ -8,9 +11,6 @@
 #include <cstring>
 #include "common/SanlaMessage.hpp"
 
-#ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
-#define SANLACLASSIC_COMMON_SANLAPACKET_H_
-
 namespace sanla {
     namespace sanlamessage {
 
@@ -20,10 +20,10 @@ namespace sanla {
 
             struct SanlaPacketHeader {
                 Flag_t flags;
-                PackageId_t package_id;
+                MessageId_t message_id;
                 SenderId_t sender_id;
                 RecipientId_t recipient_id;
-                PayloadLength_t package_payload_length;
+                PayloadLength_t message_payload_length;
                 PayloadSeq_t payload_seq;
                 PayloadChecksum_t payload_chks;
             };

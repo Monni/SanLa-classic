@@ -1,13 +1,16 @@
 #ifndef SANLACLASSIC_HW_DOWNLINKBUFFER_H_
 #define SANLACLASSIC_HW_DOWNLINKBUFFER_H_
 
+#include <map>
 #include "hw/MessageBuffer.hpp"
 #include "message/MessageParser.hpp"
+#include "DownlinkPacket.hpp"
 
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
             using MessageParser = sanlamessage::MessageParser;
+            using DownlinkPacketMap = std::map<MessageId_t, DownlinkPacket*>;
 
             class DownlinkBuffer:MessageBuffer {
                 public:
@@ -17,9 +20,17 @@ namespace sanla {
                 virtual uint32_t GetBufferLength() override;
 
                 private:
-
-                std::vector<SanlaPacket> packetBuffer;
+                DownlinkPacketMap downlinkPacketBuffer;
                 MessageParser parser;
+
+                /**
+                 * @brief Validate stored DownlinkPacket is ready to be parsed into
+                 * a message and to be sent into MessageStore.
+                 * 
+                 * @return true if message is ready.
+                 * @return false if message is not ready.
+                 */
+                bool validateMessageReady(DownlinkPacket);
                 
                 void DropPacket(SanlaPacket);
                 bool StorePacket(SanlaPacket);

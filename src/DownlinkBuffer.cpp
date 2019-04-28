@@ -27,7 +27,7 @@ namespace sanla {
             }
 
             uint32_t DownlinkBuffer::GetBufferLength() {
-                return packetBuffer.size();
+                return downlinkPacketBuffer.size();
             }
 
             void DownlinkBuffer::DropPacket(SanlaPacket packet){
@@ -35,12 +35,38 @@ namespace sanla {
             }
 
             bool DownlinkBuffer::StorePacket(SanlaPacket packet) {
-                if (packetBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
+                if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
+                    // TODO add debug line here.
                     DropPacket(packet);
                     return false;
                 }
-                packetBuffer.push_back(packet);
+
+                try {
+                    auto *downlinkPacket = downlinkPacketBuffer.at(packet.header.message_id);
+                    std::string body_string(packet.body);
+                    downlinkPacket->payloadBuffer.push_back(body_string);
+                } catch(const std::out_of_range& e) {
+                    DownlinkPacket downlinkPacket(packet);
+                    downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
+                }
+
+                if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
+                    // Todo send to MessageStore and remove 
+                }
+
                 return true;
+            }
+
+            bool validateMessageReady(DownlinkPacket downlinkPacket) {
+                std::string downlinkPayload;
+                for (auto const& str : downlinkPacket.payloadBuffer) {
+                    downlinkPayload += str;
+                }
+                
+                if (downlinkPayload.length() == downlinkPacket.message_payload_length) {
+                    return true; // TODO if length matches, calculate checksum to verify integrity of the message.
+                }
+                return false;
             }
 
             void DownlinkBuffer::RespondPacket(SanlaPacket packet) {

@@ -6,8 +6,8 @@ namespace sanla {
         void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[23]) {
             memcpy(buffer+0, &header.flags, sizeof(header.flags));
             
-            PackageId_t package_id = htonl(header.package_id);
-            memcpy(buffer+1, &package_id, sizeof(package_id));
+            MessageId_t message_id = htonl(header.message_id);
+            memcpy(buffer+1, &message_id, sizeof(message_id));
 
             SenderId_t sender_id;
             sender_id = htons(header.sender_id);
@@ -16,8 +16,8 @@ namespace sanla {
             RecipientId_t recipient_id{};
             memcpy(buffer+7, &recipient_id, RECIPIENT_ID_MAX_SIZE); // TODO this may or may not work
 
-            PayloadLength_t package_payload_length = htons(header.package_payload_length);
-            memcpy(buffer+15, &package_payload_length, sizeof(header.package_payload_length));
+            PayloadLength_t message_payload_length = htons(header.message_payload_length);
+            memcpy(buffer+15, &message_payload_length, sizeof(header.message_payload_length));
 
             PayloadSeq_t payload_seq = htons(header.payload_seq);
             memcpy(buffer+17, &payload_seq, sizeof(header.payload_seq));
@@ -32,16 +32,16 @@ namespace sanla {
             
             memcpy(&tmp.flags, buffer+0, sizeof(tmp.flags));
             
-            memcpy(&tmp.package_id, buffer+1, sizeof(tmp.package_id));
-            tmp.package_id = ntohl(tmp.package_id);
+            memcpy(&tmp.message_id, buffer+1, sizeof(tmp.message_id));
+            tmp.message_id = ntohl(tmp.message_id);
 
             memcpy(&tmp.sender_id, buffer+5, sizeof(tmp.sender_id));
             tmp.sender_id = ntohs(tmp.sender_id);
             
             memcpy(&tmp.recipient_id, buffer+7, RECIPIENT_ID_MAX_SIZE); // TODO this may or may not work
 
-            memcpy(&tmp.package_payload_length, buffer+15, sizeof(tmp.package_payload_length));
-            tmp.package_payload_length = ntohs(tmp.package_payload_length);
+            memcpy(&tmp.message_payload_length, buffer+15, sizeof(tmp.message_payload_length));
+            tmp.message_payload_length = ntohs(tmp.message_payload_length);
 
             memcpy(&tmp.payload_seq, buffer+17, sizeof(tmp.payload_seq));
             tmp.payload_seq = ntohs(tmp.payload_seq);
