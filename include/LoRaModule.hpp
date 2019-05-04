@@ -31,16 +31,49 @@ namespace sanla {
         class LoRaModule {
         public:
             LoRaModule();
+
+            /**
+             * @brief Initial boot function of a LoRa-module.
+             * Sets the module into corresponding pins in ESP32 and handles the bootup routine.
+             * Leaves the module into a state ready to receive messages.
+             * 
+             */
             void begin();
+
+            /**
+             * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
+             * 
+             * @param message User typed input message.
+             */
             void sendMessage(String message);
             void onPackage(void(*callback)(String));
 
         private:
+
+            /**
+             * @brief Setup LoRa-radio with custom parameters.
+             * The function is called during bootup routine.
+             * 
+             */
             void setRadioParameters();
             static void onMessage(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
+
+            /**
+             * @brief Build a message header based on user input.
+             * 
+             * @param _recipient_id Recipient group id.
+             * @return sanla::MessageHeader Complete message header.
+             */
             sanla::MessageHeader buildUserInputHeader(RecipientId_t);
+
+            /**
+             * @brief Build a message body based on user input.
+             * 
+             * @param _payload User input text.
+             * @return sanla::MessageBody Complete message body.
+             */
             sanla::MessageBody buildUserInputBody(String);
         };
 
