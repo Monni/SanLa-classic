@@ -66,7 +66,7 @@ namespace sanla {
              * @param _recipient_id Recipient group id.
              * @return sanla::MessageHeader Complete message header.
              */
-            sanla::MessageHeader buildUserInputHeader(RecipientId_t);
+            sanla::messaging::MessageHeader buildUserInputHeader(RecipientId_t);
 
             /**
              * @brief Build a message body based on user input.
@@ -74,7 +74,7 @@ namespace sanla {
              * @param _payload User input text.
              * @return sanla::MessageBody Complete message body.
              */
-            sanla::MessageBody buildUserInputBody(String);
+            sanla::messaging::sanlamessage::Payload_t * buildUserInputBody(String);
         };
 
     };

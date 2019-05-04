@@ -32,8 +32,8 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
-    sanla::MessageHeader header;
+sanla::messaging::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
+    sanla::messaging::MessageHeader header;
     header.message_id = 1; // TODO generate. UUID?
     header.sender_id = 65535; // TODO generate. MAC?
     header.payload_chks = 1; // TODO calculate. Given as input?
@@ -41,19 +41,17 @@ sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     return header;
 }
 
-sanla::MessageBody buildUserInputBody(String _payload) {
-    sanla::MessageBody body;
-    strncpy(body.sender, "foo", sizeof("foo")); // TODO how to get this?
-    strncpy(body.payload, _payload.c_str(), sizeof(_payload));
+sanla::messaging::sanlamessage::Payload_t* buildUserInputBody(String _payload) {
+    sanla::messaging::sanlamessage::Payload_t* body;
+    strcpy(*body, _payload.c_str());
 
     return body;
 }
 
 void LoRaModule::sendMessage(String _input) {
 
-    sanla::MessageHeader header = sanla::lora::buildUserInputHeader("sanla__"); // TODO where to get recipient id?
-    sanla::MessageBody body = sanla::lora::buildUserInputBody(_input);
-    sanla::SanlaMessagePackage package(header, body);
+    sanla::messaging::MessageHeader header = sanla::lora::buildUserInputHeader("sanla__"); // TODO where to get recipient id?
+    sanla::messaging::SanlaMessagePackage package(header, *sanla::lora::buildUserInputBody(_input));
 
     // TODO send package to MessageStore for broadcasting.
 
@@ -62,11 +60,11 @@ void LoRaModule::sendMessage(String _input) {
     packet.header.flags = sanla::messaging::PRO;
     packet.header.message_id = 4294967295;
     packet.header.sender_id = 65535;
-    strncpy(packet.header.recipient_id, "asdfasdf", sanla::messaging::RECIPIENT_ID_MAX_SIZE);
+    strcpy(packet.header.recipient_id, "asdfasdf");
     packet.header.message_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
-    strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
+    strcpy(packet.body, "12345678901234567890");
 
     // TODO may be removed from here.
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
