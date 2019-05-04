@@ -35,8 +35,8 @@ namespace sanla {
                 void copy_headers_from_message(MessageHeader, MessageBody);
             };
 
-            inline void htonSanlaPacketHeader(SanlaPacketHeader, char[23]);
-            inline SanlaPacketHeader ntohSanlaPacketHeader(char[23]);
+            inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
+            inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
             inline void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
             inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
 

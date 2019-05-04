@@ -20,6 +20,7 @@ namespace sanla
 
         namespace sanlapacket {
             using SerializedPacket_t = char[PACKET_MAX_SIZE];
+            using SerializedPacketHeader_t = char[PACKET_HEADER_SIZE];
             using Payload_t = char[PACKET_BODY_MAX_SIZE];
         };
 
