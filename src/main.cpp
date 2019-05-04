@@ -1,11 +1,13 @@
 #include "LoRaModule.hpp"
 #include "common.hpp"
+#include "common/SanlaProcessor.hpp"
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 sanla::lora::LoRaModule lora;
-
 namespace sanla {
+    auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
+
 namespace common {
     void displayMessage(String message) {
         Serial.println("Callback: " + message);

@@ -15,6 +15,7 @@ namespace sanla {
             class DownlinkBuffer:MessageBuffer {
                 public:
                 DownlinkBuffer();
+                ~DownlinkBuffer();
                 void onPacketReceived(SanlaPacket);
 
                 virtual uint32_t GetBufferLength() override;

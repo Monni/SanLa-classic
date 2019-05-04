@@ -14,8 +14,10 @@ namespace sanla {
             using MessageMap = std::map<MessageId_t, SanlaPackage* /*,FlashAllocator<SanlaPackage>*/>;
 
             class MessageStore:MessageBuffer {
-                public:                
+                public:
 
+                MessageStore();
+                ~MessageStore();
                 virtual uint32_t GetBufferLength() override;
 
                 void Append(const SanlaPackage&);
