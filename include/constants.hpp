@@ -11,8 +11,11 @@ namespace sanla {
 
     namespace messaging {
         constexpr size_t RECIPIENT_ID_MAX_SIZE{8};
-        constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12};
-        constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};
+
+        namespace sanlamessage {
+            constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12}; // TODO remove
+            constexpr size_t MESSAGE_BODY_MAX_SIZE{2000};
+        };
 
         namespace sanlapacket {
             constexpr size_t PACKET_MAX_SIZE{53}; // TODO define suitable packet size by determined LoRa SF-value. Probably increase a bit?

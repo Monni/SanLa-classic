@@ -69,7 +69,7 @@ void LoRaModule::sendMessage(String _input) {
     strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
-    sanla::messaging::sanlapacket::Packet_t buffer{};
+    sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     //sanla::messaging::htonSanlaPacket(packet.header, packet.body, buffer);
 
     // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
