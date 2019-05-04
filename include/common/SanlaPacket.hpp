@@ -12,7 +12,7 @@
 #include "common/SanlaMessage.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
+    namespace messaging {
 
         const Flag_t BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
         SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},

@@ -11,8 +11,8 @@
 namespace sanla {
 
     struct MessageBody {
-        char sender[sanla::sanlamessage::MESSAGE_BODY_SENDER_MAX_SIZE];
-        char payload[sanla::sanlamessage::MESSAGE_BODY_PAYLOAD_MAX_SIZE];
+        char sender[sanla::messaging::MESSAGE_BODY_SENDER_MAX_SIZE];
+        char payload[sanla::messaging::MESSAGE_BODY_PAYLOAD_MAX_SIZE];
     };
 
     struct MessageHeader {

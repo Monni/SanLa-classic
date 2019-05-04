@@ -31,7 +31,7 @@ MessageBody& SanlaMessagePackage::GetPackageBody() {
     return body;
 }
 
-namespace sanlamessage{
+namespace messaging {
     void SanlaPacket::copy_headers_from_message(MessageHeader header, MessageBody body) {
         MessageId_t message_id = header.message_id;
         SenderId_t sender_id = header.sender_id;
@@ -41,5 +41,5 @@ namespace sanlamessage{
         PayloadLength_t message_payload_length = strlen(body.payload); // Possible segfault due to non Null terminated string
 
     }
-} // sanlamessage
+} // messaging
 } // sanla

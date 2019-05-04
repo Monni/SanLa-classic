@@ -9,7 +9,7 @@ namespace sanla {
         const size_t LORA_PACKAGE_SIZE{56};
     };
 
-    namespace sanlamessage { // TODO name to general "messaging" and add sub-namespaces for sanlamessage and sanlapacket?
+    namespace messaging {
         constexpr size_t RECIPIENT_ID_MAX_SIZE{8};
         constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12};
         constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};

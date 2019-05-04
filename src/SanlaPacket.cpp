@@ -1,7 +1,7 @@
 #include "common/SanlaPacket.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
+    namespace messaging {
 
         void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[23]) {
             memcpy(buffer+0, &header.flags, sizeof(header.flags));
@@ -64,7 +64,7 @@ namespace sanla {
             for(int i = 0; i < 23; i++) {
                 headerArr[i] = buffer[i];
             };
-            sanlapacket.header = sanla::sanlamessage::ntohSanlaPacketHeader(headerArr);
+            sanlapacket.header = sanla::messaging::ntohSanlaPacketHeader(headerArr);
 
             memcpy(sanlapacket.body, buffer+23, sizeof(Payload_t));
 

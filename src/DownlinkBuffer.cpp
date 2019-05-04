@@ -9,15 +9,15 @@ namespace sanla {
                 auto result = parser.ParseMessage(packet);
                 switch (result)
                 {
-                    case sanlamessage::STORE:
+                    case messaging::STORE:
                         StorePacket(packet);
                         break;
                     
-                    case sanlamessage::DROP:
+                    case messaging::DROP:
                         DropPacket(packet);
                         break;
                     
-                    case sanlamessage::RESPOND:
+                    case messaging::RESPOND:
                         RespondPacket(packet);
                         break;
                 

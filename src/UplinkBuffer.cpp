@@ -13,9 +13,9 @@ void UplinkBuffer::send(){
         /*if (!LoRa.beginPacket()) {
             break;
         }
-        char serialized_packet[sanla::sanlamessage::sanlapacket::PACKET_MAX_SIZE]{};
-        //sanla::sanlamessage::htonSanlaPacket(packetBuffer.front(), serialized_packet);
-        LoRa.write((uint8_t*)serialized_packet, sanla::sanlamessage::sanlapacket::PACKET_MAX_SIZE);
+        char serialized_packet[sanla::messaging::sanlapacket::PACKET_MAX_SIZE]{};
+        //sanla::messaging::htonSanlaPacket(packetBuffer.front(), serialized_packet);
+        LoRa.write((uint8_t*)serialized_packet, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
         LoRa.endPacket();
 
         // Revert back to listening mode

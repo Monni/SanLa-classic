@@ -58,24 +58,24 @@ void LoRaModule::sendMessage(String _input) {
     // TODO send package to MessageStore for broadcasting.
 
     // TODO may be removed from here
-    sanla:sanlamessage::SanlaPacket packet;
-    packet.header.flags = sanla::sanlamessage::PRO;
+    sanla:messaging::SanlaPacket packet;
+    packet.header.flags = sanla::messaging::PRO;
     packet.header.message_id = 4294967295;
     packet.header.sender_id = 65535;
-    strncpy(packet.header.recipient_id, "asdfasdf", sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
+    strncpy(packet.header.recipient_id, "asdfasdf", sanla::messaging::RECIPIENT_ID_MAX_SIZE);
     packet.header.message_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
     strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
-    sanla::sanlamessage::sanlapacket::Packet_t buffer{};
-    //sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
+    sanla::messaging::sanlapacket::Packet_t buffer{};
+    //sanla::messaging::htonSanlaPacket(packet.header, packet.body, buffer);
 
     // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
     // Send.
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)buffer, sanla::sanlamessage::sanlapacket::PACKET_MAX_SIZE);
+    LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
     LoRa.endPacket();
 
     // Revert back to listening mode.

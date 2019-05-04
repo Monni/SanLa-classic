@@ -1,30 +1,30 @@
 #include "message/MessageParser.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
+    namespace messaging {
 
         uint32_t MessageParser::ParseMessage(SanlaPacket packet){
             switch(packet.header.flags){
 
-                case sanlamessage::BRO:
+                case messaging::BRO:
                     return RESPOND;
                 
-                case sanlamessage::ACK:
+                case messaging::ACK:
                     return STORE;
                 
-                case sanlamessage::PACPRO:
+                case messaging::PACPRO:
                     return RESPOND;
                 
-                case sanlamessage::PACRES:
+                case messaging::PACRES:
                     return RESPOND;
 
-                case sanlamessage::PACSEN:
+                case messaging::PACSEN:
                     return STORE;
                 
-                case sanlamessage::PACREQ:
+                case messaging::PACREQ:
                     return RESPOND;
 
-                case sanlamessage::PROACK:
+                case messaging::PROACK:
                     return RESPOND;
 
                 default:
@@ -32,5 +32,5 @@ namespace sanla {
             }
         }
 
-    } // sanlamessage
+    } // messaging
 } // sanla
