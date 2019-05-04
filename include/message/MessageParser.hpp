@@ -5,7 +5,7 @@
 #include "common/SanlaPacket.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
+    namespace messaging {
 
         enum ActionsE {
             STORE,
@@ -21,6 +21,6 @@ namespace sanla {
             uint32_t ParseMessage(SanlaPacket);
 
         };
-    }; // sanlamessage
+    }; // messaging
 }; // sanla
 #endif

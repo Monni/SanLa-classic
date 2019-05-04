@@ -7,7 +7,7 @@
 namespace sanla {
     namespace hw_interfaces {
 
-        using SanlaPacket = sanla::sanlamessage::SanlaPacket;
+        using SanlaPacket = sanla::messaging::SanlaPacket;
 
         class LoraMessageIntepreter {
             public:

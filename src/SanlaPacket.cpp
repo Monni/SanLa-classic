@@ -1,9 +1,9 @@
 #include "common/SanlaPacket.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
+    namespace messaging {
 
-        void htonSanlaPacketHeader(SanlaPacketHeader header, char buffer[23]) {
+        void htonSanlaPacketHeader(SanlaPacketHeader header, sanlapacket::SerializedPacketHeader_t buffer) {
             memcpy(buffer+0, &header.flags, sizeof(header.flags));
             
             MessageId_t message_id = htonl(header.message_id);
@@ -27,7 +27,7 @@ namespace sanla {
         };
 
         // Network to host
-        inline SanlaPacketHeader ntohSanlaPacketHeader(char buffer[23]) {
+        inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t buffer) {
             SanlaPacketHeader tmp;
             
             memcpy(&tmp.flags, buffer+0, sizeof(tmp.flags));
@@ -52,21 +52,23 @@ namespace sanla {
             return tmp;
         };
     
-        void htonSanlaPacket(SanlaPacket packet, sanlapacket::Packet_t buffer) {
+        void htonSanlaPacket(SanlaPacket packet, sanlapacket::SerializedPacket_t buffer) {
             htonSanlaPacketHeader(packet.header, buffer+0);
             memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
         };
 
-        inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t buffer) {
+        inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t buffer) {
             SanlaPacket sanlapacket;
 
-            char headerArr[23];
-            for(int i = 0; i < 23; i++) {
+            // Extract header information from incoming serialized data.
+            sanlapacket::SerializedPacket_t headerArr;
+            for(int i = 0; i < sanlapacket::PACKET_HEADER_SIZE; i++) {
                 headerArr[i] = buffer[i];
             };
-            sanlapacket.header = sanla::sanlamessage::ntohSanlaPacketHeader(headerArr);
+            sanlapacket.header = sanla::messaging::ntohSanlaPacketHeader(headerArr);
 
-            memcpy(sanlapacket.body, buffer+23, sizeof(Payload_t));
+            // Rest of the serialized data belongs to a packet body.
+            memcpy(sanlapacket.body, buffer+sanlapacket::PACKET_HEADER_SIZE, sizeof(sanlapacket::Payload_t));
 
             return sanlapacket;
         }

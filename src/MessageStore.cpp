@@ -11,10 +11,10 @@ namespace mq {
 SanlaPacket MessageStore::GetPackagePart(MessageId_t packageId, size_t payloadStartPos) {
     auto package = m_store[packageId]; // TODO catch exceptions raised here and inform method caller
     std::string msg(package->GetPackageBody().payload);
-    auto new_payload = msg.substr(payloadStartPos, sanla::sanlamessage::sanlapacket::PACKET_BODY_MAX_SIZE).c_str();
+    auto new_payload = msg.substr(payloadStartPos, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE).c_str();
     SanlaPacket output{};
     output.copy_headers_from_message(package->GetPackageHeader(), package->GetPackageBody());
-    strncpy(output.body, new_payload, sanla::sanlamessage::sanlapacket::PACKET_BODY_MAX_SIZE); // Possible segfault due to missing Null terminator
+    strncpy(output.body, new_payload, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE); // Possible segfault due to missing Null terminator
     return output;
 
 }

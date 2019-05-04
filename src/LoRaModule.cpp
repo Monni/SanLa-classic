@@ -8,16 +8,11 @@ LoRaModule* ptrToLoraModule = NULL;
 
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
-/**
- * @brief Initial boot function of a LoRa-module.
- * Sets the module into corresponding pins in ESP32 and handles the bootup routine.
- * Leaves the module into a state ready to receive messages.
- * 
- */
 void LoRaModule::begin() {
+    Serial.println("Starting LoRa module.");
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
-        Serial.println("LoRaModule init failed.");
+        Serial.println("Failed to start LoRa module!");
         while (1);
     }
     setRadioParameters();
@@ -25,14 +20,9 @@ void LoRaModule::begin() {
     ptrToLoraModule = this;
     LoRa.onReceive(onMessage);
     LoRa.receive();
-    Serial.println("LoRaModule init succeeded.");
+    Serial.println("LoRa module started.");
 }
 
-/**
- * @brief Setup LoRa-radio with custom parameters.
- * The function is called during bootup routine.
- * 
- */
 void LoRaModule::setRadioParameters() {
     LoRa.setTxPower(TX_POWER);
     LoRa.setSpreadingFactor(S_FACTOR);
@@ -42,12 +32,6 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-/**
- * @brief Build a message header based on user input.
- * 
- * @param _recipient_id Recipient group id.
- * @return sanla::MessageHeader Complete message header.
- */
 sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     sanla::MessageHeader header;
     header.message_id = 1; // TODO generate. UUID?
@@ -57,12 +41,6 @@ sanla::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
     return header;
 }
 
-/**
- * @brief Build a message body based on user input.
- * 
- * @param _payload User input text.
- * @return sanla::MessageBody Complete message body.
- */
 sanla::MessageBody buildUserInputBody(String _payload) {
     sanla::MessageBody body;
     strncpy(body.sender, "foo", sizeof("foo")); // TODO how to get this?
@@ -71,38 +49,33 @@ sanla::MessageBody buildUserInputBody(String _payload) {
     return body;
 }
 
-/**
- * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
- * 
- * @param message User typed input message.
- */
-void LoRaModule::sendMessage(String _user_input) {
+void LoRaModule::sendMessage(String _input) {
 
     sanla::MessageHeader header = sanla::lora::buildUserInputHeader("sanla__"); // TODO where to get recipient id?
-    sanla::MessageBody body = sanla::lora::buildUserInputBody(_user_input);
+    sanla::MessageBody body = sanla::lora::buildUserInputBody(_input);
     sanla::SanlaMessagePackage package(header, body);
 
     // TODO send package to MessageStore for broadcasting.
 
     // TODO may be removed from here
-    sanla:sanlamessage::SanlaPacket packet;
-    packet.header.flags = sanla::sanlamessage::PRO;
+    sanla:messaging::SanlaPacket packet;
+    packet.header.flags = sanla::messaging::PRO;
     packet.header.message_id = 4294967295;
     packet.header.sender_id = 65535;
-    strncpy(packet.header.recipient_id, "asdfasdf", sanla::sanlamessage::RECIPIENT_ID_MAX_SIZE);
+    strncpy(packet.header.recipient_id, "asdfasdf", sanla::messaging::RECIPIENT_ID_MAX_SIZE);
     packet.header.message_payload_length = 65535;
     packet.header.payload_seq = 65535;
     packet.header.payload_chks = 4294967295;
     strncpy(packet.body, "12345678901234567890", sizeof("12345678901234567890"));
 
     // TODO may be removed from here.
-    sanla::sanlamessage::sanlapacket::Packet_t buffer{};
-    //sanla::sanlamessage::htonSanlaPacket(packet.header, packet.body, buffer);
+    sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
+    //sanla::messaging::htonSanlaPacket(packet.header, packet.body, buffer);
 
     // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
     // Send.
     LoRa.beginPacket();
-    LoRa.write((uint8_t*)buffer, sanla::sanlamessage::sanlapacket::PACKET_MAX_SIZE);
+    LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
     LoRa.endPacket();
 
     // Revert back to listening mode.

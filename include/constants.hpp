@@ -9,14 +9,18 @@ namespace sanla {
         const size_t LORA_PACKAGE_SIZE{56};
     };
 
-    namespace sanlamessage { // TODO name to general "messaging" and add sub-namespaces for sanlamessage and sanlapacket?
+    namespace messaging {
         constexpr size_t RECIPIENT_ID_MAX_SIZE{8};
-        constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12};
-        constexpr size_t MESSAGE_BODY_PAYLOAD_MAX_SIZE{30};
+
+        namespace sanlamessage {
+            constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12}; // TODO remove
+            constexpr size_t MESSAGE_BODY_MAX_SIZE{2000};
+        };
 
         namespace sanlapacket {
-            constexpr size_t PACKET_MAX_SIZE{53}; // TODO define suitable packet size by determined LoRa SF-value. Probably increase a bit?
+            constexpr size_t PACKET_MAX_SIZE{56}; // TODO define suitable packet size by determined LoRa SF-value. Probably increase a bit?
             constexpr size_t PACKET_BODY_MAX_SIZE{33};
+            constexpr size_t PACKET_HEADER_SIZE{23};
         };
     };
 

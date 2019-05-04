@@ -15,20 +15,28 @@ namespace common {
 
 
 void setup() {
+    // Set serial data transmission
     Serial.begin(sanla::common::BAUDRATE);
     while (!Serial);
-    Serial.println("Booting SanLa classic..");
+    Serial.println("Starting SanLa Classic.");
 
+    // Set Serial Peripheral Interface for controlling LoRa module
     SPI.begin(SCK,MISO,MOSI,SS);
+
+    // Initialize customized LoRa module
     lora.begin();
     lora.onPackage(sanla::common::displayMessage);
-
+    Serial.println("SanLa Classic ready.");
 }
 
 void loop() {
+
+    // Todo this is probably where the threading magic happens between UI and backend?
+
+    // For testings purposes:
     if (millis() - lastSendTime > interval) {
         String message = "Foo walks into a bar baz qux moo";
-        lora.sendMessage(message);
+        lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
         lastSendTime = millis();
         interval = random(4000) + 1000;
     }

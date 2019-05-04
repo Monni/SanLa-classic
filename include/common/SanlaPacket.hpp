@@ -12,8 +12,8 @@
 #include "common/SanlaMessage.hpp"
 
 namespace sanla {
-    namespace sanlamessage {
-
+    namespace messaging {
+        
         const Flag_t BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
         SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},
         PACSEN {0xF}, PACRES {0xD};
@@ -30,15 +30,15 @@ namespace sanla {
 
             struct SanlaPacket {
                 SanlaPacketHeader header;
-                Payload_t body;
+                sanlapacket::Payload_t body;
                 
                 void copy_headers_from_message(MessageHeader, MessageBody);
             };
 
-            inline void htonSanlaPacketHeader(SanlaPacketHeader, char[23]);
-            inline SanlaPacketHeader ntohSanlaPacketHeader(char[23]);
-            inline void htonSanlaPacket(SanlaPacket, sanlapacket::Packet_t);
-            inline SanlaPacket ntohSanlaPacket(sanlapacket::Packet_t);
+            inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
+            inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
+            inline void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
+            inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
 
         };
 };
