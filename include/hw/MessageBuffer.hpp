@@ -9,7 +9,7 @@ namespace sanla {
     namespace hw_interfaces {
         namespace mq {
             using SanlaPacket = sanla::messaging::SanlaPacket;
-            using SanlaPackage = sanla::SanlaMessagePackage;
+            using SanlaPackage = sanla::messaging::SanlaMessagePackage;
             using PacketVector = std::vector<SanlaPacket>;
 
             class MessageBuffer {

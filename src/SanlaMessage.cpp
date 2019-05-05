@@ -4,42 +4,40 @@
 #include "common/SanlaPacket.hpp"
 
 namespace sanla {
+    namespace messaging {
 
-SanlaMessagePackage::SanlaMessagePackage(MessageId_t _message_id, SenderId_t _sender_id, PayloadChecksum_t _payload_chks, const MessageBody _body ) {
-    header.message_id = _message_id;
-    header.sender_id = _sender_id;
-    header.payload_chks = _payload_chks;
-    //header.recipient_id = _recipient_id;
-    body = _body;
-}
+        SanlaMessagePackage::SanlaMessagePackage(MessageId_t _message_id, SenderId_t _sender_id, PayloadChecksum_t _payload_chks, RecipientId_t _recipient_id, Payload_t _body ) {
+            header.message_id = _message_id;
+            header.sender_id = _sender_id;
+            header.payload_chks = _payload_chks;
+            strcpy(header.recipient_id, _recipient_id);
+            strcpy(body, _body);
+        }
 
-SanlaMessagePackage::SanlaMessagePackage(MessageHeader _header, MessageBody _body) {
-    header = _header;
-    body = _body;
-}
+        SanlaMessagePackage::SanlaMessagePackage(MessageHeader _header, Payload_t _body) {
+            header = _header;
+            strcpy(body, _body);
+        }
 
-uint8_t SanlaMessagePackage::GetPackageLength() {
-    // TODO calculate real payload length
-    return 123;
-}
+        uint16_t SanlaMessagePackage::GetPackageLength() {
+            return strlen(body);
+        }
 
-MessageHeader& SanlaMessagePackage::GetPackageHeader() {
-    return header;
-}
+        MessageHeader& SanlaMessagePackage::GetPackageHeader() {
+            return header;
+        }
 
-MessageBody& SanlaMessagePackage::GetPackageBody() {
-    return body;
-}
+        Payload_t& SanlaMessagePackage::GetPackageBody() {
+            return body;
+        }
 
-namespace messaging {
-    void SanlaPacket::copy_headers_from_message(MessageHeader header, MessageBody body) {
-        MessageId_t message_id = header.message_id;
-        SenderId_t sender_id = header.sender_id;
-        PayloadChecksum_t payload_chks = header.payload_chks;
-        char recipient_id[header.recipient_id.length()+1];
-        strcpy(recipient_id, header.recipient_id.c_str());
-        PayloadLength_t message_payload_length = strlen(body.payload); // Possible segfault due to non Null terminated string
-
-    }
-} // messaging
+        void SanlaPacket::copy_headers_from_message(MessageHeader header, Payload_t body) {
+                MessageId_t message_id = header.message_id;
+                SenderId_t sender_id = header.sender_id;
+                PayloadChecksum_t payload_chks = header.payload_chks;
+                RecipientId_t recipient_id;
+                strcpy(recipient_id, header.recipient_id);
+                PayloadLength_t message_payload_length = strlen(body); // Possible segfault due to non Null terminated string
+        }
+    } // messaging
 } // sanla
