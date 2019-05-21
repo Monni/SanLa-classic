@@ -12,8 +12,9 @@
 using DownlinkBuffer = sanla::hw_interfaces::mq::DownlinkBuffer;
 using UplinkBuffer = sanla::hw_interfaces::mq::UplinkBuffer;
 using MessageStore = sanla::hw_interfaces::mq::MessageStore;
-using SanlaPacket = sanla::sanlamessage::SanlaPacket;
-using MessageParser = sanla::sanlamessage::MessageParser;
+using SanlaPacket = sanla::messaging::SanlaPacket;
+using SanlaMessagePackage = sanla::messaging::SanlaMessagePackage;
+using MessageParser = sanla::messaging::MessageParser;
 
 namespace sanla {
 
@@ -45,15 +46,15 @@ bool HandleResponseForPacket_cb(SanlaPacket &packet){
     auto action = m_parser.ParseMessage(packet);
     switch (action)
     {
-    case sanlamessage::ActionsE::STORE:
+    case messaging::ActionsE::STORE:
         // where did we store this again?
         break;
     
-    case sanlamessage::ActionsE::RESPOND:
+    case messaging::ActionsE::RESPOND:
         // Formulate a response here
         break;
     
-    case sanlamessage::ActionsE::DROP:
+    case messaging::ActionsE::DROP:
         // delete the packet
         (void)packet;
         break;

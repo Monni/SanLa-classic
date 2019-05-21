@@ -6,9 +6,6 @@
 #include "message/MessageParser.hpp"
 #include "DownlinkPacket.hpp"
 
-#ifndef SANLACLASSIC_HW_DOWNLINKBUFFER_H_
-#define SANLACLASSIC_HW_DOWNLINKBUFFER_H_
-
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
