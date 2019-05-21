@@ -9,7 +9,7 @@ sanla::lora::LoRaModule lora;
 sanla::hw_interfaces::LoraMessageIntepreter interpreter;
 
 namespace sanla {
-    // auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
+    auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
 
 namespace common {
     void displayMessage(String message) {

@@ -14,8 +14,8 @@ namespace sanla {
 
             class MessageBuffer {
                 public:
-                MessageBuffer();
-                ~MessageBuffer();
+                MessageBuffer(){};
+                ~MessageBuffer(){};
 
                 virtual uint32_t GetBufferLength();
 

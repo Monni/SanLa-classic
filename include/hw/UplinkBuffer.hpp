@@ -11,8 +11,8 @@ namespace sanla {
         namespace mq {
             class UplinkBuffer:MessageBuffer {
                 public:
-                UplinkBuffer();
-                ~UplinkBuffer();
+                UplinkBuffer(){};
+                ~UplinkBuffer(){};
                 void send();
                 bool addPacket(SanlaPacket);
                 virtual uint32_t GetBufferLength() override;

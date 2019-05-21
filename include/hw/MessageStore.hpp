@@ -1,11 +1,11 @@
-#ifndef SANLACLASSIC_HW_MESSAGESTORE_H_
-#define SANLACLASSIC_HW_MESSAGESTORE_H_
-
 #include <map>
 #include "common/SanlaMessage.hpp"
 #include "hw/MessageBuffer.hpp"
 #include "common/typedefs.hpp"
 #include "constants.hpp"
+
+#ifndef SANLACLASSIC_HW_MESSAGESTORE_H_
+#define SANLACLASSIC_HW_MESSAGESTORE_H_
 
 namespace sanla {
     namespace hw_interfaces {
@@ -16,8 +16,8 @@ namespace sanla {
             class MessageStore:MessageBuffer {
                 public:
 
-                MessageStore();
-                ~MessageStore();
+                MessageStore(){};
+                ~MessageStore(){};
                 virtual uint32_t GetBufferLength() override;
 
                 void Append(const SanlaPackage&);

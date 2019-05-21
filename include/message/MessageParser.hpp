@@ -15,8 +15,8 @@ namespace sanla {
 
         class MessageParser {
             public:
-            MessageParser();
-            ~MessageParser();
+            MessageParser(){};
+            ~MessageParser(){};
 
             uint32_t ParseMessage(SanlaPacket);
 

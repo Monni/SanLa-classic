@@ -6,6 +6,9 @@
 #include "message/MessageParser.hpp"
 #include "DownlinkPacket.hpp"
 
+#ifndef SANLACLASSIC_HW_DOWNLINKBUFFER_H_
+#define SANLACLASSIC_HW_DOWNLINKBUFFER_H_
+
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
@@ -14,8 +17,8 @@ namespace sanla {
 
             class DownlinkBuffer:MessageBuffer {
                 public:
-                DownlinkBuffer();
-                ~DownlinkBuffer();
+                DownlinkBuffer(){};
+                ~DownlinkBuffer(){};
                 void onPacketReceived(SanlaPacket);
 
                 virtual uint32_t GetBufferLength() override;
