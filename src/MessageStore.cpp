@@ -12,6 +12,11 @@ uint32_t MessageStore::GetBufferLength(){
     return m_store.size();
 }
 
+void MessageStore::Append(SanlaPackage &pkg)
+{
+    m_store.insert({pkg.GetPackageHeader().package_id, &pkg});
+}
+
 SanlaPacket MessageStore::GetPackagePart(MessageId_t packageId, size_t payloadStartPos) {
     auto package = m_store[packageId]; // TODO catch exceptions raised here and inform method caller
     std::string msg(package->GetPackageBody());

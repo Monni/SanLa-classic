@@ -20,9 +20,9 @@ namespace sanla {
                 ~MessageStore(){};
                 virtual uint32_t GetBufferLength() override;
 
-                void Append(const SanlaPackage&);
                 SanlaPackage Pop(MessageId_t);
                 SanlaPackage Get(MessageId_t);
+                void Append(SanlaPackage&);
 
                 SanlaPacket GetNthPacket(SanlaPackage, size_t);
                 SanlaPacket GetPackagePart(MessageId_t, size_t);
