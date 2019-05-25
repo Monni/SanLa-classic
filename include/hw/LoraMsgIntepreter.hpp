@@ -11,8 +11,8 @@ namespace sanla {
 
         class LoraMessageIntepreter {
             public:
-            LoraMessageIntepreter();
-            ~LoraMessageIntepreter();
+            LoraMessageIntepreter(){};
+            ~LoraMessageIntepreter(){};
 
             std::vector<u_char> buffer;
 

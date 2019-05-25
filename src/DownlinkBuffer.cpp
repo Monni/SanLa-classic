@@ -1,43 +1,23 @@
 #include "hw/DownlinkBuffer.hpp"
 #include "constants.hpp"
+#include "common/SanlaProcessor.hpp"
 
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
 
-            void DownlinkBuffer::onPacketReceived(SanlaPacket packet) {
-                auto result = parser.ParseMessage(packet);
-                switch (result)
-                {
-                    case messaging::STORE:
-                        StorePacket(packet);
-                        break;
-                    
-                    case messaging::DROP:
-                        DropPacket(packet);
-                        break;
-                    
-                    case messaging::RESPOND:
-                        RespondPacket(packet);
-                        break;
-                
-                    default:
-                        break;
-                }
+            void DownlinkBuffer::ReceivePacket(SanlaPacket &packet) {
+                StorePacket(packet);
             }
 
             uint32_t DownlinkBuffer::GetBufferLength() {
                 return downlinkPacketBuffer.size();
             }
 
-            void DownlinkBuffer::DropPacket(SanlaPacket packet){
-                (void)packet;
-            }
-
-            bool DownlinkBuffer::StorePacket(SanlaPacket packet) {
+            bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
                     // TODO add debug line here.
-                    DropPacket(packet);
+                    (void)packet;
                     return false;
                 }
 
@@ -45,16 +25,34 @@ namespace sanla {
                     auto *downlinkPacket = downlinkPacketBuffer.at(packet.header.message_id);
                     std::string body_string(packet.body);
                     downlinkPacket->payloadBuffer.push_back(body_string);
+                    if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
+                        // Message is complete. Send it to store and remove downlinkPacketBuffer element
+                        // call function to create a SanlaPackage from downlinkPacket
+                        // if(SendMessageToStore(message)){
+                        //     (void)&downlinkPacket;
+                        // }
+                        // else {
+                        //     return false;
+                        // }
+                    }
                 } catch(const std::out_of_range& e) {
                     DownlinkPacket downlinkPacket(packet);
                     downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
                 }
-
-                if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
-                    // Todo send to MessageStore and remove 
-                }
-
+                // packet is either stored to downlinkPacketBuffer either way at this point
+                // we can drop the packet here
+                (void)packet;
                 return true;
+            }
+
+            void DownlinkBuffer::SendMessageToStore(SanlaPackage &message){
+                if (m_sanla_processor_ptr != nullptr) {
+                    auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
+                    processor->StoreCompleteMessage(message);
+                }
+                else {
+                    // Throw some error here
+                }
             }
 
             bool validateMessageReady(DownlinkPacket downlinkPacket) {
@@ -67,10 +65,6 @@ namespace sanla {
                     return true; // TODO if length matches, calculate checksum to verify integrity of the message.
                 }
                 return false;
-            }
-
-            void DownlinkBuffer::RespondPacket(SanlaPacket packet) {
-                //TODO formulate response and push it to object which manages both uplink and downlink buffers
             }
         }
     }

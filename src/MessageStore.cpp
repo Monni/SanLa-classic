@@ -8,8 +8,17 @@ namespace sanla {
 namespace hw_interfaces {
 namespace mq {
 
-SanlaPacket MessageStore::GetPackagePart(MessageId_t packageId, size_t payloadStartPos) {
-    auto package = m_store[packageId]; // TODO catch exceptions raised here and inform method caller
+uint32_t MessageStore::GetBufferLength(){
+    return m_store.size();
+}
+
+void MessageStore::Append(SanlaPackage &pkg)
+{
+    m_store.insert({pkg.GetPackageHeader().message_id, &pkg});
+}
+
+SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadStartPos) {
+    auto package = m_store[message_id]; // TODO catch exceptions raised here and inform method caller
     std::string msg(package->GetPackageBody());
     auto new_payload = msg.substr(payloadStartPos, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE).c_str();
     SanlaPacket output{};

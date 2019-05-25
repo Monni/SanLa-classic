@@ -12,15 +12,8 @@ namespace sanla {
             RESPOND,
             DROP
         };
-
-        class MessageParser {
-            public:
-            MessageParser();
-            ~MessageParser();
-
-            uint32_t ParseMessage(SanlaPacket);
-
-        };
+// This doesn't need tp be a class. I think this should be refactored as a function
+        ActionsE DefineActionToPacket(const SanlaPacket&);
     }; // messaging
 }; // sanla
 #endif
