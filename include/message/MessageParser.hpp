@@ -13,14 +13,7 @@ namespace sanla {
             DROP
         };
 // This doesn't need tp be a class. I think this should be refactored as a function
-        class MessageParser {
-            public:
-            MessageParser(){};
-            ~MessageParser(){};
-
-            uint32_t ParseMessage(SanlaPacket&);
-
-        };
+        ActionsE DefineActionToPacket(const SanlaPacket&);
     }; // messaging
 }; // sanla
 #endif

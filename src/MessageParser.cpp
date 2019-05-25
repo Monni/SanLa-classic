@@ -3,7 +3,7 @@
 namespace sanla {
     namespace messaging {
 
-        uint32_t MessageParser::ParseMessage(SanlaPacket &packet){
+        ActionsE DefineActionToPacket(const SanlaPacket &packet){
             switch(packet.header.flags){
 
                 case messaging::BRO:

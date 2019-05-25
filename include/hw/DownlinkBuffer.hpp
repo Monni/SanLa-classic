@@ -9,20 +9,19 @@
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
-            using MessageParser = messaging::MessageParser;
             using DownlinkPacketMap = std::map<MessageId_t, DownlinkPacket*>;
 
             class DownlinkBuffer:MessageBuffer {
                 public:
                 DownlinkBuffer(){};
+                DownlinkBuffer( void *processor_ptr) : m_sanla_processor_ptr(processor_ptr) {};
                 ~DownlinkBuffer(){};
-                void onPacketReceived(SanlaPacket);
+                void ReceivePacket(SanlaPacket&);
 
                 virtual uint32_t GetBufferLength() override;
 
                 private:
                 DownlinkPacketMap downlinkPacketBuffer;
-                MessageParser parser;
 
                 /**
                  * @brief Validate stored DownlinkPacket is ready to be parsed into
@@ -31,11 +30,15 @@ namespace sanla {
                  * @return true if message is ready.
                  * @return false if message is not ready.
                  */
-                bool validateMessageReady(DownlinkPacket);
+                bool validateMessageReady(DownlinkPacket&);
                 
-                void DropPacket(SanlaPacket);
-                bool StorePacket(SanlaPacket);
-                void RespondPacket(SanlaPacket);
+                bool StorePacket(SanlaPacket&);
+
+                void SendMessageToStore(SanlaPackage&);
+
+                // This is later casted to SanlaProcessor
+                void* m_sanla_processor_ptr = nullptr;
+
             };
         }; // mq
     }; // hw_interfaces
