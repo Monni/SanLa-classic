@@ -31,13 +31,13 @@ namespace sanla {
             return body;
         }
 
-        void SanlaPacket::copy_headers_from_message(MessageHeader header, Payload_t body) {
+        /*void SanlaPacket::copy_headers_from_message(MessageHeader header, Payload_t body) {
                 MessageId_t message_id = header.message_id;
                 SenderId_t sender_id = header.sender_id;
                 PayloadChecksum_t payload_chks = header.payload_chks;
                 RecipientId_t recipient_id;
                 strcpy(recipient_id, header.recipient_id);
                 PayloadLength_t message_payload_length = strlen(body); // Possible segfault due to non Null terminated string
-        }
+        }*/
     } // messaging
 } // sanla

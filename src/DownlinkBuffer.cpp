@@ -36,8 +36,9 @@ namespace sanla {
                         // }
                     }
                 } catch(const std::out_of_range& e) {
-                    DownlinkPacket downlinkPacket(packet);
-                    downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
+                    // TODO fix after this fucker works.
+                    //DownlinkPacket downlinkPacket(packet);
+                    //downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
                 }
                 // packet is either stored to downlinkPacketBuffer either way at this point
                 // we can drop the packet here

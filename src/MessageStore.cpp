@@ -22,7 +22,10 @@ SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadS
     std::string msg(package->GetPackageBody());
     auto new_payload = msg.substr(payloadStartPos, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE).c_str();
     SanlaPacket output{};
-    output.copy_headers_from_message(package->GetPackageHeader(), package->GetPackageBody());
+
+    // TODO fix this fucker
+    //output.copy_headers_from_message(package->GetPackageHeader(), package->GetPackageBody());
+    
     strcpy(output.body, new_payload); // Possible segfault due to missing Null terminator
     return output;
 

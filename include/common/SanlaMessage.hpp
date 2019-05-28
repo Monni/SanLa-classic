@@ -7,8 +7,19 @@
 #include <sstream>
 #include "constants.hpp"
 #include "common/typedefs.hpp"
+#include "hw/DownlinkPacket.hpp"
 
 namespace sanla {
+    struct foo {
+        MessageId_t asd;
+    };
+
+    namespace asd {struct MessageHeader {
+            MessageId_t message_id;
+            SenderId_t sender_id;
+            PayloadChecksum_t payload_chks;
+            RecipientId_t recipient_id;
+        };};
     namespace messaging {
 
         struct MessageHeader {
@@ -19,6 +30,7 @@ namespace sanla {
         };
 
         using Payload_t = messaging::sanlamessage::Payload_t;
+        using DownlinkPacket = hw_interfaces::mq::DownlinkPacket;
 
         class SanlaMessagePackage {
             MessageHeader header;
@@ -27,6 +39,7 @@ namespace sanla {
             public:
             SanlaMessagePackage(MessageId_t, SenderId_t, PayloadChecksum_t, RecipientId_t, Payload_t);
             SanlaMessagePackage(MessageHeader, Payload_t);
+            SanlaMessagePackage(DownlinkPacket);
             // This class is not moveable
             SanlaMessagePackage(SanlaMessagePackage&&) = delete;
             SanlaMessagePackage& operator=(SanlaMessagePackage&&) = delete;
