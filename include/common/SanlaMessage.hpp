@@ -10,16 +10,7 @@
 #include "hw/DownlinkPacket.hpp"
 
 namespace sanla {
-    struct foo {
-        MessageId_t asd;
-    };
 
-    namespace asd {struct MessageHeader {
-            MessageId_t message_id;
-            SenderId_t sender_id;
-            PayloadChecksum_t payload_chks;
-            RecipientId_t recipient_id;
-        };};
     namespace messaging {
 
         struct MessageHeader {

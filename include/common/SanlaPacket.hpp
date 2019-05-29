@@ -33,8 +33,9 @@ namespace sanla {
                 sanlapacket::Payload_t body;
                 
                 // Todo fix this fucker
-                void copy_headers_from_message(sanla::foo, sanlamessage::Payload_t);
+                void copy_headers_from_message(MessageHeader, sanlamessage::Payload_t);
             };
+            
 
             inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
             inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
