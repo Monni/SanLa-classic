@@ -1,6 +1,7 @@
 #include "hw/DownlinkBuffer.hpp"
 #include "constants.hpp"
 #include "common/SanlaProcessor.hpp"
+#include "common/utils.hpp"
 
 namespace sanla {
     namespace hw_interfaces {
@@ -36,8 +37,9 @@ namespace sanla {
                         // }
                     }
                 } catch(const std::out_of_range& e) {
-                    DownlinkPacket downlinkPacket(packet);
-                    downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
+                    DownlinkPacket dl_packet;
+                    dl_packet = messaging::sanlapacket_to_downlinkpacket(packet);
+                    downlinkPacketBuffer[packet.header.message_id] = &dl_packet;
                 }
                 // packet is either stored to downlinkPacketBuffer either way at this point
                 // we can drop the packet here
