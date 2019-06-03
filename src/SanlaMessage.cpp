@@ -31,6 +31,18 @@ namespace sanla {
             return body;
         }
 
+        PayloadChecksum_t& SanlaMessagePackage::GetPackagePayloadChks() {
+            /*
+            TODO deferred scope.
+            
+            Calculate and return payload checksum.
+            */
+           PayloadChecksum_t checksum;
+           checksum = 1;
+
+           return checksum;
+        }
+
         void SanlaPacket::copy_headers_from_message(MessageHeader header, Payload_t body) {
                 MessageId_t message_id = header.message_id;
                 SenderId_t sender_id = header.sender_id;

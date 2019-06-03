@@ -28,6 +28,8 @@
 namespace sanla {
     namespace lora {
 
+        using SanlaPacket = sanla::messaging::SanlaPacket;
+
         class LoRaModule {
         public:
             LoRaModule();
@@ -41,11 +43,13 @@ namespace sanla {
             void begin();
 
             /**
-             * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
+             * @brief Send packet into LoRa network.
              * 
-             * @param message User typed input message.
+             * @return true if packet was successfully sent.
+             * @return false if sending is on cooldown or an error happened.
              */
-            void sendMessage(String message);
+            bool sendPacket(SanlaPacket);
+
             void onPackage(void(*callback)(String));
 
         private:
@@ -59,22 +63,6 @@ namespace sanla {
             static void onMessage(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
-
-            /**
-             * @brief Build a message header based on user input.
-             * 
-             * @param _recipient_id Recipient group id.
-             * @return sanla::MessageHeader Complete message header.
-             */
-            sanla::messaging::MessageHeader buildUserInputHeader(RecipientId_t);
-
-            /**
-             * @brief Build a message body based on user input.
-             * 
-             * @param _payload User input text.
-             * @return sanla::MessageBody Complete message body.
-             */
-            sanla::messaging::sanlamessage::Payload_t * buildUserInputBody(String);
         };
 
     };
