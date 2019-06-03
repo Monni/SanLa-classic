@@ -3,20 +3,26 @@
 namespace sanla {
     namespace messaging {
         
-        SanlaMessagePackage downlinkpacket_to_sanlamessage(DownlinkPacket downlink_packet) {
+        SanlaMessagePackage downlinkpacket_to_sanlamessage(DownlinkPacket dl_packet) {
 
-            char foo[2000];
-            uint16_t bar;
-            bar = 12345;
-            
-            return SanlaMessagePackage(
-                downlink_packet.message_id,
-                bar, // TODO what to do with sender id?
-                downlink_packet.payload_chks,
-                downlink_packet.recipient_id,
-                foo, // TODO string vector to char array
-            );
+            // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
+            uint16_t dummy_sender;
+            dummy_sender = 65535;
 
+            std::string dl_packet_payload;
+            for (auto const& str : dl_packet.payloadBuffer) {
+                dl_packet_payload += str;
+            }
+            sanlamessage::Payload_t payload;
+            strcpy(payload, dl_packet_payload.c_str());
+
+            return {
+                dl_packet.message_id,
+                dummy_sender,
+                dl_packet.payload_chks,
+                dl_packet.recipient_id,
+                payload
+            };
         };
 
         DownlinkPacket sanlapacket_to_downlinkpacket(SanlaPacket packet) {

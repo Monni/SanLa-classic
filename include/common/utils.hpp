@@ -10,7 +10,18 @@ namespace sanla {
 
         using DownlinkPacket = hw_interfaces::mq::DownlinkPacket;
 
+        /**
+         * @brief Construct a SanlaMessage from DownlinkPacket.
+         * 
+         * @return SanlaMessagePackage 
+         */
         SanlaMessagePackage downlinkpacket_to_sanlamessage(DownlinkPacket);
+
+        /**
+         * @brief Construct a DownlinkPacket from SanlaPacket.
+         * 
+         * @return DownlinkPacket 
+         */
         DownlinkPacket sanlapacket_to_downlinkpacket(SanlaPacket);
 
     }
