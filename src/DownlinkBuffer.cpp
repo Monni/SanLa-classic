@@ -1,6 +1,7 @@
 #include "hw/DownlinkBuffer.hpp"
 #include "constants.hpp"
 #include "common/SanlaProcessor.hpp"
+#include "common/utils.hpp"
 
 namespace sanla {
     namespace hw_interfaces {
@@ -21,23 +22,26 @@ namespace sanla {
                     return false;
                 }
 
+                // Try to find existing record of DownlinkPacket and push payload if found.
                 try {
-                    auto *downlinkPacket = downlinkPacketBuffer.at(packet.header.message_id);
+                    auto *dl_packet = downlinkPacketBuffer.at(packet.header.message_id);
                     std::string body_string(packet.body);
-                    downlinkPacket->payloadBuffer.push_back(body_string);
+                    dl_packet->payloadBuffer.push_back(body_string);
+
+                    // Validate if DownlinkPacket is ready to be turned into SanlaMessage.
                     if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
-                        // Message is complete. Send it to store and remove downlinkPacketBuffer element
-                        // call function to create a SanlaPackage from downlinkPacket
-                        // if(SendMessageToStore(message)){
-                        //     (void)&downlinkPacket;
-                        // }
-                        // else {
-                        //     return false;
-                        // }
+                        //Send it to store and remove downlinkPacketBuffer element
+                        
+                        SanlaPackage message = messaging::downlinkpacket_to_sanlamessage(*dl_packet);
+                        SendMessageToStore(message);
+                        downlinkPacketBuffer.erase(packet.header.message_id);
+                        dl_packet = nullptr;
+                            
                     }
                 } catch(const std::out_of_range& e) {
-                    DownlinkPacket downlinkPacket(packet);
-                    downlinkPacketBuffer[packet.header.message_id] = &downlinkPacket;
+                    DownlinkPacket dl_packet;
+                    dl_packet = messaging::sanlapacket_to_downlinkpacket(packet);
+                    downlinkPacketBuffer[packet.header.message_id] = &dl_packet;
                 }
                 // packet is either stored to downlinkPacketBuffer either way at this point
                 // we can drop the packet here
@@ -62,7 +66,11 @@ namespace sanla {
                 }
                 
                 if (downlinkPayload.length() == downlinkPacket.message_payload_length) {
-                    return true; // TODO if length matches, calculate checksum to verify integrity of the message.
+                    /*
+                    TODO deferred scope.
+                    If length matches, calculate checksum to verify integrity of the message.
+                    */
+                    return true;
                 }
                 return false;
             }

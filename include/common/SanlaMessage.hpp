@@ -27,12 +27,6 @@ namespace sanla {
             public:
             SanlaMessagePackage(MessageId_t, SenderId_t, PayloadChecksum_t, RecipientId_t, Payload_t);
             SanlaMessagePackage(MessageHeader, Payload_t);
-            // This class is not moveable
-            SanlaMessagePackage(SanlaMessagePackage&&) = delete;
-            SanlaMessagePackage& operator=(SanlaMessagePackage&&) = delete;
-            // This class is not copyable
-            SanlaMessagePackage(const SanlaMessagePackage&) = delete;
-            SanlaMessagePackage& operator=(const SanlaMessagePackage&) = delete;
 
             ~SanlaMessagePackage(){};
 
