@@ -18,28 +18,28 @@ namespace sanla {
         SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},
         PACSEN {0xF}, PACRES {0xD};
 
-            struct SanlaPacketHeader {
-                Flag_t flags;
-                MessageId_t message_id;
-                SenderId_t sender_id;
-                RecipientId_t recipient_id;
-                PayloadLength_t message_payload_length;
-                PayloadSeq_t payload_seq;
-                PayloadChecksum_t payload_chks;
-            };
-
-            struct SanlaPacket {
-                SanlaPacketHeader header;
-                sanlapacket::Payload_t body;
-                
-                void copy_headers_from_message(MessageHeader, sanlamessage::Payload_t);
-            };
-
-            inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
-            inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
-            inline void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
-            inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
-
+        struct SanlaPacketHeader {
+            Flag_t flags;
+            MessageId_t message_id;
+            SenderId_t sender_id;
+            RecipientId_t recipient_id;
+            PayloadLength_t message_payload_length;
+            PayloadSeq_t payload_seq;
+            PayloadChecksum_t payload_chks;
         };
+
+        struct SanlaPacket {
+            SanlaPacketHeader header;
+            sanlapacket::Payload_t body;
+            
+            void copy_headers_from_message(MessageHeader, sanlamessage::Payload_t);
+        };
+
+        inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
+        inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
+        inline void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
+        inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
+
+    };
 };
 #endif

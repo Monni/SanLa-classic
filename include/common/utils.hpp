@@ -15,14 +15,14 @@ namespace sanla {
          * 
          * @return SanlaMessagePackage 
          */
-        SanlaMessagePackage downlinkpacket_to_sanlamessage(DownlinkPacket);
+        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket);
 
         /**
          * @brief Construct a DownlinkPacket from SanlaPacket.
          * 
          * @return DownlinkPacket 
          */
-        DownlinkPacket sanlapacket_to_downlinkpacket(SanlaPacket);
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket);
 
     }
 }

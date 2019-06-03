@@ -3,7 +3,7 @@
 namespace sanla {
     namespace messaging {
         
-        SanlaMessagePackage downlinkpacket_to_sanlamessage(DownlinkPacket dl_packet) {
+        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket dl_packet) {
 
             // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
             uint16_t dummy_sender;
@@ -25,7 +25,7 @@ namespace sanla {
             };
         };
 
-        DownlinkPacket sanlapacket_to_downlinkpacket(SanlaPacket packet) {
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket packet) {
             DownlinkPacket dl_packet;
             
             dl_packet.message_id = packet.header.message_id;
