@@ -2,10 +2,12 @@
 #include "common.hpp"
 #include "common/SanlaProcessor.hpp"
 #include "hw/LoraMsgIntepreter.hpp"
+#include "ui/UserInterface.hpp"
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 sanla::lora::LoRaModule lora;
+sanla::ui::UserInterface user_interface;
 sanla::hw_interfaces::LoraMessageIntepreter interpreter;
 
 namespace sanla {
@@ -41,7 +43,10 @@ void loop() {
     // For testings purposes:
     if (millis() - lastSendTime > interval) {
         String message = "Foo walks into a bar baz qux moo";
-        lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
+
+        // TODO for testing purposes, call UI's send method here on loop.
+
+        //lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
         lastSendTime = millis();
         interval = random(4000) + 1000;
     }

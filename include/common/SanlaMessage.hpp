@@ -14,7 +14,7 @@ namespace sanla {
         struct MessageHeader {
             MessageId_t message_id;
             SenderId_t sender_id;
-            PayloadChecksum_t payload_chks;
+            PayloadChecksum_t payload_chks; // TODO checksum is to be moved from SanlaMessage header into a function.
             RecipientId_t recipient_id;
         };
 
@@ -33,6 +33,7 @@ namespace sanla {
             uint16_t GetPackageLength();
             MessageHeader& GetPackageHeader();
             Payload_t& GetPackageBody();
+            PayloadChecksum_t& GetPackagePayloadChks();
         };
 
     }; // messaging

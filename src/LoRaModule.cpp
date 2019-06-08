@@ -32,14 +32,6 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-sanla::messaging::MessageHeader buildUserInputHeader(RecipientId_t _recipient_id) {
-    sanla::messaging::MessageHeader header;
-    header.message_id = 1; // TODO generate. UUID?
-    header.sender_id = 65535; // TODO generate. MAC?
-    header.payload_chks = 1; // TODO calculate. Given as input?
-
-    return header;
-}
 
 sanla::messaging::sanlamessage::Payload_t* buildUserInputBody(String _payload) {
     sanla::messaging::sanlamessage::Payload_t* body;
@@ -48,33 +40,16 @@ sanla::messaging::sanlamessage::Payload_t* buildUserInputBody(String _payload) {
     return body;
 }
 
-void LoRaModule::sendMessage(String _input) {
-
-    sanla::messaging::MessageHeader header = sanla::lora::buildUserInputHeader("sanla__"); // TODO where to get recipient id?
-    sanla::messaging::SanlaMessagePackage package(header, *sanla::lora::buildUserInputBody(_input));
-
-    // TODO send package to MessageStore for broadcasting.
-
-    // TODO may be removed from here
-    sanla:messaging::SanlaPacket packet;
-    packet.header.flags = sanla::messaging::PRO;
-    packet.header.message_id = 4294967295;
-    packet.header.sender_id = 65535;
-    strcpy(packet.header.recipient_id, "asdfasdf");
-    packet.header.message_payload_length = 65535;
-    packet.header.payload_seq = 65535;
-    packet.header.payload_chks = 4294967295;
-    strcpy(packet.body, "12345678901234567890");
-
-    // TODO may be removed from here.
+bool LoRaModule::sendPacket(SanlaPacket packet) {
+    
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
-    //sanla::messaging::htonSanlaPacket(packet.header, packet.body, buffer);
+    sanla::messaging::htonSanlaPacket(packet, buffer);
 
-    // TODO below send and revert to listening mode should be moved to a function inside handler. Is this handler?
     // Send.
-    LoRa.beginPacket();
-    LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
-    LoRa.endPacket();
+    if (LoRa.beginPacket()) {
+        LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
+        LoRa.endPacket();
+    }
 
     // Revert back to listening mode.
     LoRa.receive();
