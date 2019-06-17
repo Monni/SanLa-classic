@@ -23,9 +23,13 @@ namespace sanla {
             MessageHeader header = buildUserInputHeader("sanla__"); // TODO where to get recipient id?
             SanlaMessage message(header, *buildUserInputBody(_input));
 
-            // TODO Message should be passed into Sanlaprocessor to save it into message store and broadcast.
+            sanla_processor_ptr->HandleUplinkMessage(message);
 
         };
+
+        void UserInterface::registerProcessor(SanlaProcessor* processor){
+            sanla_processor_ptr = processor;
+        }
 
     } // ui
 } // sanla

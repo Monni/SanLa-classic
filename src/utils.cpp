@@ -38,6 +38,11 @@ namespace sanla {
             return dl_packet;
         };
 
+        SanlaPacket buildBroadcastPacket(SanlaMessagePackage& messagePackage){
+            auto msg_header = messagePackage.GetPackageHeader();
+            return SanlaPacket {{BRO, msg_header.message_id, msg_header.sender_id,
+            *msg_header.recipient_id, 0, 0}, "\0"};
+        }
     
     }
 }

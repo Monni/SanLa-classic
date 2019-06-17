@@ -24,6 +24,13 @@ namespace sanla {
          */
         DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket);
 
+        /**
+         *  @brief Constructs a SanlaPacket from SanlaMessagePackage.
+         *  
+         *  @return SanlaPacket
+         */
+        SanlaPacket buildBroadcastPacket(SanlaMessagePackage&);
+
     }
 }
 
