@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "common/typedefs.hpp"
 #include "common/SanlaMessage.hpp"
+#include "common/SanlaProcessor.hpp"
 
 namespace sanla {
     namespace ui {
@@ -23,6 +24,8 @@ namespace sanla {
              */
             void sendUserMessage(String message);
 
+            void registerProcessor(SanlaProcessor* processor);
+
         private:
             /**
              * @brief Build a message header based on user input.
@@ -39,6 +42,8 @@ namespace sanla {
              * @return sanla::MessageBody Complete message body.
              */
             Payload_t * buildUserInputBody(String);
+
+            SanlaProcessor* sanla_processor_ptr = NULL;
         };
 
     } // ui

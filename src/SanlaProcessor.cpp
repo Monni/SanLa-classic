@@ -1,4 +1,5 @@
 #include "common/SanlaProcessor.hpp"
+#include "common/utils.hpp"
 
 namespace sanla {
 
@@ -6,6 +7,7 @@ bool SanlaProcessor::HandleUplinkMessage(SanlaMessagePackage &messagePackage)
 {
     // should we put packets to Uplink buffer here?
     m_mstore.Append(messagePackage);
+    m_ubuffer.addPacket(messaging::buildBroadcastPacket(messagePackage));
     return true;
 }
 
