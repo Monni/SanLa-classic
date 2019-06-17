@@ -32,7 +32,7 @@ namespace sanla {
                     if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
                         //Send it to store and remove downlinkPacketBuffer element
                         
-                        SanlaPackage message = messaging::downlinkpacket_to_sanlamessage(*dl_packet);
+                        SanlaPackage message = messaging::downlinkpacketToSanlamessage(*dl_packet);
                         SendMessageToStore(message);
                         downlinkPacketBuffer.erase(packet.header.message_id);
                         dl_packet = nullptr;
@@ -40,7 +40,7 @@ namespace sanla {
                     }
                 } catch(const std::out_of_range& e) {
                     DownlinkPacket dl_packet;
-                    dl_packet = messaging::sanlapacket_to_downlinkpacket(packet);
+                    dl_packet = messaging::sanlapacketToDownlinkpacket(packet);
                     downlinkPacketBuffer[packet.header.message_id] = &dl_packet;
                 }
                 // packet is either stored to downlinkPacketBuffer either way at this point
