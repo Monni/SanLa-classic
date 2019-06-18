@@ -19,6 +19,12 @@ namespace sanla {
                 
                 private:
                 std::vector<SanlaPacket> packetBuffer;
+
+                /**
+                 * @brief Erases first SanlaPacket from UplinkBuffer.
+                 * 
+                 */
+                void eraseFirstPacket();
             };
         }; // mq
     }; // hw_interfaces

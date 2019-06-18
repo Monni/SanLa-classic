@@ -6,7 +6,10 @@ namespace hw_interfaces {
 namespace mq {
 
 void UplinkBuffer::send(){
-    while (!packetBuffer.empty() && sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {};
+    while (!packetBuffer.empty() && sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {
+        // Remove packet from buffer after it's been sent.
+        UplinkBuffer::eraseFirstPacket();
+    };
 }
 
 /**
@@ -29,6 +32,10 @@ bool UplinkBuffer::addPacket(SanlaPacket packet){
 
 uint32_t UplinkBuffer::GetBufferLength() {
     return packetBuffer.size();
+}
+
+void UplinkBuffer::eraseFirstPacket() {
+    packetBuffer.erase(packetBuffer.begin());
 }
 
 } // mq
