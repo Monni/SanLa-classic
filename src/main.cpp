@@ -12,12 +12,6 @@ sanla::hw_interfaces::LoraMessageIntepreter interpreter;
 
 namespace sanla {
     auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
-
-namespace common {
-    void displayMessage(String message) {
-        Serial.println("Callback: " + message);
-        }
-} // common
 } // sanla
 
 
@@ -30,9 +24,13 @@ void setup() {
     // Set Serial Peripheral Interface for controlling LoRa module
     SPI.begin(SCK,MISO,MOSI,SS);
 
-    // Initialize customized LoRa module
+    // Initialize customized LoRa module and register UI callback.
     lora.begin();
-    lora.onPackage(sanla::common::displayMessage);
+    lora.onPackage(user_interface.displayMessage);
+
+    // Register SanLaProcessor into UI for callbacks.
+    user_interface.registerProcessor(sanla::g_sanlaProcessor);
+
     Serial.println("SanLa Classic ready.");
 }
 
@@ -45,6 +43,7 @@ void loop() {
         String message = "Foo walks into a bar baz qux moo";
 
         // TODO for testing purposes, call UI's send method here on loop.
+        user_interface.sendUserMessage(message);
 
         //lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
         lastSendTime = millis();

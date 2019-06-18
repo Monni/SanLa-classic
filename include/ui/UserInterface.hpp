@@ -24,6 +24,13 @@ namespace sanla {
              */
             void sendUserMessage(String message);
 
+            /**
+             * @brief Display incoming message on screen.
+             * 
+             * @param message Incoming message.
+             */
+            static void displayMessage(String message);
+
             void registerProcessor(SanlaProcessor* processor);
 
         private:

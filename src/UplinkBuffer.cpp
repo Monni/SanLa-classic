@@ -1,26 +1,12 @@
 #include "hw/UplinkBuffer.hpp"
+#include "LoRaModule.hpp"
 
 namespace sanla {
 namespace hw_interfaces {
 namespace mq {
 
 void UplinkBuffer::send(){
-    while (!packetBuffer.empty()) {
-        /*
-        TODO: LoRaModule needs to be accessed before this can be used!
-        */
-
-        /*if (!LoRa.beginPacket()) {
-            break;
-        }
-        char serialized_packet[sanla::messaging::sanlapacket::PACKET_MAX_SIZE]{};
-        //sanla::messaging::htonSanlaPacket(packetBuffer.front(), serialized_packet);
-        LoRa.write((uint8_t*)serialized_packet, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
-        LoRa.endPacket();
-
-        // Revert back to listening mode
-        LoRa.receive();*/
-    }
+    while (!packetBuffer.empty() && sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {};
 }
 
 /**
@@ -31,8 +17,11 @@ void UplinkBuffer::send(){
  * @return false If packet wasn't added. This is caused by buffer already being full.
  */
 bool UplinkBuffer::addPacket(SanlaPacket packet){
+    // TODO flow: if there's space, push_back and send.
+    // Otherwise try to send and then push_back.
     if (packetBuffer.size() < UPLINKBUFFER_MAX_SIZE) {
         packetBuffer.push_back(packet);
+        UplinkBuffer::send(); // Todo temporarily here for testing.
         return true;
     }
     return false;

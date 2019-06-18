@@ -48,7 +48,7 @@ namespace sanla {
              * @return true if packet was successfully sent.
              * @return false if sending is on cooldown or an error happened.
              */
-            bool sendPacket(SanlaPacket);
+            static bool sendPacket(SanlaPacket);
 
             void onPackage(void(*callback)(String));
 
