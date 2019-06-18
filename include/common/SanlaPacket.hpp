@@ -1,7 +1,7 @@
 #ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
 #define SANLACLASSIC_COMMON_SANLAPACKET_H_
 
-#include <netinet/in.h>
+#include "lwip/ip4_addr.h"
 #include <stdint.h>
 #include <string>
 #include "constants.hpp"
