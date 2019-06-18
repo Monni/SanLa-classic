@@ -8,6 +8,7 @@
 #include <sstream>
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
+#include "common/utils.hpp"
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK

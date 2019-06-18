@@ -43,9 +43,7 @@ sanla::messaging::sanlamessage::Payload_t* buildUserInputBody(String _payload) {
 bool LoRaModule::sendPacket(SanlaPacket packet) {
     
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
-
-    // TODO I MUST BE FISTED.
-    //sanla::messaging::htonSanlaPacket(packet, buffer);
+    sanla::messaging::htonSanlaPacket(packet, buffer);
     
     // Send.
     if (LoRa.beginPacket()) {
