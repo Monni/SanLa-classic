@@ -14,7 +14,16 @@ namespace sanla {
                 UplinkBuffer(){};
                 ~UplinkBuffer(){};
                 void send();
+
+                /**
+                 * @brief Add SanlaPacket into buffer.
+                 * 
+                 * @param packet SanlaPacket to be added
+                 * @return true If packet was added
+                 * @return false If packet wasn't added. This is caused by buffer already being full.
+                 */
                 bool addPacket(SanlaPacket);
+
                 virtual uint32_t GetBufferLength() override;
                 
                 private:

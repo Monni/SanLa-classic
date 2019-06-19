@@ -12,19 +12,13 @@ void UplinkBuffer::send(){
     };
 }
 
-/**
- * @brief Add SanlaPacket into buffer.
- * 
- * @param packet SanlaPacket to be added
- * @return true If packet was added
- * @return false If packet wasn't added. This is caused by buffer already being full.
- */
 bool UplinkBuffer::addPacket(SanlaPacket packet){
-    // TODO flow: if there's space, push_back and send.
-    // Otherwise try to send and then push_back.
+    // Try to make more space into buffer before pushing anything new
+    UplinkBuffer::send();
+
     if (packetBuffer.size() < UPLINKBUFFER_MAX_SIZE) {
         packetBuffer.push_back(packet);
-        UplinkBuffer::send(); // Todo temporarily here for testing.
+        UplinkBuffer::send();
         return true;
     }
     return false;
