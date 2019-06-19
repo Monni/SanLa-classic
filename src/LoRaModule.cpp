@@ -44,15 +44,22 @@ bool LoRaModule::sendPacket(SanlaPacket packet) {
     
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     sanla::messaging::htonSanlaPacket(packet, buffer);
-
+    
     // Send.
     if (LoRa.beginPacket()) {
         LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
         LoRa.endPacket();
+
+        // Revert back to listening mode.
+        LoRa.receive();
+
+        return true;
     }
 
-    // Revert back to listening mode.
+    // Even upon failure ensure we are back at listening mode.
     LoRa.receive();
+
+    return false;
 }
 
 void LoRaModule::onPackage(void(*callback)(String)) {

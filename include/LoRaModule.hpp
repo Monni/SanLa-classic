@@ -8,6 +8,7 @@
 #include <sstream>
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
+#include "common/utils.hpp"
 
 // LoRa HW definitions
 #define SCK     5    // GPIO5  -- SX1278's SCK
@@ -48,7 +49,7 @@ namespace sanla {
              * @return true if packet was successfully sent.
              * @return false if sending is on cooldown or an error happened.
              */
-            bool sendPacket(SanlaPacket);
+            static bool sendPacket(SanlaPacket);
 
             void onPackage(void(*callback)(String));
 

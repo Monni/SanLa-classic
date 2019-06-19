@@ -1,7 +1,7 @@
 #ifndef SANLACLASSIC_COMMON_SANLAPACKET_H_
 #define SANLACLASSIC_COMMON_SANLAPACKET_H_
 
-#include <netinet/in.h>
+#include "lwip/ip4_addr.h"
 #include <stdint.h>
 #include <string>
 #include "constants.hpp"
@@ -34,11 +34,6 @@ namespace sanla {
             
             void copy_headers_from_message(MessageHeader, sanlamessage::Payload_t);
         };
-
-        inline void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
-        inline SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
-        inline void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
-        inline SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
 
     };
 };

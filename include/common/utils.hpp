@@ -31,6 +31,31 @@ namespace sanla {
          */
         SanlaPacket buildBroadcastPacket(SanlaMessagePackage&);
 
+        /**
+         * @brief Constructs a host-to-network byte order char array of a SanlaPacket.
+         * 
+         */
+        void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
+
+        /**
+         * @brief Constructs a host-to-network byte order char array of a SanlaPacket header.
+         * 
+         */
+        void htonSanlaPacketHeader(SanlaPacketHeader, sanlapacket::SerializedPacketHeader_t);
+        
+        /**
+         * @brief Constructs a SanlaPacket from network-to-host char array.
+         * 
+         * @return SanlaPacket Constructed SanlaPacket.
+         */
+        SanlaPacket ntohSanlaPacket(sanlapacket::SerializedPacket_t);
+
+        /**
+         * @brief Constructs a SanlaPacket header from network-to-host char array.
+         * 
+         * @return SanlaPacketHeader Constucted header.
+         */
+        SanlaPacketHeader ntohSanlaPacketHeader(sanlapacket::SerializedPacketHeader_t);
     }
 }
 
