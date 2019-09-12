@@ -65,7 +65,7 @@ namespace sanla {
                     downlinkPayload += str;
                 }
                 
-                if (downlinkPayload.length() == downlinkPacket.message_payload_length) {
+                if (downlinkPayload.length() == downlinkPacket.payload_length) {
                     /*
                     TODO deferred scope.
                     If length matches, calculate checksum to verify integrity of the message.

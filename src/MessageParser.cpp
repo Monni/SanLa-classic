@@ -6,9 +6,6 @@ namespace sanla {
         ActionsE DefineActionToPacket(const SanlaPacket &packet){
             switch(packet.header.flags){
 
-                case messaging::BRO:
-                    return RESPOND;
-                
                 case messaging::ACK:
                     return STORE;
                 

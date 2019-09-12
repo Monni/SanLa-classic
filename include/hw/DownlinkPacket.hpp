@@ -13,7 +13,7 @@ namespace sanla {
             struct DownlinkPacket {
                 MessageId_t message_id;
                 RecipientId_t recipient_id;
-                PayloadLength_t message_payload_length;
+                PayloadLength_t payload_length;
                 PayloadChecksum_t payload_chks;
                 std::vector<std::string> payloadBuffer;
             };

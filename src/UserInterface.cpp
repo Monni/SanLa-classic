@@ -3,11 +3,12 @@
 namespace sanla {
     namespace ui {
 
-        MessageHeader UserInterface::buildUserInputHeader(RecipientId_t recipient_id) {
+        MessageHeader UserInterface::buildUserInputHeader(RecipientId_t _recipient_id) {
             MessageHeader header;
             header.message_id = 1; // TODO generate. UUID?
             header.sender_id = 65535; // TODO generate. MAC?
             header.payload_chks = 1; // TODO to be removed from header.
+            header.recipient_id = _recipient_id;
 
             return header;
         };
@@ -21,8 +22,8 @@ namespace sanla {
 
         void UserInterface::sendUserMessage(String _input) {
             
-            // TODO get recipient id and use instead of "sanla__"
-            SanlaMessage message(buildUserInputHeader((char *)"sanla__"), *buildUserInputBody(_input));
+            // TODO get recipient id and use instead of 65535
+            SanlaMessage message(buildUserInputHeader(65535), *buildUserInputBody(_input));
 
             sanla_processor_ptr->HandleUplinkMessage(message);
         };

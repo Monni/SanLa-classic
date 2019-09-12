@@ -10,7 +10,7 @@ namespace sanla {
             header.message_id = _message_id;
             header.sender_id = _sender_id;
             header.payload_chks = _payload_chks;
-            strcpy(header.recipient_id, _recipient_id);
+            header.recipient_id = _recipient_id;
             strcpy(body, _body);
         }
 
@@ -47,9 +47,8 @@ namespace sanla {
                 MessageId_t message_id = header.message_id;
                 SenderId_t sender_id = header.sender_id;
                 PayloadChecksum_t payload_chks = header.payload_chks;
-                RecipientId_t recipient_id;
-                strcpy(recipient_id, header.recipient_id);
-                PayloadLength_t message_payload_length = strlen(body); // Possible segfault due to non Null terminated string
+                RecipientId_t recipient_id = header.recipient_id;
+                PayloadLength_t payload_length = strlen(body); // Possible segfault due to non Null terminated string
         }
     } // messaging
 } // sanla
