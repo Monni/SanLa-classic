@@ -19,7 +19,6 @@ namespace sanla {
             return {
                 dl_packet.message_id,
                 dummy_sender,
-                dl_packet.payload_chks,
                 dl_packet.recipient_id,
                 payload
             };

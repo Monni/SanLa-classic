@@ -7,7 +7,6 @@ namespace sanla {
             MessageHeader header;
             header.message_id = 1; // TODO generate. UUID?
             header.sender_id = 65535; // TODO generate. MAC?
-            header.payload_chks = 1; // TODO to be removed from header.
             header.recipient_id = _recipient_id;
 
             return header;
