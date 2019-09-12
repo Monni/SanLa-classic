@@ -30,7 +30,7 @@ namespace sanla {
             return body;
         }
 
-        void SanlaPacket::copy_headers_from_message(MessageHeader header, Payload_t body) {
+        void SanlaPacket::copy_headers_from_message(MessageHeader header, PacketPayload_t body) {
                 MessageId_t message_id = header.message_id;
                 SenderId_t sender_id = header.sender_id;
                 RecipientId_t recipient_id = header.recipient_id;

@@ -3,26 +3,25 @@
 
 namespace sanla {
 
-bool SanlaProcessor::HandleUplinkMessage(SanlaMessagePackage &messagePackage)
+bool SanlaProcessor::HandleUplinkMessage(SanlaMessagePackage &sanla_message)
 {
-    // should we put packets to Uplink buffer here?
-    m_mstore.Append(messagePackage);
-    m_ubuffer.addPacket(messaging::buildBroadcastPacket(messagePackage));
+    // Save message to MessageStore.
+    m_mstore.Append(sanla_message);
+
+    // Construct broadcast packets from message and push all to uplinkbuffer.
+    std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(sanla_message));
+    for(std::size_t i = 0; i < packet_vector.size(); i++) {
+        m_ubuffer.addPacket(packet_vector[i]);
+    }
     return true;
 }
 
 bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     switch (messaging::DefineActionToPacket(packet))
     {
+    
     case messaging::ActionsE::STORE: {
-        //Somehow check if the packet is already in buffer
-        if(true){
-            m_dbuffer.ReceivePacket(packet);
-        }
-        else{
-            // We drop the packet
-            (void)packet;
-        }
+        m_dbuffer.ReceivePacket(packet);
         return true;
     }
     
@@ -48,7 +47,13 @@ void SanlaProcessor::StoreCompleteMessage(SanlaMessagePackage &package) {
 }
 
 SanlaPacket SanlaProcessor::BuildResponseToPacket(const SanlaPacket &inputPacket){
-    //TODO: Implement this
+    //TODO: Implement this here or into utils?
+    /*
+        1. Check for flag. Done in somewhere else??
+        2. Get payload based on sequence.
+        3. Construct packet.
+        4. Push packet to uplinkbuffer.
+    */
     return inputPacket;
 }
 }

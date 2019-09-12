@@ -18,6 +18,7 @@ namespace sanla {
         };
 
         using Payload_t = messaging::sanlamessage::Payload_t;
+        using PacketPayload_t = messaging::sanlapacket::Payload_t;
 
         class SanlaMessagePackage {
             MessageHeader header;

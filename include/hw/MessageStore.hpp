@@ -26,6 +26,7 @@ namespace sanla {
 
                 SanlaPacket GetNthPacket(SanlaPackage, size_t);
                 SanlaPacket GetPackagePart(MessageId_t, size_t);
+                SanlaPackage GetMessage(MessageId_t);
 
                 private:
                 MessageMap m_store;

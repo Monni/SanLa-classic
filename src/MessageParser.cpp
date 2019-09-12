@@ -6,24 +6,12 @@ namespace sanla {
         ActionsE DefineActionToPacket(const SanlaPacket &packet){
             switch(packet.header.flags){
 
-                case messaging::ACK:
+                case messaging::END:
                     return STORE;
                 
-                case messaging::PACPRO:
+                case messaging::REQ:
                     return RESPOND;
                 
-                case messaging::PACRES:
-                    return RESPOND;
-
-                case messaging::PACSEN:
-                    return STORE;
-                
-                case messaging::PACREQ:
-                    return RESPOND;
-
-                case messaging::PROACK:
-                    return RESPOND;
-
                 default:
                     return DROP;
             }

@@ -14,9 +14,7 @@
 namespace sanla {
     namespace messaging {
         
-        const Flags_t BRO {0x1}, REQ {0x2}, PRO {0x3}, PAC {0x4}, ACK {0x8},
-        SEN {0xC}, RES {0xA}, PACREQ {0x6}, PACPRO {0x7}, PROACK {0xB},
-        PACSEN {0xF}, PACRES {0xD};
+        const Flags_t END {0x1}, REQ {0x2};
 
         struct SanlaPacketHeader {
             Flags_t flags;
@@ -32,7 +30,7 @@ namespace sanla {
             SanlaPacketHeader header;
             sanlapacket::Payload_t body;
             
-            void copy_headers_from_message(MessageHeader, sanlamessage::Payload_t);
+            void copy_headers_from_message(MessageHeader, sanlapacket::Payload_t);
         };
 
     };

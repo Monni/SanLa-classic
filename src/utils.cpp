@@ -37,15 +37,44 @@ namespace sanla {
             return dl_packet;
         };
 
+        // TODO tee tasta semmonen, etta rakentaa yhden paketin REQ-viestin perusteella.
         SanlaPacket buildBroadcastPacket(SanlaMessagePackage& messagePackage){
             auto msg_header = messagePackage.GetPackageHeader();
-            return SanlaPacket {{BRO, msg_header.message_id, msg_header.sender_id,
+            return SanlaPacket {{0x1, msg_header.message_id, msg_header.sender_id,
             msg_header.recipient_id, 0, 0}, "\0"};
         }
 
-        std::vector<SanlaPacket> buildBroadcastPackets(SanlaMessagePackage& messagePackage){
-            auto msg_header = messagePackage.GetPackageHeader();
-            // TODO
+        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& sanla_message){
+            /*
+            1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.
+            2. Splittaa SanlaMessagePackage osiin ja rakenna niiden header.
+            3. Merkkaa viimeinen END-flagilla.
+            4. Puske vectoriin.
+            5. Palauta vector.
+            */
+
+            std::vector<SanlaPacket> packet_vector;
+            std::string message_body(sanla_message.GetPackageBody());
+
+            for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE) {
+                SanlaPacket packet{};
+                
+                std::string payload_string(message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE));
+                char payload_arr[payload_string.size() + 1];
+                strcpy(payload_arr, payload_string.c_str());
+                
+                packet.copy_headers_from_message(sanla_message.GetPackageHeader(), payload_arr); // TODO oparissa sanoo etta total header + payload, nyt menee pelkka payload.
+                memcpy(&packet.body, payload_arr, sizeof(payload_arr));
+
+                // Mark last packet with END flag.
+                if (i >= message_body.length()) {
+                    packet.header.flags = END;
+                }
+
+                packet_vector.push_back(packet);
+            }
+
+            return packet_vector;
         }
 
         void htonSanlaPacket(SanlaPacket packet, sanlapacket::SerializedPacket_t buffer) {
