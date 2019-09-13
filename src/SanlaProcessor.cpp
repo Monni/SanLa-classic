@@ -19,12 +19,6 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
         return true;
     }
     
-    case messaging::ActionsE::STORE: {
-        // TODO STORE vain messageille. Tarvitaanko taalla?
-        return true;
-    }
-    
-    
     case messaging::DROP: {
         // delete the packet
         (void)packet;
@@ -36,6 +30,7 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
 }
 
 bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
+    Serial.println("SanlaProcessor::HandleMessage");
     // Save message to MessageStore.
     m_mstore.Append(message);
 
@@ -44,6 +39,17 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
     for(std::size_t i = 0; i < packet_vector.size(); i++) {
         m_ubuffer.addPacket(packet_vector[i]);
     }
+
+    // TODO For debugging purposes, print payload for each packet:
+    for (auto const& packet : packet_vector) {
+        Serial.print("Packet payload: ");
+
+        for (int i = 0; i < strlen(packet.body); i++) {
+            Serial.print(packet.body[i]);
+        }
+        Serial.println("");
+    }
+
     return true;
 }
 

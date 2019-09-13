@@ -1,3 +1,4 @@
+#include "HardwareSerial.h" // TODO remove after debugging not needed.
 #include "Singleton.hpp"
 #include "common/SanlaPacket.hpp"
 #include "common/SanlaMessage.hpp"
