@@ -3,34 +3,27 @@
 
 namespace sanla {
 
-bool SanlaProcessor::HandleUplinkMessage(SanlaMessagePackage &sanla_message)
-{
-    // Save message to MessageStore.
-    m_mstore.Append(sanla_message);
-
-    // Construct broadcast packets from message and push all to uplinkbuffer.
-    std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(sanla_message));
-    for(std::size_t i = 0; i < packet_vector.size(); i++) {
-        m_ubuffer.addPacket(packet_vector[i]);
-    }
-    return true;
-}
-
 bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     switch (messaging::DefineActionToPacket(packet))
     {
     
-    case messaging::ActionsE::STORE: {
+    case messaging::ActionsE::RECEIVE: {
         m_dbuffer.ReceivePacket(packet);
         return true;
     }
-    
+
     case messaging::ActionsE::RESPOND: {
-        m_ubuffer.addPacket(BuildResponseToPacket(packet));
+        HandleResponse(packet);
         //This packet has no further use
         (void)packet;
         return true;
     }
+    
+    case messaging::ActionsE::STORE: {
+        // TODO STORE vain messageille. Tarvitaanko taalla?
+        return true;
+    }
+    
     
     case messaging::DROP: {
         // delete the packet
@@ -42,18 +35,27 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     }
 }
 
-void SanlaProcessor::StoreCompleteMessage(SanlaMessagePackage &package) {
-    m_mstore.Append(package);
+bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
+    // Save message to MessageStore.
+    m_mstore.Append(message);
+
+    // Construct broadcast packets from message and push to uplinkbuffer.
+    std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(message));
+    for(std::size_t i = 0; i < packet_vector.size(); i++) {
+        m_ubuffer.addPacket(packet_vector[i]);
+    }
+    return true;
 }
 
-SanlaPacket SanlaProcessor::BuildResponseToPacket(const SanlaPacket &inputPacket){
-    //TODO: Implement this here or into utils?
-    /*
-        1. Check for flag. Done in somewhere else??
-        2. Get payload based on sequence.
-        3. Construct packet.
-        4. Push packet to uplinkbuffer.
-    */
-    return inputPacket;
+bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
+/*
+    1. Get payload based on sequence.
+    2. Construct packet.
+    3. Push packet to UplinkBuffer.
+*/
+    auto message = m_mstore.GetMessage(input_packet.header.message_id);
+
+    return m_ubuffer.addPacket(messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq));
 }
+
 }

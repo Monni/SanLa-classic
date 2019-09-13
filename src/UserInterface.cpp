@@ -24,7 +24,7 @@ namespace sanla {
             // TODO get recipient id and use instead of 65535
             SanlaMessage message(buildUserInputHeader(65535), *buildUserInputBody(_input));
 
-            sanla_processor_ptr->HandleUplinkMessage(message);
+            sanla_processor_ptr->HandleMessage(message);
         };
 
         void UserInterface::displayMessage(String message) {

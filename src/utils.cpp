@@ -10,8 +10,8 @@ namespace sanla {
             dummy_sender = 65535;
 
             std::string dl_packet_payload;
-            for (auto const& str : dl_packet.payloadBuffer) {
-                dl_packet_payload += str;
+            for (auto const& payload_buffer : dl_packet.payloadBuffer) {
+                dl_packet_payload += payload_buffer.second;
             }
             sanlamessage::Payload_t payload;
             strcpy(payload, dl_packet_payload.c_str());
@@ -28,11 +28,9 @@ namespace sanla {
             DownlinkPacket dl_packet;
             
             dl_packet.message_id = packet.header.message_id;
-            dl_packet.recipient_id = packet.header.recipient_id;
-            dl_packet.payload_length = packet.header.payload_length;
-            dl_packet.payload_chks = packet.header.payload_chks;                
+            dl_packet.recipient_id = packet.header.recipient_id;                
             std::string body_string(packet.body);
-            dl_packet.payloadBuffer.push_back(body_string);
+            dl_packet.payloadBuffer[packet.header.payload_seq] = body_string;
 
             return dl_packet;
         };
@@ -44,7 +42,7 @@ namespace sanla {
             msg_header.recipient_id, 0, 0}, "\0"};
         }
 
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& sanla_message){
+        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& message){
             /*
             1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.
             2. Splittaa SanlaMessagePackage osiin ja rakenna niiden header.
@@ -54,7 +52,7 @@ namespace sanla {
             */
 
             std::vector<SanlaPacket> packet_vector;
-            std::string message_body(sanla_message.GetPackageBody());
+            std::string message_body(message.GetPackageBody());
 
             for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE) {
                 SanlaPacket packet{};
@@ -63,11 +61,12 @@ namespace sanla {
                 char payload_arr[payload_string.size() + 1];
                 strcpy(payload_arr, payload_string.c_str());
                 
-                packet.copy_headers_from_message(sanla_message.GetPackageHeader(), payload_arr); // TODO oparissa sanoo etta total header + payload, nyt menee pelkka payload.
+                packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
+                packet.header.payload_seq = i;
                 memcpy(&packet.body, payload_arr, sizeof(payload_arr));
 
                 // Mark last packet with END flag.
-                if (i >= message_body.length()) {
+                if (i + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE >= message_body.length()) {
                     packet.header.flags = END;
                 }
 
@@ -75,6 +74,21 @@ namespace sanla {
             }
 
             return packet_vector;
+        }
+
+        SanlaPacket buildBroadcastPacketFromSequence(SanlaMessagePackage& message, PayloadSeq_t sequence) {
+            SanlaPacket packet{};
+
+            std::string message_body(message.GetPackageBody());
+
+            std::string payload_string(message_body.substr(sequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE));
+            char payload_arr[payload_string.size() + 1];
+            strcpy(payload_arr, payload_string.c_str());
+
+            packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
+            packet.header.payload_seq = sequence;
+
+            return packet;
         }
 
         void htonSanlaPacket(SanlaPacket packet, sanlapacket::SerializedPacket_t buffer) {

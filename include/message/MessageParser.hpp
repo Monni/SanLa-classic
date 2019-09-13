@@ -8,11 +8,12 @@ namespace sanla {
     namespace messaging {
 
         enum ActionsE {
-            STORE,
+            RECEIVE,
             RESPOND,
+            STORE,
             DROP
         };
-// This doesn't need tp be a class. I think this should be refactored as a function
+// This doesn't need to be a class. I think this should be refactored as a function
         ActionsE DefineActionToPacket(const SanlaPacket&);
     }; // messaging
 }; // sanla

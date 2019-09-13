@@ -17,16 +17,21 @@ namespace sanla {
 
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
-                    // TODO add debug line here.
+                    // TODO add debug line here in case dl_buffer is full.
                     (void)packet;
                     return false;
                 }
+
+                // Validate incoming packet.
+                validatePacket(packet);
 
                 // Try to find existing record of DownlinkPacket and push payload if found.
                 try {
                     auto *dl_packet = downlinkPacketBuffer.at(packet.header.message_id);
                     std::string body_string(packet.body);
-                    dl_packet->payloadBuffer.push_back(body_string);
+
+                    // Push payload to Map.
+                    dl_packet->payloadBuffer[packet.header.payload_seq] = body_string;
 
                     // Validate if DownlinkPacket is ready to be turned into SanlaMessage.
                     if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
@@ -52,27 +57,38 @@ namespace sanla {
             void DownlinkBuffer::SendMessageToStore(SanlaPackage &message){
                 if (m_sanla_processor_ptr != nullptr) {
                     auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
-                    processor->StoreCompleteMessage(message);
+                    processor->HandleMessage(message);
                 }
                 else {
                     // Throw some error here
                 }
             }
 
-            bool validateMessageReady(DownlinkPacket downlinkPacket) {
-                std::string downlinkPayload;
-                for (auto const& str : downlinkPacket.payloadBuffer) {
-                    downlinkPayload += str;
-                }
-                
-                if (downlinkPayload.length() == downlinkPacket.payload_length) {
-                    /*
-                    TODO deferred scope.
-                    If length matches, calculate checksum to verify integrity of the message.
-                    */
+            bool DownlinkBuffer::validatePacket(SanlaPacket &packet) {
+                /*
+                TODO
+                Validate checksum
+                */
+
+                if (packet.header.payload_length == strlen(packet.body)) {
                     return true;
                 }
-                return false;
+                return true;
+            }
+
+            bool validateMessageReady(DownlinkPacket downlinkPacket) {
+                /*
+                TODO
+                1. END-flag loydyttava. Miten se tallennetaan bufferiin? CRUCIAL!!!
+                2. Kay payloadBuffer lapi ja katso ettei sequencessa ole virheita.
+                */
+                
+                std::string downlinkPayload;
+                for (auto const& packet : downlinkPacket.payloadBuffer) {
+                    downlinkPayload += packet.second;
+                }
+                
+                return true;
             }
         }
     }

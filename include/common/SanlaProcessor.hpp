@@ -29,16 +29,31 @@ SanlaProcessor& operator=(SanlaProcessor&&) = delete;
 SanlaProcessor(const SanlaProcessor&) = delete;
 SanlaProcessor& operator=(const SanlaProcessor&) = delete;
 
-bool HandleUplinkMessage(SanlaMessagePackage&);
+/**
+ * @brief Handle user input message.
+ * Saves it to MessageStore and sends to UplinkBuffer.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool HandleMessage(SanlaMessagePackage&);
+
+/**
+ * @brief Handle incoming packet with REQ-flag.
+ * Constructs a response packet and sends to UplinkBuffer.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool HandleResponse(SanlaPacket&);
+
 bool ProcessPacket(SanlaPacket&);
-void StoreCompleteMessage(SanlaMessagePackage&); //TODO: Register this to m_dbuffer
+
 
 private:
 // Only Singleton of type SanlaProcessor is able to create or delete object of this class
 SanlaProcessor(): m_dbuffer(this), m_ubuffer(), m_mstore(){};
 ~SanlaProcessor(){};
-
-SanlaPacket BuildResponseToPacket(const SanlaPacket& /*input packet*/);
 
 DownlinkBuffer m_dbuffer;
 UplinkBuffer m_ubuffer;
