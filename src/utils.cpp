@@ -35,13 +35,6 @@ namespace sanla {
             return dl_packet;
         };
 
-        // TODO tee tasta semmonen, etta rakentaa yhden paketin REQ-viestin perusteella.
-        SanlaPacket buildBroadcastPacket(SanlaMessagePackage& messagePackage){
-            auto msg_header = messagePackage.GetPackageHeader();
-            return SanlaPacket {{0x1, msg_header.message_id, msg_header.sender_id,
-            msg_header.recipient_id, 0, 0}, "\0"};
-        }
-
         std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& message){
             /*
             1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.

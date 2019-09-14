@@ -25,14 +25,6 @@ namespace sanla {
         DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket);
 
         /**
-         *  @brief Constructs a SanlaPacket from SanlaMessagePackage.
-         * Used if received a REQ-request for a new packet.
-         *  
-         *  @return SanlaPacket
-         */
-        SanlaPacket buildBroadcastPacket(SanlaMessagePackage&);
-
-        /**
          * @brief Constructs a SanlaPacket vector from SanlaMessage for broadcast purposes.
          * 
          * @return std::vector<SanlaPacket> 
