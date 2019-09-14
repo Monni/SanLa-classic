@@ -16,6 +16,7 @@ namespace sanla {
             }
 
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
+                Serial.println("DownlinkBuffer::StorePacket");
                 if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
                     // TODO add debug line here in case dl_buffer is full.
                     (void)packet;
@@ -76,7 +77,7 @@ namespace sanla {
                 return true;
             }
 
-            bool validateMessageReady(DownlinkPacket downlinkPacket) {
+            bool DownlinkBuffer::validateMessageReady(DownlinkPacket &downlinkPacket) {
                 /*
                 TODO
                 1. END-flag loydyttava. Miten se tallennetaan bufferiin? CRUCIAL!!!
