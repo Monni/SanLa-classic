@@ -1,6 +1,7 @@
 #ifndef SANLACLASSIC_HW_UPLINKBUFFER_H_
 #define SANLACLASSIC_HW_UPLINKBUFFER_H_
 
+#include "HardwareSerial.h" // TODO remove after debugging not needed.
 #include "hw/MessageBuffer.hpp"
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"

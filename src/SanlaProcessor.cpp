@@ -3,37 +3,26 @@
 
 namespace sanla {
 
-bool SanlaProcessor::HandleUplinkMessage(SanlaMessagePackage &messagePackage)
-{
-    // should we put packets to Uplink buffer here?
-    m_mstore.Append(messagePackage);
-    m_ubuffer.addPacket(messaging::buildBroadcastPacket(messagePackage));
-    return true;
-}
-
 bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     switch (messaging::DefineActionToPacket(packet))
     {
-    case messaging::ActionsE::STORE: {
-        //Somehow check if the packet is already in buffer
-        if(true){
-            m_dbuffer.ReceivePacket(packet);
-        }
-        else{
-            // We drop the packet
-            (void)packet;
-        }
+    
+    case messaging::ActionsE::RECEIVE: {
+        Serial.println("messaging::ActionsE::RECEIVE");
+        m_dbuffer.ReceivePacket(packet);
         return true;
     }
-    
+
     case messaging::ActionsE::RESPOND: {
-        m_ubuffer.addPacket(BuildResponseToPacket(packet));
+        Serial.println("messaging::ActionsE::RESPOND");
+        HandleResponse(packet);
         //This packet has no further use
         (void)packet;
         return true;
     }
     
     case messaging::DROP: {
+        Serial.println("messaging::ActionsE::DROP");
         // delete the packet
         (void)packet;
         return true;
@@ -43,12 +32,39 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     }
 }
 
-void SanlaProcessor::StoreCompleteMessage(SanlaMessagePackage &package) {
-    m_mstore.Append(package);
+bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
+    Serial.println("SanlaProcessor::HandleMessage");
+    // Save message to MessageStore.
+    m_mstore.Append(message);
+
+    // Construct broadcast packets from message and push to uplinkbuffer.
+    std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(message));
+    for (auto& packet : packet_vector) {
+        m_ubuffer.addPacket(packet);
+    }
+
+    // TODO For debugging purposes, print payload for each packet:
+    for (auto const& packet : packet_vector) {
+        Serial.print("Packet payload: ");
+
+        for (int i = 0; i < strlen(packet.body); i++) {
+            Serial.print(packet.body[i]);
+        }
+        Serial.println("");
+    }
+
+    return true;
 }
 
-SanlaPacket SanlaProcessor::BuildResponseToPacket(const SanlaPacket &inputPacket){
-    //TODO: Implement this
-    return inputPacket;
+bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
+/*
+    1. Get payload based on sequence.
+    2. Construct packet.
+    3. Push packet to UplinkBuffer.
+*/
+    auto message = m_mstore.GetMessage(input_packet.header.message_id);
+
+    return m_ubuffer.addPacket(messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq));
 }
+
 }

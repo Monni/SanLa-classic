@@ -24,6 +24,14 @@ namespace sanla {
                 DownlinkPacketMap downlinkPacketBuffer;
 
                 /**
+                 * @brief Validate incoming packet is valid.
+                 * 
+                 * @return true 
+                 * @return false 
+                 */
+                bool validatePacket(SanlaPacket&);
+
+                /**
                  * @brief Validate stored DownlinkPacket is ready to be parsed into
                  * a message and to be sent into MessageStore.
                  * 

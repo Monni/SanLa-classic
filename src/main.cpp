@@ -26,7 +26,7 @@ void setup() {
 
     // Initialize customized LoRa module and register UI callback.
     lora.begin();
-    lora.onPackage(user_interface.displayMessage);
+    lora.onMessage(user_interface.displayMessage);
 
     // Register SanLaProcessor into UI for callbacks.
     user_interface.registerProcessor(sanla::g_sanlaProcessor);
@@ -40,7 +40,7 @@ void loop() {
 
     // For testings purposes:
     if (millis() - lastSendTime > interval) {
-        String message = "Foo walks into a bar baz qux moo";
+        std::string message = "Foo walks into a bar baz qux moo, then another kazoo comes out of doo";
 
         // TODO for testing purposes, call UI's send method here on loop.
         user_interface.sendUserMessage(message);

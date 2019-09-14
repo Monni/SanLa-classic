@@ -51,7 +51,7 @@ namespace sanla {
              */
             static bool sendPacket(SanlaPacket);
 
-            void onPackage(void(*callback)(String));
+            void onMessage(void(*callback)(String));
 
         private:
 
@@ -61,7 +61,7 @@ namespace sanla {
              * 
              */
             void setRadioParameters();
-            static void onMessage(int packetSize);
+            static void onPacket(int packetSize);
             void packageReceived(String message);
             void (*_onReceive)(String);
         };

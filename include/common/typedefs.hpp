@@ -8,13 +8,16 @@
 
 namespace sanla
 {
-    using MessageId_t = uint32_t;
-    using PayloadSeq_t = uint8_t;
-    using PayloadLength_t = uint16_t;
     using SenderId_t = uint16_t;
-    using RecipientId_t = char[messaging::RECIPIENT_ID_MAX_SIZE];
-    using PayloadChecksum_t = uint32_t;
-    using Flag_t = u_char;
+    using RecipientId_t = uint16_t;
+
+    using Flags_t = u_char;
+    using PayloadLength_t = uint8_t;
+    using PayloadChecksum_t = uint16_t;
+
+    using MessageId_t = uint16_t;
+    using PayloadSeq_t = uint16_t;
+    
     
     namespace messaging {
 

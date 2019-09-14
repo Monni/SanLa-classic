@@ -18,7 +18,7 @@ void LoRaModule::begin() {
     setRadioParameters();
 
     ptrToLoraModule = this;
-    LoRa.onReceive(onMessage);
+    LoRa.onReceive(onPacket);
     LoRa.receive();
     Serial.println("LoRa module started.");
 }
@@ -30,14 +30,6 @@ void LoRaModule::setRadioParameters() {
     LoRa.setCodingRate4(CODING_RATE);
     LoRa.setPreambleLength(PREAMBL_LEN);
     LoRa.setSyncWord(SYNC_WORD);
-}
-
-
-sanla::messaging::sanlamessage::Payload_t* buildUserInputBody(String _payload) {
-    sanla::messaging::sanlamessage::Payload_t* body;
-    strcpy(*body, _payload.c_str());
-
-    return body;
 }
 
 bool LoRaModule::sendPacket(SanlaPacket packet) {
@@ -62,7 +54,7 @@ bool LoRaModule::sendPacket(SanlaPacket packet) {
     return false;
 }
 
-void LoRaModule::onPackage(void(*callback)(String)) {
+void LoRaModule::onMessage(void(*callback)(String)) {
     _onReceive = callback;
 }
 
@@ -73,8 +65,8 @@ void LoRaModule::packageReceived(String message) {
     }
 }
 
-void LoRaModule::onMessage(int packetSize) {
-    Serial.println("onMessage");
+void LoRaModule::onPacket(int packetSize) {
+    Serial.println("LoRaModule::onPacket");
     if (packetSize == 0) return;
 
     byte byteArray[packetSize];

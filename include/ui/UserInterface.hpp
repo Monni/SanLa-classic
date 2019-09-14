@@ -22,7 +22,7 @@ namespace sanla {
              * 
              * @param message User typed input message.
              */
-            void sendUserMessage(String message);
+            void sendUserMessage(std::string message);
 
             /**
              * @brief Display incoming message on screen.
@@ -41,14 +41,6 @@ namespace sanla {
              * @return sanla::MessageHeader Complete message header.
              */
             MessageHeader buildUserInputHeader(RecipientId_t);
-
-            /**
-             * @brief Build a message body based on user input.
-             * 
-             * @param _payload User input text.
-             * @return sanla::MessageBody Complete message body.
-             */
-            Payload_t * buildUserInputBody(String);
 
             SanlaProcessor* sanla_processor_ptr = NULL;
         };
