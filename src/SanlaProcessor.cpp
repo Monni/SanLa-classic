@@ -8,11 +8,13 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     {
     
     case messaging::ActionsE::RECEIVE: {
+        Serial.println("messaging::ActionsE::RECEIVE");
         m_dbuffer.ReceivePacket(packet);
         return true;
     }
 
     case messaging::ActionsE::RESPOND: {
+        Serial.println("messaging::ActionsE::RESPOND");
         HandleResponse(packet);
         //This packet has no further use
         (void)packet;
@@ -20,6 +22,7 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     }
     
     case messaging::DROP: {
+        Serial.println("messaging::ActionsE::DROP");
         // delete the packet
         (void)packet;
         return true;
@@ -36,8 +39,8 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
 
     // Construct broadcast packets from message and push to uplinkbuffer.
     std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(message));
-    for(std::size_t i = 0; i < packet_vector.size(); i++) {
-        m_ubuffer.addPacket(packet_vector[i]);
+    for (auto& packet : packet_vector) {
+        m_ubuffer.addPacket(packet);
     }
 
     // TODO For debugging purposes, print payload for each packet:
