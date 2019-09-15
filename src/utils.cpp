@@ -101,10 +101,10 @@ namespace sanla {
 
             memcpy(buffer+5, &header.payload_length, sizeof(header.payload_length)); // 1
 
-            PayloadChecksum_t payload_chks = htonl(header.payload_chks); // 2
+            PayloadChecksum_t payload_chks = htons(header.payload_chks); // 2
             memcpy(buffer+6, &payload_chks, sizeof(header.payload_seq));
 
-            MessageId_t message_id = htonl(header.message_id); // 2
+            MessageId_t message_id = htons(header.message_id); // 2
             memcpy(buffer+8, &message_id, sizeof(message_id));
 
             PayloadSeq_t payload_seq = htons(header.payload_seq); // 2
@@ -125,10 +125,10 @@ namespace sanla {
             memcpy(&tmp.payload_length, buffer+5, sizeof(tmp.payload_length)); // 1
 
             memcpy(&tmp.payload_chks, buffer+6, sizeof(tmp.payload_chks)); // 2
-            tmp.payload_chks = ntohl(tmp.payload_chks);
+            tmp.payload_chks = ntohs(tmp.payload_chks);
 
             memcpy(&tmp.message_id, buffer+8, sizeof(tmp.message_id)); // 2
-            tmp.message_id = ntohl(tmp.message_id);
+            tmp.message_id = ntohs(tmp.message_id);
 
             memcpy(&tmp.payload_seq, buffer+10, sizeof(tmp.payload_seq)); // 2
             tmp.payload_seq = ntohs(tmp.payload_seq);
