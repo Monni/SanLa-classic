@@ -16,12 +16,11 @@ namespace sanla {
             sanlamessage::Payload_t payload;
             strcpy(payload, dl_packet_payload.c_str());
 
-            return {
-                dl_packet.message_id,
+            return SanlaMessagePackage(dl_packet.message_id,
                 dummy_sender,
                 dl_packet.recipient_id,
                 payload
-            };
+            );
         };
 
         DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket packet) {
@@ -30,7 +29,7 @@ namespace sanla {
             dl_packet.message_id = packet.header.message_id;
             dl_packet.recipient_id = packet.header.recipient_id;                
             std::string body_string(packet.body);
-            dl_packet.payloadBuffer[packet.header.payload_seq] = body_string;
+            dl_packet.payloadBuffer.insert(std::pair<PayloadSeq_t, std::string>(packet.header.payload_seq, body_string));
 
             return dl_packet;
         };
@@ -86,7 +85,7 @@ namespace sanla {
 
         void htonSanlaPacket(SanlaPacket packet, sanlapacket::SerializedPacket_t buffer) {
             htonSanlaPacketHeader(packet.header, buffer+0);
-            memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
+            memcpy(buffer + sanlapacket::PACKET_HEADER_SIZE, packet.body, sanlapacket::PACKET_BODY_MAX_SIZE);
         };
 
         void htonSanlaPacketHeader(SanlaPacketHeader header, sanlapacket::SerializedPacketHeader_t buffer) {
@@ -99,9 +98,8 @@ namespace sanla {
             memcpy(buffer+2, &recipient_id, sizeof(header.recipient_id));
 
             memcpy(buffer+4, &header.flags, sizeof(header.flags)); // 1
-            
-            PayloadLength_t payload_length = htons(header.payload_length); // 1
-            memcpy(buffer+5, &payload_length, sizeof(header.payload_length));
+
+            memcpy(buffer+5, &header.payload_length, sizeof(header.payload_length)); // 1
 
             PayloadChecksum_t payload_chks = htonl(header.payload_chks); // 2
             memcpy(buffer+6, &payload_chks, sizeof(header.payload_seq));
@@ -125,7 +123,6 @@ namespace sanla {
             memcpy(&tmp.flags, buffer+4, sizeof(tmp.flags)); // 1
             
             memcpy(&tmp.payload_length, buffer+5, sizeof(tmp.payload_length)); // 1
-            tmp.payload_length = ntohs(tmp.payload_length);
 
             memcpy(&tmp.payload_chks, buffer+6, sizeof(tmp.payload_chks)); // 2
             tmp.payload_chks = ntohl(tmp.payload_chks);

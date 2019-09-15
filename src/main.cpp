@@ -1,14 +1,14 @@
 #include "LoRaModule.hpp"
 #include "common.hpp"
 #include "common/SanlaProcessor.hpp"
-#include "hw/LoraMsgIntepreter.hpp"
+#include "hw/LoraPacketIntepreter.hpp"
 #include "ui/UserInterface.hpp"
 
 long lastSendTime = 0;        // last send time
 int interval = 2000;          // interval between sends
 sanla::lora::LoRaModule lora;
 sanla::ui::UserInterface user_interface;
-sanla::hw_interfaces::LoraMessageIntepreter interpreter;
+sanla::hw_interfaces::LoraPacketIntepreter interpreter;
 
 namespace sanla {
     auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
@@ -26,10 +26,12 @@ void setup() {
 
     // Initialize customized LoRa module and register UI callback.
     lora.begin();
-    lora.onMessage(user_interface.displayMessage);
 
-    // Register SanLaProcessor into UI for callbacks.
+    //lora.onMessage(user_interface.displayMessage);
+
+    // Register SanLaProcessor into components for callbacks.
     user_interface.registerProcessor(sanla::g_sanlaProcessor);
+    lora.registerProcessor(sanla::g_sanlaProcessor);
 
     Serial.println("SanLa Classic ready.");
 }
@@ -43,11 +45,11 @@ void loop() {
         std::string message = "Foo walks into a bar baz qux moo, then another kazoo comes out of doo";
 
         // TODO for testing purposes, call UI's send method here on loop.
-        user_interface.sendUserMessage(message);
+        //user_interface.sendUserMessage(message);
 
         //lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
         lastSendTime = millis();
-        interval = random(4000) + 1000;
+        interval = random(6000) + 1000;
     }
 }
 

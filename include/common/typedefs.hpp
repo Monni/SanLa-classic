@@ -1,6 +1,7 @@
 #ifndef SANLACLASSIC_COMMON_TYPEDEFS_H_
 #define SANLACLASSIC_COMMON_TYPEDEFS_H_
 
+#include <map>
 #include <stdint.h>
 #include <cstddef>
 #include <string>
@@ -30,6 +31,10 @@ namespace sanla
         namespace sanlamessage {
             using Payload_t = char[MESSAGE_BODY_MAX_SIZE];
         };
+
+        namespace dl_sanlapacket {
+            using PayloadBuffer_t = std::map<PayloadSeq_t, std::string>;
+        }
         
     }; // messaging
 }; // sanla

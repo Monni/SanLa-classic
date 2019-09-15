@@ -6,17 +6,18 @@
 #include "common/typedefs.hpp"
 #include "common/SanlaPacket.hpp"
 #include "constants.hpp"
+#include "HardwareSerial.h"
 
 namespace sanla {
     namespace hw_interfaces {
         namespace mq {
+            using PayloadBuffer_t = messaging::dl_sanlapacket::PayloadBuffer_t;
 
             struct DownlinkPacket {
                 MessageId_t message_id;
                 RecipientId_t recipient_id;
-                std::map<PayloadSeq_t, std::string> payloadBuffer;
+                PayloadBuffer_t payloadBuffer;
             };
-
         };
     };
 };

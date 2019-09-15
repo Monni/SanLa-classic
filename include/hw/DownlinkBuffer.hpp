@@ -18,7 +18,7 @@ namespace sanla {
                 ~DownlinkBuffer(){};
                 void ReceivePacket(SanlaPacket&);
 
-                virtual uint32_t GetBufferLength() override;
+                virtual size_t GetBufferLength() override;
 
                 private:
                 DownlinkPacketMap downlinkPacketBuffer;
@@ -38,7 +38,7 @@ namespace sanla {
                  * @return true if message is ready.
                  * @return false if message is not ready.
                  */
-                bool validateMessageReady(DownlinkPacket&);
+                bool validateMessageReady(PayloadBuffer_t&);
                 
                 bool StorePacket(SanlaPacket&);
 
