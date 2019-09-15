@@ -3,7 +3,6 @@
 
 #include <SPI.h>
 #include <LoRa.h>
-#include <Arduino.h>
 #include <string>
 #include <sstream>
 #include "common/SanlaMessage.hpp"
@@ -90,6 +89,5 @@ namespace sanla {
 
     };
 };
-
 
 #endif //SANLA_CLASSIC_LORAMODULE_H

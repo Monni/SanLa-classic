@@ -5,7 +5,13 @@ namespace sanla {
 
         MessageHeader UserInterface::buildUserInputHeader(RecipientId_t _recipient_id) {
             MessageHeader header;
-            header.message_id = 1; // TODO generate. UUID?
+
+            // Generate random message id.
+            std::mt19937 rng;
+            rng.seed(time(0));
+            std::uniform_int_distribution<MessageId_t> uint16_dist65535(0, 65535);
+            header.message_id = uint16_dist65535(rng);
+
             header.sender_id = 65535; // TODO generate. MAC?
             header.recipient_id = _recipient_id;
 
@@ -26,9 +32,9 @@ namespace sanla {
             sanla_processor_ptr->HandleMessage(message);
         };
 
-        void UserInterface::displayMessage(String message) {
+        void UserInterface::displayMessage(std::string message) {
             Serial.println("*** Incoming message into UI ***");
-            Serial.println(message);
+            Serial.println(message.c_str());
         };
 
         void UserInterface::registerProcessor(SanlaProcessor* processor){

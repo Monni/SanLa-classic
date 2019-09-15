@@ -18,52 +18,42 @@ namespace sanla {
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 Serial.println("DownlinkBuffer::StorePacket");
 
+                Serial.print("Message id: ");
+                Serial.println(packet.header.message_id);
+
                 // Validate incoming packet.
                 // TODO if packet is not valid, REQ a new one!
                 validatePacket(packet);
                 
                 std::map<MessageId_t, DownlinkPacket*>::iterator it;
                 it = downlinkPacketBuffer.find(packet.header.message_id);
-                
-                Serial.println("DownlinkBuffer::StorePacket -- trying to find existing dl_packet");
+
                 if (it != downlinkPacketBuffer.end()) {
-                    Serial.println("DownlinkBuffer::StorePacket -- dl_packet found.");
+                    Serial.println("DownlinkBuffer::StorePacket -- existing dl_packet found.");
 
                     DownlinkPacket *dl_packet = it->second;
 
                     // Push payload to Map.
                     std::string body_string(packet.body);
-
-                    Serial.print("payloadBuffer size pre: ");
-                    Serial.println(dl_packet->payloadBuffer.size());
-
-                    /* TODO
-                    Jos message on valmistunut ja poistettu bufferista,
-                    sen jalkeen uusi dl_packet tulee tanne natisti, mutta siihen lisatessa payloadia crash.
-                    */
                     dl_packet->payloadBuffer.insert(std::pair<PayloadSeq_t, std::string>(packet.header.payload_seq, body_string));
-
-                    // TODO why this crashes?
-                    Serial.print("payloadBuffer size post: ");
-                    Serial.println(dl_packet->payloadBuffer.size());
-                    Serial.println("Dong finished");
                     
                     // Validate if DownlinkPacket is ready to be turned into SanlaMessage.
                     // TODO this needs to handled on both cases.
                     if (validateMessageReady(dl_packet->payloadBuffer)) {
-                        Serial.println("DownlinkBuffer::StorePacket -- dl_packet ready to MessageStore");
+                        Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket ready to MessageStore");
                         
                         //Send to store and remove element from Map.
                         SanlaPackage message = messaging::downlinkpacketToSanlamessage(*dl_packet);
                         SendMessageToStore(message);
                         
-                        downlinkPacketBuffer.erase(packet.header.message_id);
+                        // TODO below will cause a crash when next time inserting stuff into payloadBuffer.
+                        //downlinkPacketBuffer.erase(packet.header.message_id);
                         dl_packet = nullptr;
                     }
                     
                 
                 } else {
-                    Serial.println("DownlinkBuffer::StorePacket -- dl_packet not found. Creating.");
+                    Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket does not exist. Creating..");
 
                     if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
                         Serial.println("DownlinkBuffer::StorePacket -- DownlinkBuffer is full!");
@@ -100,11 +90,11 @@ namespace sanla {
                 */
 
                 if (packet.header.payload_length == strlen(packet.body)) {
-                    Serial.println("DownlinkBuffer::validatePacket - true");
+                    Serial.println("DownlinkBuffer::validatePacket - true.");
                     return true;
                 }
 
-                Serial.println("DownlinkBuffer::validatePacket - false");
+                Serial.println("DownlinkBuffer::validatePacket - false.");
                 return false;
             }
 

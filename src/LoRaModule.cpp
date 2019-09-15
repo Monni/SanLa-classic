@@ -59,6 +59,7 @@ void LoRaModule::onMessage(void(*callback)(SanlaPacket)) {
 }
 
 void LoRaModule::onPacket(int packetSize) {
+    Serial.println("");
     Serial.println("LoRaModule::onPacket");
 
     // Read incoming packet into a single byte array.
