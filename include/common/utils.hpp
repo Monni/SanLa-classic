@@ -22,7 +22,7 @@ namespace sanla {
          * 
          * @return DownlinkPacket 
          */
-        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket);
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket&);
 
         /**
          * @brief Constructs a SanlaPacket vector from SanlaMessage for broadcast purposes.

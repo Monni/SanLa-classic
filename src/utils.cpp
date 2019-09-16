@@ -23,7 +23,7 @@ namespace sanla {
             );
         };
 
-        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket packet) {
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket &packet) {
             DownlinkPacket dl_packet;
             
             dl_packet.message_id = packet.header.message_id;

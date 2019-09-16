@@ -33,6 +33,10 @@ namespace sanla {
 
                     DownlinkPacket *dl_packet = it->second;
 
+                    if(dl_packet == nullptr){
+                        Serial.println("Null packet encountered! FIXME");
+                        return false;
+                    }
                     // Push payload to Map.
                     std::string body_string(packet.body);
                     dl_packet->payloadBuffer.insert(std::pair<PayloadSeq_t, std::string>(packet.header.payload_seq, body_string));
@@ -62,7 +66,7 @@ namespace sanla {
                     }
 
                     DownlinkPacket dl_packet = messaging::sanlapacketToDownlinkpacket(packet);
-                    downlinkPacketBuffer.insert(std::pair<MessageId_t, DownlinkPacket*>(packet.header.message_id, &dl_packet));
+                    downlinkPacketBuffer.insert(std::pair<MessageId_t, DownlinkPacket*>(packet.header.message_id, new DownlinkPacket(dl_packet)));
                 }
 
                 // Packet is either stored to downlinkPacketBuffer either way at this point.
