@@ -23,7 +23,7 @@ namespace sanla {
                  * @return true If packet was added
                  * @return false If packet wasn't added. This is caused by buffer already being full.
                  */
-                bool addPacket(SanlaPacket);
+                bool addPacket(SanlaPacket&);
 
                 virtual uint32_t GetBufferLength() override;
                 

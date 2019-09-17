@@ -14,7 +14,7 @@ uint32_t MessageStore::GetBufferLength(){
 
 void MessageStore::Append(SanlaPackage &pkg)
 {
-    m_store.insert({pkg.GetPackageHeader().message_id, &pkg});
+    m_store.insert({pkg.GetPackageHeader().message_id, new SanlaPackage(pkg)});
 }
 
 SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadStartPos) {

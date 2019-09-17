@@ -5,7 +5,11 @@
 #include "ui/UserInterface.hpp"
 
 long lastSendTime = 0;        // last send time
-int interval = 2000;          // interval between sends
+int interval = 50000;          // interval between sends
+
+long uplinkbuffer_lastSendTime = 0;
+int uplinkbuffer_interval = 20000;
+
 sanla::lora::LoRaModule lora;
 sanla::ui::UserInterface user_interface;
 sanla::hw_interfaces::LoraPacketIntepreter interpreter;
@@ -47,9 +51,13 @@ void loop() {
         // TODO for testing purposes, call UI's send method here on loop.
         //user_interface.sendUserMessage(message);
 
-        //lora.sendMessage(message); // TODO this should probably not be in lora but the module handling buffers.
         lastSendTime = millis();
-        interval = random(6000) + 1000;
+    } else if (millis() - uplinkbuffer_lastSendTime > uplinkbuffer_interval) {
+        
+        // Try to clear uplinkbuffer at periods.
+        sanla::g_sanlaProcessor->SendUplinkBuffer();
+
+        uplinkbuffer_lastSendTime = millis();
     }
 }
 

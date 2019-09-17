@@ -5,6 +5,7 @@
 #include <LoRa.h>
 #include <string>
 #include <sstream>
+#include "unistd.h"
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
 #include "common/SanlaProcessor.hpp"
@@ -49,7 +50,7 @@ namespace sanla {
              * @return true if packet was successfully sent.
              * @return false if sending is on cooldown or an error happened.
              */
-            static bool sendPacket(SanlaPacket);
+            static bool sendPacket(SanlaPacket&);
 
             void onMessage(void(*callback)(SanlaPacket));
 

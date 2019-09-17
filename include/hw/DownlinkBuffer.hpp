@@ -38,7 +38,7 @@ namespace sanla {
                  * @return true if message is ready.
                  * @return false if message is not ready.
                  */
-                bool validateMessageReady(PayloadBuffer_t&);
+                bool validateMessageReady(DownlinkPacket&);
                 
                 bool StorePacket(SanlaPacket&);
 

@@ -9,10 +9,10 @@ LoRaModule* ptrToLoraModule = NULL;
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
 void LoRaModule::begin() {
-    Serial.println("Starting LoRa module.");
+    Serial.println("LoRaModule::begin");
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
-        Serial.println("Failed to start LoRa module!");
+        Serial.println("LoRaModule::begin -- Failed to start!");
         while (1);
     }
     setRadioParameters();
@@ -20,7 +20,6 @@ void LoRaModule::begin() {
     ptrToLoraModule = this;
     LoRa.onReceive(onReceive);
     LoRa.receive();
-    Serial.println("LoRa module started.");
 }
 
 void LoRaModule::setRadioParameters() {
@@ -32,15 +31,23 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-bool LoRaModule::sendPacket(SanlaPacket packet) {
+bool LoRaModule::sendPacket(SanlaPacket &packet) {
+    Serial.println("LoRaModule::sendPacket");
     
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     sanla::messaging::htonSanlaPacket(packet, buffer);
-    
-    // Send.
-    if (LoRa.beginPacket()) {
-        LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
-        LoRa.endPacket();
+
+    if (LoRa.beginPacket() == 1) {
+        Serial.print("Sending packet: ");
+        for (auto const& packet_byte : buffer) {
+            Serial.print(packet_byte);
+            LoRa.write(packet_byte);
+        }
+        Serial.println("");
+
+        // Wait for 1ms.
+        usleep(1000);
+        LoRa.endPacket(true);
 
         // Revert back to listening mode.
         LoRa.receive();
@@ -59,7 +66,6 @@ void LoRaModule::onMessage(void(*callback)(SanlaPacket)) {
 }
 
 void LoRaModule::onPacket(int packetSize) {
-    Serial.println("");
     Serial.println("LoRaModule::onPacket");
 
     // Read incoming packet into a single byte array.
@@ -72,8 +78,13 @@ void LoRaModule::onPacket(int packetSize) {
     // TODO this probably needs some error handling.
     SanlaPacket packet = messaging::ntohSanlaPacket(serializedPacket);
 
-    Serial.print("Packet arrived. Payload: ");
+    Serial.println("");
+    Serial.println("Packet arrived.");
+    Serial.print("Message ID: ");
+    Serial.println(packet.header.message_id);
+    Serial.print("Body: ");
     Serial.println(packet.body);
+    Serial.println("");
 
     Serial.println("Sending packet to processor..");
     sanla_processor_ptr->ProcessPacket(packet);

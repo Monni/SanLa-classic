@@ -33,7 +33,7 @@ namespace sanla
         };
 
         namespace dl_sanlapacket {
-            using PayloadBuffer_t = std::map<PayloadSeq_t, std::string>;
+            using PayloadBuffer_t = std::map<std::pair<PayloadSeq_t, Flags_t>, std::string>;
         }
         
     }; // messaging

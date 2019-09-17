@@ -2,6 +2,7 @@
 #include "Singleton.hpp"
 #include "common/SanlaPacket.hpp"
 #include "common/SanlaMessage.hpp"
+#include "common/utils.hpp"
 #include "hw/DownlinkBuffer.hpp"
 #include "hw/UplinkBuffer.hpp"
 #include "hw/MessageStore.hpp"
@@ -47,6 +48,12 @@ bool HandleMessage(SanlaMessagePackage&);
  * @return false 
  */
 bool HandleResponse(SanlaPacket&);
+
+/**
+ * @brief Try to send packets from UplinkBuffer.
+ * 
+ */
+void SendUplinkBuffer();
 
 bool ProcessPacket(SanlaPacket&);
 
