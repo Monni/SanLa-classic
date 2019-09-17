@@ -6,25 +6,26 @@ namespace hw_interfaces {
 namespace mq {
 
 void UplinkBuffer::send(){
-    Serial.println("UplinkBuffer::send");
-    while (!packetBuffer.empty() && sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {
-        // Remove packet from buffer after it's been sent.
-        UplinkBuffer::eraseFirstPacket();
+    while (!packetBuffer.empty()) {
+        if (sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {
+            Serial.println("Sent");
+            UplinkBuffer::eraseFirstPacket();
+        } else {
+            Serial.println("Could not send");
+            return;
+        }
     };
 }
 
-bool UplinkBuffer::addPacket(SanlaPacket packet){
-    Serial.println("UplinkBuffer::addPacket");
-    // Try to make more space into buffer before pushing anything new
+bool UplinkBuffer::addPacket(SanlaPacket &packet){
+    // First try to make more space into buffer.
     UplinkBuffer::send();
 
     if (packetBuffer.size() < UPLINKBUFFER_MAX_SIZE) {
         packetBuffer.push_back(packet);
-        Serial.println("UplinkBuffer::addPacket::true");
         UplinkBuffer::send();
         return true;
     }
-    Serial.println("UplinkBuffer::addPacket::false");
     return false;
 }
 
@@ -33,7 +34,11 @@ uint32_t UplinkBuffer::GetBufferLength() {
 }
 
 void UplinkBuffer::eraseFirstPacket() {
+
+    // Does this erase packet correctly?
+    SanlaPacket& packet = *packetBuffer.begin();
     packetBuffer.erase(packetBuffer.begin());
+    (void)packet;
 }
 
 } // mq
