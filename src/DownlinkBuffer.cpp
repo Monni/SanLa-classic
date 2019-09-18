@@ -11,51 +11,72 @@ namespace sanla {
                 StorePacket(packet);
             }
 
-            uint32_t DownlinkBuffer::GetBufferLength() {
+            size_t DownlinkBuffer::GetBufferLength() {
                 return downlinkPacketBuffer.size();
             }
 
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 Serial.println("DownlinkBuffer::StorePacket");
-                if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
-                    // TODO add debug line here in case dl_buffer is full.
-                    (void)packet;
-                    return false;
-                }
 
                 // Validate incoming packet.
+                // TODO if packet is not valid, REQ a new one!
                 validatePacket(packet);
+                
+                std::map<MessageId_t, DownlinkPacket*>::iterator it;
+                it = downlinkPacketBuffer.find(packet.header.message_id);
 
-                // Try to find existing record of DownlinkPacket and push payload if found.
-                try {
-                    auto *dl_packet = downlinkPacketBuffer.at(packet.header.message_id);
-                    std::string body_string(packet.body);
+                if (it != downlinkPacketBuffer.end()) {
+                    Serial.println("DownlinkBuffer::StorePacket -- Existing DownlinkPacket found.");
+
+                    DownlinkPacket *dl_packet = it->second;
+
+                    if(dl_packet == nullptr){
+                        Serial.println("Null packet encountered! FIXME");
+                        return false;
+                    }
 
                     // Push payload to Map.
-                    dl_packet->payloadBuffer[packet.header.payload_seq] = body_string;
+                    std::string body_string(packet.body);
+                    dl_packet->payloadBuffer.insert(
+                        std::make_pair(std::make_pair(packet.header.payload_seq, packet.header.flags), body_string)
+                    );
 
-                    // Validate if DownlinkPacket is ready to be turned into SanlaMessage.
-                    if (validateMessageReady(*downlinkPacketBuffer[packet.header.message_id])) {
-                        //Send it to store and remove downlinkPacketBuffer element
-                        
-                        SanlaPackage message = messaging::downlinkpacketToSanlamessage(*dl_packet);
+                    // Validate if DownlinkPacket is ready to be turned into SanlaMessage and send to MessageStore.
+                    // TODO this needs to handled on both cases.
+                    if (validateMessageReady(*dl_packet)) {
+                        Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket ready to MessageStore.");
+
+                        SanlaPackage message(messaging::downlinkpacketToSanlamessage(*dl_packet));
                         SendMessageToStore(message);
                         downlinkPacketBuffer.erase(packet.header.message_id);
-                        dl_packet = nullptr;
-                            
+                        delete dl_packet;
+                    }   
+
+                } else {
+                    Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket does not exist. Creating.");
+
+                    if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
+                        Serial.println("DownlinkBuffer::StorePacket -- DownlinkBuffer is full!");
+                        (void)packet;
+                        return false;
                     }
-                } catch(const std::out_of_range& e) {
-                    DownlinkPacket dl_packet;
-                    dl_packet = messaging::sanlapacketToDownlinkpacket(packet);
-                    downlinkPacketBuffer[packet.header.message_id] = &dl_packet;
+                    downlinkPacketBuffer.insert(
+                        std::pair<MessageId_t, DownlinkPacket*>(
+                            packet.header.message_id,
+                            new DownlinkPacket(messaging::sanlapacketToDownlinkpacket(packet)
+                            )
+                        )
+                    );
                 }
-                // packet is either stored to downlinkPacketBuffer either way at this point
-                // we can drop the packet here
+
+                // Packet is either stored to downlinkPacketBuffer either way at this point.
+                // We can drop the packet here.
                 (void)packet;
                 return true;
             }
 
             void DownlinkBuffer::SendMessageToStore(SanlaPackage &message){
+                Serial.println("DownlinkBuffer::SendMessageToStore");
                 if (m_sanla_processor_ptr != nullptr) {
                     auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
                     processor->HandleMessage(message);
@@ -72,25 +93,28 @@ namespace sanla {
                 */
 
                 if (packet.header.payload_length == strlen(packet.body)) {
+                    Serial.println("DownlinkBuffer::validatePacket - true.");
                     return true;
                 }
-                return true;
+
+                Serial.println("DownlinkBuffer::validatePacket - false.");
+                return false;
             }
 
-            bool DownlinkBuffer::validateMessageReady(DownlinkPacket &downlinkPacket) {
-                /*
-                TODO
-                1. END-flag loydyttava. Miten se tallennetaan bufferiin? CRUCIAL!!!
-                2. Kay payloadBuffer lapi ja katso ettei sequencessa ole virheita.
-                */
-                
-                std::string downlinkPayload;
-                for (auto const& packet : downlinkPacket.payloadBuffer) {
-                    downlinkPayload += packet.second;
-                }
-                
-                return true;
+            bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
+            /*
+            TODO
+            - Kay payloadBuffer lapi ja katso ettei sequencessa ole virheita.
+            - END flag loydyttava.
+            */
+            std::string downlinkPayload;
+            for (auto const& payload_buffer : dl_packet.payloadBuffer) {
+                // TODO
             }
+            
+            return true;
+            }
+
         }
     }
 }

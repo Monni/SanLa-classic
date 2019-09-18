@@ -3,34 +3,37 @@
 namespace sanla {
     namespace messaging {
         
-        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket dl_packet) {
+        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
 
             // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
             uint16_t dummy_sender;
             dummy_sender = 65535;
 
+            // TODO payload buffer must be ordered before concatenation!
             std::string dl_packet_payload;
             for (auto const& payload_buffer : dl_packet.payloadBuffer) {
-                dl_packet_payload += payload_buffer.second;
+                dl_packet_payload += payload_buffer.second.c_str();
             }
             sanlamessage::Payload_t payload;
             strcpy(payload, dl_packet_payload.c_str());
 
-            return {
-                dl_packet.message_id,
+            return SanlaMessagePackage(dl_packet.message_id,
                 dummy_sender,
                 dl_packet.recipient_id,
                 payload
-            };
+            );
         };
 
-        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket packet) {
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket &packet) {
             DownlinkPacket dl_packet;
             
             dl_packet.message_id = packet.header.message_id;
             dl_packet.recipient_id = packet.header.recipient_id;                
             std::string body_string(packet.body);
-            dl_packet.payloadBuffer[packet.header.payload_seq] = body_string;
+
+            dl_packet.payloadBuffer.insert(
+                std::make_pair(std::make_pair(packet.header.payload_seq, packet.header.flags), body_string)
+            );
 
             return dl_packet;
         };
@@ -47,12 +50,11 @@ namespace sanla {
             std::vector<SanlaPacket> packet_vector;
             std::string message_body(message.GetPackageBody());
 
-            for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE) {
+            for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
                 SanlaPacket packet{};
-                
-                std::string payload_string(message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE));
-                char payload_arr[payload_string.size() + 1];
-                strcpy(payload_arr, payload_string.c_str());
+                char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
+
+                strcpy(payload_arr, message_body.substr(i, i+sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
                 
                 packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
                 packet.header.payload_seq = i;
@@ -74,8 +76,8 @@ namespace sanla {
 
             std::string message_body(message.GetPackageBody());
 
-            std::string payload_string(message_body.substr(sequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE));
-            char payload_arr[payload_string.size() + 1];
+            std::string payload_string(message_body.substr(sequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1));
+            char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
             strcpy(payload_arr, payload_string.c_str());
 
             packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
@@ -84,9 +86,9 @@ namespace sanla {
             return packet;
         }
 
-        void htonSanlaPacket(SanlaPacket packet, sanlapacket::SerializedPacket_t buffer) {
+        void htonSanlaPacket(SanlaPacket &packet, sanlapacket::SerializedPacket_t buffer) {
             htonSanlaPacketHeader(packet.header, buffer+0);
-            memcpy(packet.body, buffer+21, sanlapacket::PACKET_BODY_MAX_SIZE);
+            strcpy(buffer+sanlapacket::PACKET_HEADER_SIZE, packet.body);
         };
 
         void htonSanlaPacketHeader(SanlaPacketHeader header, sanlapacket::SerializedPacketHeader_t buffer) {
@@ -99,14 +101,13 @@ namespace sanla {
             memcpy(buffer+2, &recipient_id, sizeof(header.recipient_id));
 
             memcpy(buffer+4, &header.flags, sizeof(header.flags)); // 1
-            
-            PayloadLength_t payload_length = htons(header.payload_length); // 1
-            memcpy(buffer+5, &payload_length, sizeof(header.payload_length));
 
-            PayloadChecksum_t payload_chks = htonl(header.payload_chks); // 2
+            memcpy(buffer+5, &header.payload_length, sizeof(header.payload_length)); // 1
+
+            PayloadChecksum_t payload_chks = htons(header.payload_chks); // 2
             memcpy(buffer+6, &payload_chks, sizeof(header.payload_seq));
 
-            MessageId_t message_id = htonl(header.message_id); // 2
+            MessageId_t message_id = htons(header.message_id); // 2
             memcpy(buffer+8, &message_id, sizeof(message_id));
 
             PayloadSeq_t payload_seq = htons(header.payload_seq); // 2
@@ -125,13 +126,12 @@ namespace sanla {
             memcpy(&tmp.flags, buffer+4, sizeof(tmp.flags)); // 1
             
             memcpy(&tmp.payload_length, buffer+5, sizeof(tmp.payload_length)); // 1
-            tmp.payload_length = ntohs(tmp.payload_length);
 
             memcpy(&tmp.payload_chks, buffer+6, sizeof(tmp.payload_chks)); // 2
-            tmp.payload_chks = ntohl(tmp.payload_chks);
+            tmp.payload_chks = ntohs(tmp.payload_chks);
 
             memcpy(&tmp.message_id, buffer+8, sizeof(tmp.message_id)); // 2
-            tmp.message_id = ntohl(tmp.message_id);
+            tmp.message_id = ntohs(tmp.message_id);
 
             memcpy(&tmp.payload_seq, buffer+10, sizeof(tmp.payload_seq)); // 2
             tmp.payload_seq = ntohs(tmp.payload_seq);
@@ -151,7 +151,7 @@ namespace sanla {
             sanlapacket.header = sanla::messaging::ntohSanlaPacketHeader(headerArr);
 
             // Rest of the serialized data belongs to a packet body.
-            memcpy(sanlapacket.body, buffer+sanlapacket::PACKET_HEADER_SIZE, sizeof(sanlapacket::Payload_t));
+            strcpy(sanlapacket.body, buffer+sanlapacket::PACKET_HEADER_SIZE);
 
             return sanlapacket;
         }

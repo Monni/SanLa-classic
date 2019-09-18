@@ -1,5 +1,4 @@
 #include "common/SanlaProcessor.hpp"
-#include "common/utils.hpp"
 
 namespace sanla {
 
@@ -43,15 +42,8 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
         m_ubuffer.addPacket(packet);
     }
 
-    // TODO For debugging purposes, print payload for each packet:
-    for (auto const& packet : packet_vector) {
-        Serial.print("Packet payload: ");
-
-        for (int i = 0; i < strlen(packet.body); i++) {
-            Serial.print(packet.body[i]);
-        }
-        Serial.println("");
-    }
+    // Message has no use anymore.
+    (void)message;
 
     return true;
 }
@@ -64,7 +56,12 @@ bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
 */
     auto message = m_mstore.GetMessage(input_packet.header.message_id);
 
-    return m_ubuffer.addPacket(messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq));
+    SanlaPacket packet = messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq);
+    return m_ubuffer.addPacket(packet);
+}
+
+void SanlaProcessor::SendUplinkBuffer() {
+    m_ubuffer.send();
 }
 
 }

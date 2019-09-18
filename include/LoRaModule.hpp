@@ -3,11 +3,12 @@
 
 #include <SPI.h>
 #include <LoRa.h>
-#include <Arduino.h>
 #include <string>
 #include <sstream>
+#include "unistd.h"
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
+#include "common/SanlaProcessor.hpp"
 #include "common/utils.hpp"
 
 // LoRa HW definitions
@@ -49,11 +50,14 @@ namespace sanla {
              * @return true if packet was successfully sent.
              * @return false if sending is on cooldown or an error happened.
              */
-            static bool sendPacket(SanlaPacket);
+            static bool sendPacket(SanlaPacket&);
 
-            void onMessage(void(*callback)(String));
+            void onMessage(void(*callback)(SanlaPacket));
+
+            void registerProcessor(SanlaProcessor* processor);
 
         private:
+            SanlaProcessor* sanla_processor_ptr = NULL;
 
             /**
              * @brief Setup LoRa-radio with custom parameters.
@@ -61,13 +65,30 @@ namespace sanla {
              * 
              */
             void setRadioParameters();
-            static void onPacket(int packetSize);
-            void packageReceived(String message);
-            void (*_onReceive)(String);
+
+            /**
+             * @brief Handles incoming packet from LoRa network.
+             * Used to get the incoming packet out of LoRa and to push it to 
+             * non-static LoRaModule.
+             * 
+             * @param packetSize 
+             */
+            static void onReceive(int packetSize);
+
+            /**
+             * @brief Handles incoming packet from onReceive.
+             * Validates the packet belongs to SanLa and constructs a SanlaPacket
+             * before pushing it into SanlaProcessor.
+             * 
+             * @param packetSize 
+             */
+            void onPacket(int packetSize);
+
+            void (*_onReceive)(SanlaPacket);
+            
         };
 
     };
 };
-
 
 #endif //SANLA_CLASSIC_LORAMODULE_H

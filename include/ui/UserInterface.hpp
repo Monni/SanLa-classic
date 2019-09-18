@@ -1,7 +1,8 @@
 #ifndef SANLACLASSIC_UI_USERINTERFACE_H_
 #define SANLACLASSIC_UI_USERINTERFACE_H_
 
-#include <Arduino.h>
+#include <random>
+#include <time.h>
 #include "common/typedefs.hpp"
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaProcessor.hpp"
@@ -29,7 +30,7 @@ namespace sanla {
              * 
              * @param message Incoming message.
              */
-            static void displayMessage(String message);
+            static void displayMessage(std::string message);
 
             void registerProcessor(SanlaProcessor* processor);
 

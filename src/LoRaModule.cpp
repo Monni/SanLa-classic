@@ -9,18 +9,17 @@ LoRaModule* ptrToLoraModule = NULL;
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
 void LoRaModule::begin() {
-    Serial.println("Starting LoRa module.");
+    Serial.println("LoRaModule::begin");
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
-        Serial.println("Failed to start LoRa module!");
+        Serial.println("LoRaModule::begin -- Failed to start!");
         while (1);
     }
     setRadioParameters();
 
     ptrToLoraModule = this;
-    LoRa.onReceive(onPacket);
+    LoRa.onReceive(onReceive);
     LoRa.receive();
-    Serial.println("LoRa module started.");
 }
 
 void LoRaModule::setRadioParameters() {
@@ -32,15 +31,23 @@ void LoRaModule::setRadioParameters() {
     LoRa.setSyncWord(SYNC_WORD);
 }
 
-bool LoRaModule::sendPacket(SanlaPacket packet) {
+bool LoRaModule::sendPacket(SanlaPacket &packet) {
+    Serial.println("LoRaModule::sendPacket");
     
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     sanla::messaging::htonSanlaPacket(packet, buffer);
-    
-    // Send.
-    if (LoRa.beginPacket()) {
-        LoRa.write((uint8_t*)buffer, sanla::messaging::sanlapacket::PACKET_MAX_SIZE);
-        LoRa.endPacket();
+
+    if (LoRa.beginPacket() == 1) {
+        Serial.print("Sending packet: ");
+        for (auto const& packet_byte : buffer) {
+            Serial.print(packet_byte);
+            LoRa.write(packet_byte);
+        }
+        Serial.println("");
+
+        // Wait for 1ms.
+        usleep(1000);
+        LoRa.endPacket(true);
 
         // Revert back to listening mode.
         LoRa.receive();
@@ -54,39 +61,47 @@ bool LoRaModule::sendPacket(SanlaPacket packet) {
     return false;
 }
 
-void LoRaModule::onMessage(void(*callback)(String)) {
+void LoRaModule::onMessage(void(*callback)(SanlaPacket)) {
     _onReceive = callback;
-}
-
-void LoRaModule::packageReceived(String message) {
-    // TODO Move to handler or interpreter and finish this method.
-    if (_onReceive) {
-        _onReceive(message);
-    }
 }
 
 void LoRaModule::onPacket(int packetSize) {
     Serial.println("LoRaModule::onPacket");
+
+    // Read incoming packet into a single byte array.
+    char serializedPacket[packetSize];
+    for (int i = 0; i < packetSize; i++) {
+        serializedPacket[i] = (char)LoRa.read();
+    }
+
+    // Try to deserialize the byte array into a SanlaPacket.
+    // TODO this probably needs some error handling.
+    SanlaPacket packet = messaging::ntohSanlaPacket(serializedPacket);
+
+    Serial.println("");
+    Serial.println("Packet arrived.");
+    Serial.print("Message ID: ");
+    Serial.println(packet.header.message_id);
+    Serial.print("Body: ");
+    Serial.println(packet.body);
+    Serial.println("");
+
+    Serial.println("Sending packet to processor..");
+    sanla_processor_ptr->ProcessPacket(packet);
+    Serial.println("Processing done!");
+}
+
+void LoRaModule::onReceive(int packetSize) {
     if (packetSize == 0) return;
 
-    byte byteArray[packetSize];
-    for (int i = 0; i < packetSize; i++) {
-        byteArray[i] = (char)LoRa.read();
-    }
-
-    // Read packet payload
-    // TODO this needs to be forwarded into DownlinkBuffer.
-    String incoming = "";
-    while (LoRa.available()) {              // can't use readString() in callback, so
-        incoming += (char)LoRa.read();      // add bytes one by one
-    }
-    Serial.println("Incoming: " + incoming);
-
-    // Note: We should start writing unit tests for LoRaModule!
     if (ptrToLoraModule)
-        ptrToLoraModule->_onReceive(incoming);
+        ptrToLoraModule->onPacket(packetSize);
     else
         Serial.println("ptrToLoraModule is not set!");
+}
+
+void LoRaModule::registerProcessor(SanlaProcessor* processor){
+    sanla_processor_ptr = processor;
 }
 
 } // lora

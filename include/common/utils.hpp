@@ -15,14 +15,14 @@ namespace sanla {
          * 
          * @return SanlaMessagePackage 
          */
-        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket);
+        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket&);
 
         /**
          * @brief Construct a new DownlinkPacket from SanlaPacket.
          * 
          * @return DownlinkPacket 
          */
-        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket);
+        DownlinkPacket sanlapacketToDownlinkpacket(SanlaPacket&);
 
         /**
          * @brief Constructs a SanlaPacket vector from SanlaMessage for broadcast purposes.
@@ -42,7 +42,7 @@ namespace sanla {
          * @brief Constructs a host-to-network byte order char array of a SanlaPacket.
          * 
          */
-        void htonSanlaPacket(SanlaPacket, sanlapacket::SerializedPacket_t);
+        void htonSanlaPacket(SanlaPacket&, sanlapacket::SerializedPacket_t);
 
         /**
          * @brief Constructs a host-to-network byte order char array of a SanlaPacket header.

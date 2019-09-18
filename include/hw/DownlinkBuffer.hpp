@@ -18,7 +18,7 @@ namespace sanla {
                 ~DownlinkBuffer(){};
                 void ReceivePacket(SanlaPacket&);
 
-                virtual uint32_t GetBufferLength() override;
+                virtual size_t GetBufferLength() override;
 
                 private:
                 DownlinkPacketMap downlinkPacketBuffer;

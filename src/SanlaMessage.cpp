@@ -2,6 +2,7 @@
 #include <sstream>
 #include "common/SanlaMessage.hpp"
 #include "common/SanlaPacket.hpp"
+#include "HardwareSerial.h"
 
 namespace sanla {
     namespace messaging {
@@ -30,11 +31,11 @@ namespace sanla {
             return body;
         }
 
-        void SanlaPacket::copy_headers_from_message(MessageHeader header, PacketPayload_t body) {
-                MessageId_t message_id = header.message_id;
-                SenderId_t sender_id = header.sender_id;
-                RecipientId_t recipient_id = header.recipient_id;
-                PayloadLength_t payload_length = strlen(body); // Possible segfault due to non Null terminated string
+        void SanlaPacket::copy_headers_from_message(MessageHeader message_header, PacketPayload_t body) {
+            header.message_id = message_header.message_id;
+            header.sender_id = message_header.sender_id;
+            header.recipient_id = message_header.recipient_id;
+            header.payload_length = strlen(body); // Possible segfault due to non Null terminated string
         }
     } // messaging
 } // sanla
