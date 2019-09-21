@@ -39,13 +39,22 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
     // Construct broadcast packets from message and push to uplinkbuffer.
     std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(message));
     for (auto& packet : packet_vector) {
-        m_ubuffer.addPacket(packet);
+        HandlePacket(packet);
     }
 
     // Message has no use anymore.
     (void)message;
 
     return true;
+}
+
+bool SanlaProcessor::HandlePacket(SanlaPacket &packet) {
+    Serial.println("SanlaProcessor::HandlePacket");
+    return m_ubuffer.addPacket(packet);
+}
+
+bool SanlaProcessor::messageExistsInStore(MessageId_t messageId) {
+    return m_mstore.messageExists(messageId);
 }
 
 bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
@@ -56,8 +65,8 @@ bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
 */
     auto message = m_mstore.GetMessage(input_packet.header.message_id);
 
-    SanlaPacket packet = messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq);
-    return m_ubuffer.addPacket(packet);
+    SanlaPacket packet = messaging::buildPacketFromSequence(message, input_packet.header.payload_seq);
+    return HandlePacket(packet);
 }
 
 void SanlaProcessor::SendUplinkBuffer() {

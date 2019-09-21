@@ -36,7 +36,14 @@ namespace sanla {
          * 
          * @return SanlaPacket 
          */
-        SanlaPacket buildBroadcastPacketFromSequence(SanlaMessagePackage&, PayloadSeq_t);
+        SanlaPacket buildPacketFromSequence(SanlaMessagePackage&, PayloadSeq_t);
+
+        /**
+         * @brief Build a request packet.
+         * Used to request new packets replacing malformed or missing.
+         * 
+         */
+        SanlaPacket buildRequestPacket(MessageId_t, PayloadSeq_t);
 
         /**
          * @brief Constructs a host-to-network byte order char array of a SanlaPacket.

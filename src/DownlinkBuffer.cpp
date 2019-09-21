@@ -8,6 +8,14 @@ namespace sanla {
         namespace mq {
 
             void DownlinkBuffer::ReceivePacket(SanlaPacket &packet) {
+
+                if (!validatePacket(packet)) {
+                   requestMissingPacket(packet.header.message_id, packet.header.payload_seq);
+                   return;
+                }
+                if (messageExistsInStore(packet.header.message_id)) {
+                    return;
+                }
                 StorePacket(packet);
             }
 
@@ -18,19 +26,8 @@ namespace sanla {
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 Serial.println("DownlinkBuffer::StorePacket");
 
-                // Validate incoming packet.
-                /*
-                TODO 
-                - if packet is valid and does not exist, continue.
-                - if packet is valid but does exist, skip.
-                - if packet is not valid, REQ a new one.
-
-                */
-                validatePacket(packet);
-                
                 std::map<MessageId_t, DownlinkPacket*>::iterator it;
                 it = downlinkPacketBuffer.find(packet.header.message_id);
-
                 if (it != downlinkPacketBuffer.end()) {
                     Serial.println("DownlinkBuffer::StorePacket -- Existing DownlinkPacket found.");
 
@@ -92,6 +89,16 @@ namespace sanla {
                 }
             }
 
+            bool DownlinkBuffer::messageExistsInStore(MessageId_t messageId) {
+                if (m_sanla_processor_ptr != nullptr) {
+                    auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
+                    return processor->messageExistsInStore(messageId);
+                } else {
+                    // Throw some error here
+                }
+                return false;
+            }
+
             bool DownlinkBuffer::validatePacket(SanlaPacket &packet) {
                 /*
                 TODO
@@ -107,38 +114,51 @@ namespace sanla {
                 return false;
             }
 
-            bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
-            std::string downlinkPayload;
-            bool endFlagFound = false;
-            std::vector<PayloadSeq_t> missing_packets;
+                bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
+                std::string downlinkPayload;
+                bool endFlagFound = false;
+                std::vector<PayloadSeq_t> missing_packets;
 
-            for (auto const& payload_buffer : dl_packet.payloadBuffer) {
+                for (auto const& payload_buffer : dl_packet.payloadBuffer) {
 
-                if (payload_buffer.first.second == messaging::END) {
-                    endFlagFound = true;
+                    if (payload_buffer.first.second == messaging::END) {
+                        endFlagFound = true;
+                    }
+
+                    if (payload_buffer.first.first != downlinkPayload.length()) {
+                        missing_packets.push_back(payload_buffer.first.first);
+                        downlinkPayload += std::string(messaging::sanlapacket::PACKET_BODY_MAX_SIZE, '_');
+                        Serial.print("Missing packet! ");
+                        Serial.println(payload_buffer.first.first);
+                    } else {
+                        downlinkPayload += payload_buffer.second;
+                    }
                 }
 
-                if (payload_buffer.first.first != downlinkPayload.length()) {
-                    missing_packets.push_back(payload_buffer.first.first);
-                    downlinkPayload += std::string(messaging::sanlapacket::PACKET_BODY_MAX_SIZE, '_');
-                    Serial.print("Missing packet! ");
-                    Serial.println(payload_buffer.first.first);
-                } else {
-                    downlinkPayload += payload_buffer.second;
-                }
-            }
-
-            if (!missing_packets.empty()) {
-                if (endFlagFound) {
-                    // TODO request packets
+                if (!missing_packets.empty()) {
+                    if (endFlagFound) {
+                        for (auto seq: missing_packets) {
+                            requestMissingPacket(dl_packet.message_id, seq);
+                        }
+                        return false;
+                    }
+                    return false;
+                } else if (!endFlagFound) {
                     return false;
                 }
-                return false;
-            } else if (!endFlagFound) {
-                return false;
-            }
 
-            return true;
+                return true;
+                }
+        
+            void DownlinkBuffer::requestMissingPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
+                if (m_sanla_processor_ptr != nullptr) {
+                    auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
+                    SanlaPacket packet = messaging::buildRequestPacket(messageId, payloadSequence);
+                    processor->HandlePacket(packet);
+                }
+                else {
+                    // Throw some error here
+                }
             }
 
         }

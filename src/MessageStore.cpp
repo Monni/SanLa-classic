@@ -35,6 +35,13 @@ SanlaPackage MessageStore::GetMessage(MessageId_t _message_id) {
     return *message;
 }
 
+bool MessageStore::messageExists(MessageId_t messageId) {
+    if ( m_store.find(messageId) == m_store.end() ) {
+        return false;
+    }
+    return true;
+}
+
 } // mq
 } // hw_interfaces
 } // sanla

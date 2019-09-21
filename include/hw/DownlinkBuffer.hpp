@@ -44,6 +44,20 @@ namespace sanla {
 
                 void SendMessageToStore(SanlaPackage&);
 
+                /**
+                 * @brief Build and send a request packet to replace malformed or missing packet.
+                 * 
+                 */
+                void requestMissingPacket(MessageId_t, PayloadSeq_t);
+
+                /**
+                 * @brief Check if message already exists in MessageStore in which incoming packet is belonging to.
+                 * 
+                 * @return true 
+                 * @return false 
+                 */
+                bool messageExistsInStore(MessageId_t);
+
                 // This is later casted to SanlaProcessor
                 void* m_sanla_processor_ptr = nullptr;
 

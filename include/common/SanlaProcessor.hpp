@@ -41,6 +41,14 @@ SanlaProcessor& operator=(const SanlaProcessor&) = delete;
 bool HandleMessage(SanlaMessagePackage&);
 
 /**
+ * @brief Forward given packet into UplinkBuffer.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool HandlePacket(SanlaPacket&);
+
+/**
  * @brief Handle incoming packet with REQ-flag.
  * Constructs a response packet and sends to UplinkBuffer.
  * 
@@ -56,6 +64,14 @@ bool HandleResponse(SanlaPacket&);
 void SendUplinkBuffer();
 
 bool ProcessPacket(SanlaPacket&);
+
+/**
+ * @brief Check message exists in store.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool messageExistsInStore(MessageId_t);
 
 
 private:

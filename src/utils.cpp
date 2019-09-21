@@ -71,7 +71,7 @@ namespace sanla {
             return packet_vector;
         }
 
-        SanlaPacket buildBroadcastPacketFromSequence(SanlaMessagePackage& message, PayloadSeq_t sequence) {
+        SanlaPacket buildPacketFromSequence(SanlaMessagePackage& message, PayloadSeq_t sequence) {
             SanlaPacket packet{};
 
             std::string message_body(message.GetPackageBody());
@@ -84,6 +84,17 @@ namespace sanla {
             packet.header.payload_seq = sequence;
 
             // TODO ifentify if END flag is needed.
+
+            return packet;
+        }
+
+        SanlaPacket buildRequestPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
+            // TODO add sender_id.
+            SanlaPacket packet{};
+
+            packet.header.message_id = messageId;
+            packet.header.payload_seq = payloadSequence;
+            packet.header.flags = messaging::REQ;
 
             return packet;
         }

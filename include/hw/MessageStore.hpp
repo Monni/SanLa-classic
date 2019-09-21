@@ -28,6 +28,14 @@ namespace sanla {
                 SanlaPacket GetPackagePart(MessageId_t, size_t);
                 SanlaPackage GetMessage(MessageId_t);
 
+                /**
+                 * @brief Check if a message exists in store.
+                 * 
+                 * @return true 
+                 * @return false 
+                 */
+                bool messageExists(MessageId_t);
+
                 private:
                 MessageMap m_store;
             };
