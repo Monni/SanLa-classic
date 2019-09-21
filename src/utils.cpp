@@ -52,16 +52,16 @@ namespace sanla {
 
             for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
                 SanlaPacket packet{};
-                char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
 
-                strcpy(payload_arr, message_body.substr(i, i+sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
+                char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
+                strcpy(payload_arr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
                 
                 packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
                 packet.header.payload_seq = i;
                 memcpy(&packet.body, payload_arr, sizeof(payload_arr));
 
                 // Mark last packet with END flag.
-                if (i + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE >= message_body.length()) {
+                if (i + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1 >= message_body.length()) {
                     packet.header.flags = END;
                 }
 
@@ -82,6 +82,8 @@ namespace sanla {
 
             packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
             packet.header.payload_seq = sequence;
+
+            // TODO ifentify if END flag is needed.
 
             return packet;
         }

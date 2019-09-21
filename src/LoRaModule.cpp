@@ -9,7 +9,6 @@ LoRaModule* ptrToLoraModule = NULL;
 LoRaModule::LoRaModule() : _onReceive(NULL) {}
 
 void LoRaModule::begin() {
-    Serial.println("LoRaModule::begin");
     LoRa.setPins(SS, RST, DI0);
     if (!LoRa.begin(BAND)) {
         Serial.println("LoRaModule::begin -- Failed to start!");
@@ -32,8 +31,6 @@ void LoRaModule::setRadioParameters() {
 }
 
 bool LoRaModule::sendPacket(SanlaPacket &packet) {
-    Serial.println("LoRaModule::sendPacket");
-    
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     sanla::messaging::htonSanlaPacket(packet, buffer);
 
@@ -45,9 +42,8 @@ bool LoRaModule::sendPacket(SanlaPacket &packet) {
         }
         Serial.println("");
 
-        // Wait for 1ms.
-        usleep(1000);
         LoRa.endPacket(true);
+        usleep(1000);
 
         // Revert back to listening mode.
         LoRa.receive();

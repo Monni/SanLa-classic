@@ -5,10 +5,11 @@
 #include "ui/UserInterface.hpp"
 
 long lastSendTime = 0;        // last send time
-int interval = 50000;          // interval between sends
+int interval = 120000;          // interval between sends
 
+// Try to send packets from uplinkbuffer each 10 seconds.
 long uplinkbuffer_lastSendTime = 0;
-int uplinkbuffer_interval = 20000;
+int uplinkbuffer_interval = 10000;
 
 sanla::lora::LoRaModule lora;
 sanla::ui::UserInterface user_interface;
@@ -46,10 +47,10 @@ void loop() {
 
     // For testings purposes:
     if (millis() - lastSendTime > interval) {
-        std::string message = "Foo walks into a bar baz qux moo, then another kazoo comes out of doo";
+        std::string message = "Foo walks into a bar baz qux moo, then another corge comes out of garply. But what happens when the goo is on a doo?";
 
         // TODO for testing purposes, call UI's send method here on loop.
-        //user_interface.sendUserMessage(message);
+        user_interface.sendUserMessage(message);
 
         lastSendTime = millis();
     } else if (millis() - uplinkbuffer_lastSendTime > uplinkbuffer_interval) {

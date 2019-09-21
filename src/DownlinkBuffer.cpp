@@ -19,7 +19,13 @@ namespace sanla {
                 Serial.println("DownlinkBuffer::StorePacket");
 
                 // Validate incoming packet.
-                // TODO if packet is not valid, REQ a new one!
+                /*
+                TODO 
+                - if packet is valid and does not exist, continue.
+                - if packet is valid but does exist, skip.
+                - if packet is not valid, REQ a new one.
+
+                */
                 validatePacket(packet);
                 
                 std::map<MessageId_t, DownlinkPacket*>::iterator it;
@@ -102,16 +108,36 @@ namespace sanla {
             }
 
             bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
-            /*
-            TODO
-            - Kay payloadBuffer lapi ja katso ettei sequencessa ole virheita.
-            - END flag loydyttava.
-            */
             std::string downlinkPayload;
+            bool endFlagFound = false;
+            std::vector<PayloadSeq_t> missing_packets;
+
             for (auto const& payload_buffer : dl_packet.payloadBuffer) {
-                // TODO
+
+                if (payload_buffer.first.second == messaging::END) {
+                    endFlagFound = true;
+                }
+
+                if (payload_buffer.first.first != downlinkPayload.length()) {
+                    missing_packets.push_back(payload_buffer.first.first);
+                    downlinkPayload += std::string(messaging::sanlapacket::PACKET_BODY_MAX_SIZE, '_');
+                    Serial.print("Missing packet! ");
+                    Serial.println(payload_buffer.first.first);
+                } else {
+                    downlinkPayload += payload_buffer.second;
+                }
             }
-            
+
+            if (!missing_packets.empty()) {
+                if (endFlagFound) {
+                    // TODO request packets
+                    return false;
+                }
+                return false;
+            } else if (!endFlagFound) {
+                return false;
+            }
+
             return true;
             }
 

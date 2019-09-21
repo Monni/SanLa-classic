@@ -8,10 +8,8 @@ namespace mq {
 void UplinkBuffer::send(){
     while (!packetBuffer.empty()) {
         if (sanla::lora::LoRaModule::sendPacket(packetBuffer.front())) {
-            Serial.println("Sent");
             UplinkBuffer::eraseFirstPacket();
         } else {
-            Serial.println("Could not send");
             return;
         }
     };
