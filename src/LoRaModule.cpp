@@ -31,8 +31,6 @@ void LoRaModule::setRadioParameters() {
 }
 
 bool LoRaModule::sendPacket(SanlaPacket &packet) {
-    Serial.println("LoRaModule::sendPacket");
-    
     sanla::messaging::sanlapacket::SerializedPacket_t buffer{};
     sanla::messaging::htonSanlaPacket(packet, buffer);
 
