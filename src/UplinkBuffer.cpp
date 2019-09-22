@@ -16,16 +16,8 @@ void UplinkBuffer::send(){
 }
 
 bool UplinkBuffer::addPacket(SanlaPacket &packet){
-    /*
-    TODO this method should probably only add packets into packetBuffer, not send anything.
-    */
-
-    // First try to make more space into buffer.
-    UplinkBuffer::send();
-
     if (packetBuffer.size() < UPLINKBUFFER_MAX_SIZE) {
         packetBuffer.push_back(packet);
-        UplinkBuffer::send();
         return true;
     }
     return false;
