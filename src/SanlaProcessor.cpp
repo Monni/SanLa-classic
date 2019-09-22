@@ -61,7 +61,7 @@ bool SanlaProcessor::messageExistsInStore(MessageId_t messageId) {
 }
 
 bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
-    SanlaPacket packet = m_mstore.GetPacketBySequence(input_packet.header.message_id, input_packet.header.payload_seq);
+    SanlaPacket& packet = m_mstore.GetPacketBySequence(input_packet.header.message_id, input_packet.header.payload_seq);
 
     return HandlePacket(packet);
 }

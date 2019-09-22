@@ -48,7 +48,7 @@ namespace sanla {
                  * 
                  * @return SanlaPacket 
                  */
-                SanlaPacket GetPacketBySequence(MessageId_t, PayloadSeq_t);
+                SanlaPacket& GetPacketBySequence(MessageId_t, PayloadSeq_t);
 
                 private:
                 MessageMap m_store;

@@ -31,14 +31,14 @@ bool MessageStore::messageExists(MessageId_t messageId) {
     return true;
 }
 
-SanlaPacket MessageStore::GetPacketBySequence(MessageId_t message_id, PayloadSeq_t payloadSequence) {
+SanlaPacket& MessageStore::GetPacketBySequence(MessageId_t message_id, PayloadSeq_t payloadSequence) {
     SanlaMessage *message = m_store[message_id]; // TODO catch exceptions raised here and inform method caller
     std::string messageBody(message->GetMessageBody());
 
     char payloadArr[messaging::sanlapacket::PACKET_BODY_MAX_SIZE];
     strncpy(payloadArr, messageBody.substr(payloadSequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str(), sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE);
 
-    SanlaPacket packet{};
+    static SanlaPacket packet{};
     packet.copy_headers_from_message(message->GetMessageHeader(), payloadArr);
     packet.header.payload_seq = payloadSequence;
     memcpy(&packet.body, payloadArr, sizeof(payloadArr));
