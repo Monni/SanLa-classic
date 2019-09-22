@@ -49,7 +49,6 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
 }
 
 bool SanlaProcessor::HandlePacket(SanlaPacket &packet) {
-    Serial.println("SanlaProcessor::HandlePacket");
     return m_ubuffer.addPacket(packet);
 }
 

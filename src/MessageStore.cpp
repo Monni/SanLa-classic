@@ -28,8 +28,8 @@ SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadS
 
 }
 
-SanlaPackage MessageStore::GetMessage(MessageId_t _message_id) {
-    auto message = m_store[_message_id]; // TODO catch exceptions raised here and inform method caller
+SanlaPackage MessageStore::GetMessage(MessageId_t messageId) {
+    auto message = m_store[messageId]; // TODO catch exceptions raised here and inform method caller
 
     // TODO MessageStore should probably return a copy..
     return *message;

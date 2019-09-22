@@ -14,6 +14,8 @@ namespace sanla {
                    return;
                 }
                 if (messageExistsInStore(packet.header.message_id)) {
+                    Serial.println("Message exists in store. Dropping packet.");
+                    (void)packet;
                     return;
                 }
                 StorePacket(packet);
