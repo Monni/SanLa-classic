@@ -1,7 +1,6 @@
 #ifndef SANLACLASSIC_UI_USERINTERFACE_H_
 #define SANLACLASSIC_UI_USERINTERFACE_H_
 
-#include <Esp.h>
 #include <random>
 #include <time.h>
 #include "common/typedefs.hpp"

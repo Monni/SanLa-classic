@@ -49,6 +49,10 @@ bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
 }
 
 bool SanlaProcessor::HandlePacket(SanlaPacket &packet) {
+    
+    // Stamp the packet with chip id from efuse before pushing it into UplinkBuffer.
+    packet.header.sender_id = (SenderId_t)ESP.getEfuseMac();
+    
     return m_ubuffer.addPacket(packet);
 }
 

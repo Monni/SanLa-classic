@@ -12,9 +12,6 @@ namespace sanla {
             std::uniform_int_distribution<MessageId_t> uint16_dist65535(0, 65535);
             header.message_id = uint16_dist65535(rng);
 
-            // Get chip id from efuse.
-            header.sender_id = (SenderId_t)ESP.getEfuseMac();
-
             header.recipient_id = _recipient_id;
 
             return header;
