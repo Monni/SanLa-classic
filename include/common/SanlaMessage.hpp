@@ -20,15 +20,15 @@ namespace sanla {
         using Payload_t = messaging::sanlamessage::Payload_t;
         using PacketPayload_t = messaging::sanlapacket::Payload_t;
 
-        class SanlaMessagePackage {
+        class SanlaMessage {
             MessageHeader header;
             Payload_t body;
 
             public:
-            SanlaMessagePackage(MessageId_t, SenderId_t, RecipientId_t, Payload_t);
-            SanlaMessagePackage(MessageHeader, Payload_t);
+            SanlaMessage(MessageId_t, SenderId_t, RecipientId_t, Payload_t);
+            SanlaMessage(MessageHeader, Payload_t);
 
-            ~SanlaMessagePackage(){};
+            ~SanlaMessage(){};
 
             uint16_t GetPackageLength();
             MessageHeader& GetPackageHeader();

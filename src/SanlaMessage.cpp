@@ -7,27 +7,27 @@
 namespace sanla {
     namespace messaging {
 
-        SanlaMessagePackage::SanlaMessagePackage(MessageId_t _message_id, SenderId_t _sender_id, RecipientId_t _recipient_id, Payload_t _body ) {
+        SanlaMessage::SanlaMessage(MessageId_t _message_id, SenderId_t _sender_id, RecipientId_t _recipient_id, Payload_t _body ) {
             header.message_id = _message_id;
             header.sender_id = _sender_id;
             header.recipient_id = _recipient_id;
             strcpy(body, _body);
         }
 
-        SanlaMessagePackage::SanlaMessagePackage(MessageHeader _header, Payload_t _body) {
+        SanlaMessage::SanlaMessage(MessageHeader _header, Payload_t _body) {
             header = _header;
             strcpy(body, _body);
         }
 
-        uint16_t SanlaMessagePackage::GetPackageLength() {
+        uint16_t SanlaMessage::GetPackageLength() {
             return strlen(body);
         }
 
-        MessageHeader& SanlaMessagePackage::GetPackageHeader() {
+        MessageHeader& SanlaMessage::GetPackageHeader() {
             return header;
         }
 
-        Payload_t& SanlaMessagePackage::GetPackageBody() {
+        Payload_t& SanlaMessage::GetPackageBody() {
             return body;
         }
 

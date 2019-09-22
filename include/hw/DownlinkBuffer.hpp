@@ -42,7 +42,7 @@ namespace sanla {
                 
                 bool StorePacket(SanlaPacket&);
 
-                void SendMessageToStore(SanlaPackage&);
+                void SendMessageToStore(SanlaMessage&);
 
                 /**
                  * @brief Build and send a request packet to replace malformed or missing packet.

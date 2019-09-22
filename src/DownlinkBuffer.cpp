@@ -51,7 +51,7 @@ namespace sanla {
                     if (validateMessageReady(*dl_packet)) {
                         Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket ready to MessageStore.");
 
-                        SanlaPackage message(messaging::downlinkpacketToSanlamessage(*dl_packet));
+                        SanlaMessage message(messaging::downlinkpacketToSanlamessage(*dl_packet));
                         SendMessageToStore(message);
                         downlinkPacketBuffer.erase(packet.header.message_id);
                         delete dl_packet;
@@ -80,7 +80,7 @@ namespace sanla {
                 return true;
             }
 
-            void DownlinkBuffer::SendMessageToStore(SanlaPackage &message){
+            void DownlinkBuffer::SendMessageToStore(SanlaMessage &message){
                 Serial.println("DownlinkBuffer::SendMessageToStore");
                 if (m_sanla_processor_ptr != nullptr) {
                     auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);

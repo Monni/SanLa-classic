@@ -11,7 +11,7 @@ namespace sanla {
     namespace hw_interfaces {
         namespace mq {
             // TODO: Add custom allocator which uses Flash memory
-            using MessageMap = std::map<MessageId_t, SanlaPackage* /*,FlashAllocator<SanlaPackage>*/>;
+            using MessageMap = std::map<MessageId_t, SanlaMessage* /*,FlashAllocator<SanlaMessage>*/>;
 
             class MessageStore:MessageBuffer {
                 public:
@@ -20,13 +20,13 @@ namespace sanla {
                 ~MessageStore(){};
                 virtual uint32_t GetBufferLength() override;
 
-                SanlaPackage Pop(MessageId_t);
-                SanlaPackage Get(MessageId_t);
-                void Append(SanlaPackage&);
+                SanlaMessage Pop(MessageId_t);
+                SanlaMessage Get(MessageId_t);
+                void Append(SanlaMessage&);
 
-                SanlaPacket GetNthPacket(SanlaPackage, size_t);
+                SanlaPacket GetNthPacket(SanlaMessage, size_t);
                 SanlaPacket GetPackagePart(MessageId_t, size_t);
-                SanlaPackage GetMessage(MessageId_t);
+                SanlaMessage GetMessage(MessageId_t);
 
                 /**
                  * @brief Check if a message exists in store.

@@ -12,9 +12,9 @@ uint32_t MessageStore::GetBufferLength(){
     return m_store.size();
 }
 
-void MessageStore::Append(SanlaPackage &pkg)
+void MessageStore::Append(SanlaMessage &msg)
 {
-    m_store.insert({pkg.GetPackageHeader().message_id, new SanlaPackage(pkg)});
+    m_store.insert({msg.GetPackageHeader().message_id, new SanlaMessage(msg)});
 }
 
 SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadStartPos) {
@@ -28,7 +28,7 @@ SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadS
 
 }
 
-SanlaPackage MessageStore::GetMessage(MessageId_t messageId) {
+SanlaMessage MessageStore::GetMessage(MessageId_t messageId) {
     auto message = m_store[messageId]; // TODO catch exceptions raised here and inform method caller
 
     // TODO MessageStore should probably return a copy..

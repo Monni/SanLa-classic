@@ -31,7 +31,7 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     }
 }
 
-bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
+bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     Serial.println("SanlaProcessor::HandleMessage");
     // Save message to MessageStore.
     m_mstore.Append(message);

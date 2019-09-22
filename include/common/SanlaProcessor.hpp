@@ -15,7 +15,7 @@ using DownlinkBuffer = sanla::hw_interfaces::mq::DownlinkBuffer;
 using UplinkBuffer = sanla::hw_interfaces::mq::UplinkBuffer;
 using MessageStore = sanla::hw_interfaces::mq::MessageStore;
 using SanlaPacket = sanla::messaging::SanlaPacket;
-using SanlaMessagePackage = sanla::messaging::SanlaMessagePackage;
+using SanlaMessage = sanla::messaging::SanlaMessage;
 
 namespace sanla {
 
@@ -38,7 +38,7 @@ SanlaProcessor& operator=(const SanlaProcessor&) = delete;
  * @return true 
  * @return false 
  */
-bool HandleMessage(SanlaMessagePackage&);
+bool HandleMessage(SanlaMessage&);
 
 /**
  * @brief Forward given packet into UplinkBuffer.

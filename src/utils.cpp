@@ -3,7 +3,7 @@
 namespace sanla {
     namespace messaging {
         
-        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
+        SanlaMessage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
 
             // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
             uint16_t dummy_sender;
@@ -17,7 +17,8 @@ namespace sanla {
             sanlamessage::Payload_t payload;
             strcpy(payload, dl_packet_payload.c_str());
 
-            return SanlaMessagePackage(dl_packet.message_id,
+            return SanlaMessage(
+                dl_packet.message_id,
                 dummy_sender,
                 dl_packet.recipient_id,
                 payload
@@ -38,10 +39,10 @@ namespace sanla {
             return dl_packet;
         };
 
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& message){
+        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessage& message){
             /*
             1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.
-            2. Splittaa SanlaMessagePackage osiin ja rakenna niiden header.
+            2. Splittaa SanlaMessage osiin ja rakenna niiden header.
             3. Merkkaa viimeinen END-flagilla.
             4. Puske vectoriin.
             5. Palauta vector.
@@ -71,7 +72,7 @@ namespace sanla {
             return packet_vector;
         }
 
-        SanlaPacket buildPacketFromSequence(SanlaMessagePackage& message, PayloadSeq_t sequence) {
+        SanlaPacket buildPacketFromSequence(SanlaMessage& message, PayloadSeq_t sequence) {
             SanlaPacket packet{};
 
             std::string message_body(message.GetPackageBody());

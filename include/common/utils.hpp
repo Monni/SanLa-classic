@@ -13,9 +13,9 @@ namespace sanla {
         /**
          * @brief Construct a SanlaMessage from DownlinkPacket.
          * 
-         * @return SanlaMessagePackage 
+         * @return SanlaMessage 
          */
-        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket&);
+        SanlaMessage downlinkpacketToSanlamessage(DownlinkPacket&);
 
         /**
          * @brief Construct a new DownlinkPacket from SanlaPacket.
@@ -29,14 +29,14 @@ namespace sanla {
          * 
          * @return std::vector<SanlaPacket> 
          */
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage&);
+        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessage&);
 
         /**
          * @brief Constructs a SanlaPacket from incoming request based on given sequence.
          * 
          * @return SanlaPacket 
          */
-        SanlaPacket buildPacketFromSequence(SanlaMessagePackage&, PayloadSeq_t);
+        SanlaPacket buildPacketFromSequence(SanlaMessage&, PayloadSeq_t);
 
         /**
          * @brief Build a request packet.
