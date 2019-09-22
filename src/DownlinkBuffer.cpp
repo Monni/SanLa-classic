@@ -26,8 +26,6 @@ namespace sanla {
             }
 
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
-                Serial.println("DownlinkBuffer::StorePacket");
-
                 std::map<MessageId_t, DownlinkPacket*>::iterator it;
                 it = downlinkPacketBuffer.find(packet.header.message_id);
                 if (it != downlinkPacketBuffer.end()) {
@@ -116,26 +114,25 @@ namespace sanla {
                 return false;
             }
 
-                bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
-                std::string downlinkPayload;
+            bool DownlinkBuffer::validateMessageReady(DownlinkPacket &dl_packet) {
                 bool endFlagFound = false;
                 std::vector<PayloadSeq_t> missing_packets;
 
-                for (auto const& payload_buffer : dl_packet.payloadBuffer) {
+                PayloadSeq_t expectedPacketStartSeq = 0;
+                for (auto const& payloadBuffer: dl_packet.payloadBuffer) {
 
-                    if (payload_buffer.first.second == messaging::END) {
+                    if (payloadBuffer.first.second == messaging::END) {
                         endFlagFound = true;
                     }
 
-                    if (payload_buffer.first.first != downlinkPayload.length()) {
-                        missing_packets.push_back(payload_buffer.first.first);
-                        downlinkPayload += std::string(messaging::sanlapacket::PACKET_BODY_MAX_SIZE, '_');
-                        Serial.print("Missing packet! ");
-                        Serial.println(payload_buffer.first.first);
-                    } else {
-                        downlinkPayload += payload_buffer.second;
+                    if (payloadBuffer.first.first > expectedPacketStartSeq) {
+                        for (int i = expectedPacketStartSeq; i < payloadBuffer.first.first; i += messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
+                            missing_packets.push_back(i);
+                        }
                     }
+                    expectedPacketStartSeq += (payloadBuffer.first.first + messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1);
                 }
+
 
                 if (!missing_packets.empty()) {
                     if (endFlagFound) {
@@ -153,6 +150,9 @@ namespace sanla {
                 }
         
             void DownlinkBuffer::requestMissingPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
+                Serial.print("Requesting missing packet ");
+                Serial.println(payloadSequence);
+
                 if (m_sanla_processor_ptr != nullptr) {
                     auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
                     SanlaPacket packet = messaging::buildRequestPacket(messageId, payloadSequence);
