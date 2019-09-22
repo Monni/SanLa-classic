@@ -3,7 +3,7 @@
 namespace sanla {
     namespace messaging {
         
-        SanlaMessagePackage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
+        SanlaMessage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
 
             // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
             uint16_t dummy_sender;
@@ -17,7 +17,8 @@ namespace sanla {
             sanlamessage::Payload_t payload;
             strcpy(payload, dl_packet_payload.c_str());
 
-            return SanlaMessagePackage(dl_packet.message_id,
+            return SanlaMessage(
+                dl_packet.message_id,
                 dummy_sender,
                 dl_packet.recipient_id,
                 payload
@@ -38,27 +39,27 @@ namespace sanla {
             return dl_packet;
         };
 
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessagePackage& message){
+        std::vector<SanlaPacket> buildPacketsFromMessage(SanlaMessage& message){
             /*
             1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.
-            2. Splittaa SanlaMessagePackage osiin ja rakenna niiden header.
+            2. Splittaa SanlaMessage osiin ja rakenna niiden header.
             3. Merkkaa viimeinen END-flagilla.
             4. Puske vectoriin.
             5. Palauta vector.
             */
 
             std::vector<SanlaPacket> packet_vector;
-            std::string message_body(message.GetPackageBody());
+            std::string message_body(message.GetMessageBody());
 
             for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
                 SanlaPacket packet{};
 
-                char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
-                strcpy(payload_arr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
-                
-                packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
+                char payloadArr[sanlapacket::PACKET_BODY_MAX_SIZE];
+                strncpy(payloadArr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str(), sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE);
+
+                packet.copy_headers_from_message(message.GetMessageHeader(), payloadArr); // TODO total header + payload, nyt menee pelkka payload.
                 packet.header.payload_seq = i;
-                memcpy(&packet.body, payload_arr, sizeof(payload_arr));
+                memcpy(&packet.body, payloadArr, sizeof(payloadArr));
 
                 // Mark last packet with END flag.
                 if (i + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1 >= message_body.length()) {
@@ -71,19 +72,13 @@ namespace sanla {
             return packet_vector;
         }
 
-        SanlaPacket buildBroadcastPacketFromSequence(SanlaMessagePackage& message, PayloadSeq_t sequence) {
+        SanlaPacket buildRequestPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
+            // TODO add sender_id.
             SanlaPacket packet{};
 
-            std::string message_body(message.GetPackageBody());
-
-            std::string payload_string(message_body.substr(sequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1));
-            char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
-            strcpy(payload_arr, payload_string.c_str());
-
-            packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
-            packet.header.payload_seq = sequence;
-
-            // TODO ifentify if END flag is needed.
+            packet.header.message_id = messageId;
+            packet.header.payload_seq = payloadSequence;
+            packet.header.flags = messaging::REQ;
 
             return packet;
         }

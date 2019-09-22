@@ -1,5 +1,6 @@
-#include "HardwareSerial.h" // TODO remove after debugging not needed.
-#include "Singleton.hpp"
+#include <Esp.h>
+#include <HardwareSerial.h> // TODO remove after debugging not needed.
+#include <Singleton.hpp>
 #include "common/SanlaPacket.hpp"
 #include "common/SanlaMessage.hpp"
 #include "common/utils.hpp"
@@ -15,7 +16,7 @@ using DownlinkBuffer = sanla::hw_interfaces::mq::DownlinkBuffer;
 using UplinkBuffer = sanla::hw_interfaces::mq::UplinkBuffer;
 using MessageStore = sanla::hw_interfaces::mq::MessageStore;
 using SanlaPacket = sanla::messaging::SanlaPacket;
-using SanlaMessagePackage = sanla::messaging::SanlaMessagePackage;
+using SanlaMessage = sanla::messaging::SanlaMessage;
 
 namespace sanla {
 
@@ -38,7 +39,15 @@ SanlaProcessor& operator=(const SanlaProcessor&) = delete;
  * @return true 
  * @return false 
  */
-bool HandleMessage(SanlaMessagePackage&);
+bool HandleMessage(SanlaMessage&);
+
+/**
+ * @brief Forward given packet into UplinkBuffer.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool HandlePacket(SanlaPacket&);
 
 /**
  * @brief Handle incoming packet with REQ-flag.
@@ -56,6 +65,14 @@ bool HandleResponse(SanlaPacket&);
 void SendUplinkBuffer();
 
 bool ProcessPacket(SanlaPacket&);
+
+/**
+ * @brief Check message exists in store.
+ * 
+ * @return true 
+ * @return false 
+ */
+bool messageExistsInStore(MessageId_t);
 
 
 private:

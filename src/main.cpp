@@ -1,11 +1,10 @@
 #include "LoRaModule.hpp"
 #include "common.hpp"
 #include "common/SanlaProcessor.hpp"
-#include "hw/LoraPacketIntepreter.hpp"
 #include "ui/UserInterface.hpp"
 
 long lastSendTime = 0;        // last send time
-int interval = 120000;          // interval between sends
+int interval = 60000;          // interval between sends
 
 // Try to send packets from uplinkbuffer each 10 seconds.
 long uplinkbuffer_lastSendTime = 0;
@@ -13,7 +12,6 @@ int uplinkbuffer_interval = 10000;
 
 sanla::lora::LoRaModule lora;
 sanla::ui::UserInterface user_interface;
-sanla::hw_interfaces::LoraPacketIntepreter interpreter;
 
 namespace sanla {
     auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();

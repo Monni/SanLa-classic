@@ -12,7 +12,6 @@ namespace sanla {
             std::uniform_int_distribution<MessageId_t> uint16_dist65535(0, 65535);
             header.message_id = uint16_dist65535(rng);
 
-            header.sender_id = 65535; // TODO generate. MAC?
             header.recipient_id = _recipient_id;
 
             return header;

@@ -11,7 +11,7 @@ namespace sanla {
     namespace ui {
 
         using MessageHeader = sanla::messaging::MessageHeader;
-        using SanlaMessage = sanla::messaging::SanlaMessagePackage;
+        using SanlaMessage = sanla::messaging::SanlaMessage;
         using Payload_t = sanla::messaging::sanlamessage::Payload_t;
 
         class UserInterface {

@@ -31,15 +31,15 @@ bool SanlaProcessor::ProcessPacket(SanlaPacket &packet){
     }
 }
 
-bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
+bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     Serial.println("SanlaProcessor::HandleMessage");
     // Save message to MessageStore.
-    m_mstore.Append(message);
+    m_mstore.Put(message);
 
     // Construct broadcast packets from message and push to uplinkbuffer.
-    std::vector<SanlaPacket> packet_vector(messaging::buildBroadcastPacketsFromMessage(message));
+    std::vector<SanlaPacket> packet_vector(messaging::buildPacketsFromMessage(message));
     for (auto& packet : packet_vector) {
-        m_ubuffer.addPacket(packet);
+        HandlePacket(packet);
     }
 
     // Message has no use anymore.
@@ -48,16 +48,22 @@ bool SanlaProcessor::HandleMessage(SanlaMessagePackage &message) {
     return true;
 }
 
-bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
-/*
-    1. Get payload based on sequence.
-    2. Construct packet.
-    3. Push packet to UplinkBuffer.
-*/
-    auto message = m_mstore.GetMessage(input_packet.header.message_id);
-
-    SanlaPacket packet = messaging::buildBroadcastPacketFromSequence(message, input_packet.header.payload_seq);
+bool SanlaProcessor::HandlePacket(SanlaPacket &packet) {
+    
+    // Stamp the packet with chip id from efuse before pushing it into UplinkBuffer.
+    packet.header.sender_id = (SenderId_t)ESP.getEfuseMac();
+    
     return m_ubuffer.addPacket(packet);
+}
+
+bool SanlaProcessor::messageExistsInStore(MessageId_t messageId) {
+    return m_mstore.messageExists(messageId);
+}
+
+bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
+    SanlaPacket& packet = m_mstore.GetPacketBySequence(input_packet.header.message_id, input_packet.header.payload_seq);
+
+    return HandlePacket(packet);
 }
 
 void SanlaProcessor::SendUplinkBuffer() {

@@ -12,27 +12,42 @@ uint32_t MessageStore::GetBufferLength(){
     return m_store.size();
 }
 
-void MessageStore::Append(SanlaPackage &pkg)
-{
-    m_store.insert({pkg.GetPackageHeader().message_id, new SanlaPackage(pkg)});
-}
-
-SanlaPacket MessageStore::GetPackagePart(MessageId_t message_id, size_t payloadStartPos) {
-    auto package = m_store[message_id]; // TODO catch exceptions raised here and inform method caller
-    std::string msg(package->GetPackageBody());
-    auto new_payload = msg.substr(payloadStartPos, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE).c_str();
-    SanlaPacket output{};
-    output.copy_headers_from_message(package->GetPackageHeader(), package->GetPackageBody());
-    strcpy(output.body, new_payload); // Possible segfault due to missing Null terminator
-    return output;
-
-}
-
-SanlaPackage MessageStore::GetMessage(MessageId_t _message_id) {
-    auto message = m_store[_message_id]; // TODO catch exceptions raised here and inform method caller
+SanlaMessage MessageStore::Get(MessageId_t messageId) {
+    auto message = m_store[messageId]; // TODO catch exceptions raised here and inform method caller
 
     // TODO MessageStore should probably return a copy..
     return *message;
+}
+
+void MessageStore::Put(SanlaMessage &msg)
+{
+    m_store.insert({msg.GetMessageHeader().message_id, new SanlaMessage(msg)});
+}
+
+bool MessageStore::messageExists(MessageId_t messageId) {
+    if ( m_store.find(messageId) == m_store.end() ) {
+        return false;
+    }
+    return true;
+}
+
+SanlaPacket& MessageStore::GetPacketBySequence(MessageId_t message_id, PayloadSeq_t payloadSequence) {
+    SanlaMessage *message = m_store[message_id]; // TODO catch exceptions raised here and inform method caller
+    std::string messageBody(message->GetMessageBody());
+
+    char payloadArr[messaging::sanlapacket::PACKET_BODY_MAX_SIZE];
+    strncpy(payloadArr, messageBody.substr(payloadSequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str(), sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE);
+
+    static SanlaPacket packet{};
+    packet.copy_headers_from_message(message->GetMessageHeader(), payloadArr);
+    packet.header.payload_seq = payloadSequence;
+    memcpy(&packet.body, payloadArr, sizeof(payloadArr));
+
+    if (payloadSequence + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1 >= messageBody.length()) {
+        packet.header.flags = messaging::END;
+    }
+
+    return packet;
 }
 
 } // mq

@@ -16,12 +16,8 @@ void UplinkBuffer::send(){
 }
 
 bool UplinkBuffer::addPacket(SanlaPacket &packet){
-    // First try to make more space into buffer.
-    UplinkBuffer::send();
-
     if (packetBuffer.size() < UPLINKBUFFER_MAX_SIZE) {
         packetBuffer.push_back(packet);
-        UplinkBuffer::send();
         return true;
     }
     return false;
