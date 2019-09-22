@@ -4,16 +4,10 @@
 #include <cstddef>
 
 namespace sanla {
-    namespace lora {
-        // Max lora packet size in bytes
-        const size_t LORA_PACKAGE_SIZE{56};
-    };
 
     namespace messaging {
-        constexpr size_t RECIPIENT_ID_MAX_SIZE{8};
 
         namespace sanlamessage {
-            constexpr size_t MESSAGE_BODY_SENDER_MAX_SIZE{12}; // TODO remove
             constexpr size_t MESSAGE_BODY_MAX_SIZE{2000};
         };
 

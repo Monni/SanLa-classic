@@ -29,14 +29,7 @@ namespace sanla {
          * 
          * @return std::vector<SanlaPacket> 
          */
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessage&);
-
-        /**
-         * @brief Constructs a SanlaPacket from incoming request based on given sequence.
-         * 
-         * @return SanlaPacket 
-         */
-        SanlaPacket buildPacketFromSequence(SanlaMessage&, PayloadSeq_t);
+        std::vector<SanlaPacket> buildPacketsFromMessage(SanlaMessage&);
 
         /**
          * @brief Build a request packet.

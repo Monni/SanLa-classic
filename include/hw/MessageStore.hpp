@@ -20,13 +20,20 @@ namespace sanla {
                 ~MessageStore(){};
                 virtual uint32_t GetBufferLength() override;
 
-                SanlaMessage Pop(MessageId_t);
-                SanlaMessage Get(MessageId_t);
-                void Append(SanlaMessage&);
+                SanlaMessage Pop(MessageId_t); // TODO not yet implemented. Is this needed?
 
-                SanlaPacket GetNthPacket(SanlaMessage, size_t);
-                SanlaPacket GetPackagePart(MessageId_t, size_t);
-                SanlaMessage GetMessage(MessageId_t);
+                /**
+                 * @brief Gets a message from MessageStore.
+                 * 
+                 * @return SanlaMessage 
+                 */
+                SanlaMessage Get(MessageId_t);
+
+                /**
+                 * @brief Puts a new message into MessageStore.
+                 * 
+                 */
+                void Put(SanlaMessage&);
 
                 /**
                  * @brief Check if a message exists in store.
@@ -35,6 +42,13 @@ namespace sanla {
                  * @return false 
                  */
                 bool messageExists(MessageId_t);
+
+                /**
+                 * @brief Get single Packet from Message based on given payload sequence.
+                 * 
+                 * @return SanlaPacket 
+                 */
+                SanlaPacket GetPacketBySequence(MessageId_t, PayloadSeq_t);
 
                 private:
                 MessageMap m_store;

@@ -30,9 +30,9 @@ namespace sanla {
 
             ~SanlaMessage(){};
 
-            uint16_t GetPackageLength();
-            MessageHeader& GetPackageHeader();
-            Payload_t& GetPackageBody();
+            uint16_t GetMessageLength();
+            MessageHeader& GetMessageHeader();
+            Payload_t& GetMessageBody();
         };
 
     }; // messaging

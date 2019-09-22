@@ -39,7 +39,7 @@ namespace sanla {
             return dl_packet;
         };
 
-        std::vector<SanlaPacket> buildBroadcastPacketsFromMessage(SanlaMessage& message){
+        std::vector<SanlaPacket> buildPacketsFromMessage(SanlaMessage& message){
             /*
             1. Rakenna yleispateva header, missa arvot ei muutu pakettien valilla.
             2. Splittaa SanlaMessage osiin ja rakenna niiden header.
@@ -49,7 +49,7 @@ namespace sanla {
             */
 
             std::vector<SanlaPacket> packet_vector;
-            std::string message_body(message.GetPackageBody());
+            std::string message_body(message.GetMessageBody());
 
             for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
                 SanlaPacket packet{};
@@ -57,7 +57,7 @@ namespace sanla {
                 char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
                 strcpy(payload_arr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
                 
-                packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
+                packet.copy_headers_from_message(message.GetMessageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
                 packet.header.payload_seq = i;
                 memcpy(&packet.body, payload_arr, sizeof(payload_arr));
 
@@ -70,23 +70,6 @@ namespace sanla {
             }
 
             return packet_vector;
-        }
-
-        SanlaPacket buildPacketFromSequence(SanlaMessage& message, PayloadSeq_t sequence) {
-            SanlaPacket packet{};
-
-            std::string message_body(message.GetPackageBody());
-
-            std::string payload_string(message_body.substr(sequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1));
-            char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
-            strcpy(payload_arr, payload_string.c_str());
-
-            packet.copy_headers_from_message(message.GetPackageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
-            packet.header.payload_seq = sequence;
-
-            // TODO ifentify if END flag is needed.
-
-            return packet;
         }
 
         SanlaPacket buildRequestPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {

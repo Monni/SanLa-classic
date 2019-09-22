@@ -19,15 +19,15 @@ namespace sanla {
             strcpy(body, _body);
         }
 
-        uint16_t SanlaMessage::GetPackageLength() {
+        uint16_t SanlaMessage::GetMessageLength() {
             return strlen(body);
         }
 
-        MessageHeader& SanlaMessage::GetPackageHeader() {
+        MessageHeader& SanlaMessage::GetMessageHeader() {
             return header;
         }
 
-        Payload_t& SanlaMessage::GetPackageBody() {
+        Payload_t& SanlaMessage::GetMessageBody() {
             return body;
         }
 
