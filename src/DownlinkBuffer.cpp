@@ -157,6 +157,7 @@ namespace sanla {
                     auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
                     SanlaPacket packet = messaging::buildRequestPacket(messageId, payloadSequence);
                     processor->HandlePacket(packet);
+                    (void)packet;
                 }
                 else {
                     // Throw some error here

@@ -54,12 +54,12 @@ namespace sanla {
             for (unsigned i = 0; i < message_body.length(); i += sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1) {
                 SanlaPacket packet{};
 
-                char payload_arr[sanlapacket::PACKET_BODY_MAX_SIZE];
-                strcpy(payload_arr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str());
-                
-                packet.copy_headers_from_message(message.GetMessageHeader(), payload_arr); // TODO total header + payload, nyt menee pelkka payload.
+                char payloadArr[sanlapacket::PACKET_BODY_MAX_SIZE];
+                strncpy(payloadArr, message_body.substr(i, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str(), sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE);
+
+                packet.copy_headers_from_message(message.GetMessageHeader(), payloadArr); // TODO total header + payload, nyt menee pelkka payload.
                 packet.header.payload_seq = i;
-                memcpy(&packet.body, payload_arr, sizeof(payload_arr));
+                memcpy(&packet.body, payloadArr, sizeof(payloadArr));
 
                 // Mark last packet with END flag.
                 if (i + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1 >= message_body.length()) {

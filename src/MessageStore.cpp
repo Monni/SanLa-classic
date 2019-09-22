@@ -33,17 +33,15 @@ bool MessageStore::messageExists(MessageId_t messageId) {
 
 SanlaPacket MessageStore::GetPacketBySequence(MessageId_t message_id, PayloadSeq_t payloadSequence) {
     SanlaMessage *message = m_store[message_id]; // TODO catch exceptions raised here and inform method caller
-
     std::string messageBody(message->GetMessageBody());
-    std::string payloadString(messageBody.substr(payloadSequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1));
 
     char payloadArr[messaging::sanlapacket::PACKET_BODY_MAX_SIZE];
-    strcpy(payloadArr, payloadString.c_str());
+    strncpy(payloadArr, messageBody.substr(payloadSequence, sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1).c_str(), sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE);
 
     SanlaPacket packet{};
     packet.copy_headers_from_message(message->GetMessageHeader(), payloadArr);
     packet.header.payload_seq = payloadSequence;
-    strcpy(packet.body, payloadArr);
+    memcpy(&packet.body, payloadArr, sizeof(payloadArr));
 
     if (payloadSequence + sanla::messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1 >= messageBody.length()) {
         packet.header.flags = messaging::END;

@@ -78,11 +78,12 @@ void LoRaModule::onPacket(int packetSize) {
     Serial.println("Packet arrived.");
     Serial.print("Message ID: ");
     Serial.println(packet.header.message_id);
+    Serial.print("Sequence: ");
+    Serial.println(packet.header.payload_seq);
     Serial.print("Body: ");
     Serial.println(packet.body);
     Serial.println("");
 
-    Serial.println("Sending packet to processor..");
     sanla_processor_ptr->ProcessPacket(packet);
     Serial.println("Processing done!");
 }
