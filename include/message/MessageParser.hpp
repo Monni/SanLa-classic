@@ -10,7 +10,6 @@ namespace sanla {
         enum ActionsE {
             RECEIVE,
             RESPOND,
-            STORE,
             DROP
         };
 // This doesn't need to be a class. I think this should be refactored as a function

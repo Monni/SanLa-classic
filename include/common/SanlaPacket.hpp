@@ -14,7 +14,7 @@
 namespace sanla {
     namespace messaging {
         
-        const Flags_t END {0x1}, REQ {0x2};
+        const Flags_t BRO {0x0}, END {0x1}, REQ {0x2};
 
         struct SanlaPacketHeader {
             Flags_t flags;
