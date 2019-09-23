@@ -23,6 +23,7 @@ namespace sanla {
             DownlinkPacket dl_packet;
 
             dl_packet.message_id = packet.header.message_id;
+            dl_packet.sender_id = packet.header.sender_id;
             dl_packet.recipient_id = packet.header.recipient_id;                
             std::string body_string(packet.body);
 
