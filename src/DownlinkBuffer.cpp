@@ -28,6 +28,8 @@ namespace sanla {
             bool DownlinkBuffer::StorePacket(SanlaPacket &packet) {
                 std::map<MessageId_t, DownlinkPacket*>::iterator it;
                 it = downlinkPacketBuffer.find(packet.header.message_id);
+
+                // DownlinkPacket exists. Append to payloadBuffer.
                 if (it != downlinkPacketBuffer.end()) {
                     Serial.println("DownlinkBuffer::StorePacket -- Existing DownlinkPacket found.");
 
@@ -44,17 +46,12 @@ namespace sanla {
                         std::make_pair(std::make_pair(packet.header.payload_seq, packet.header.flags), body_string)
                     );
 
-                    // Validate if DownlinkPacket is ready to be turned into SanlaMessage and send to MessageStore.
-                    // TODO this needs to handled on both cases.
                     if (validateMessageReady(*dl_packet)) {
                         Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket ready to MessageStore.");
+                        handleReady(*dl_packet);
+                    }
 
-                        SanlaMessage message(messaging::downlinkpacketToSanlamessage(*dl_packet));
-                        SendMessageToStore(message);
-                        downlinkPacketBuffer.erase(packet.header.message_id);
-                        delete dl_packet;
-                    }   
-
+                // DownlinkPacket doesn't exist. Create a new one.
                 } else {
                     Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket does not exist. Creating.");
 
@@ -70,12 +67,23 @@ namespace sanla {
                             )
                         )
                     );
+                    DownlinkPacket dl_packet = messaging::sanlapacketToDownlinkpacket(packet);
+                    if (validateMessageReady(dl_packet)) {
+                        handleReady(dl_packet);
+                    }
                 }
 
                 // Packet is either stored to downlinkPacketBuffer either way at this point.
                 // We can drop the packet here.
                 (void)packet;
                 return true;
+            }
+
+            void DownlinkBuffer::handleReady(DownlinkPacket &downlinkPacket) {
+                SanlaMessage message(messaging::downlinkpacketToSanlamessage(downlinkPacket));
+                SendMessageToStore(message);
+                downlinkPacketBuffer.erase(downlinkPacket.message_id);
+                delete &downlinkPacket;
             }
 
             void DownlinkBuffer::SendMessageToStore(SanlaMessage &message){
@@ -102,7 +110,9 @@ namespace sanla {
             bool DownlinkBuffer::validatePacket(SanlaPacket &packet) {
                 /*
                 TODO
-                Validate checksum
+                Validate checksum.
+                
+                Consider moving this into MessageParser and defining action based on whether the packet is valid or not.
                 */
 
                 if (packet.header.payload_length == strlen(packet.body)) {
@@ -132,7 +142,6 @@ namespace sanla {
                     }
                     expectedPacketStartSeq += (payloadBuffer.first.first + messaging::sanlapacket::PACKET_BODY_MAX_SIZE-1);
                 }
-
 
                 if (!missing_packets.empty()) {
                     if (endFlagFound) {

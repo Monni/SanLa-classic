@@ -58,6 +58,12 @@ namespace sanla {
                  */
                 bool messageExistsInStore(MessageId_t);
 
+                /**
+                 * @brief Build a SanlaMessage from DownlinkPacket and send to MessageStore.
+                 * 
+                 */
+                void handleReady(DownlinkPacket&);
+
                 // This is later casted to SanlaProcessor
                 void* m_sanla_processor_ptr = nullptr;
 
