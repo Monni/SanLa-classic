@@ -4,12 +4,6 @@ namespace sanla {
     namespace messaging {
         
         SanlaMessage downlinkpacketToSanlamessage(DownlinkPacket &dl_packet) {
-
-            // TODO what was agreed to do with sender? DownlinkPacket is missing sender information.
-            uint16_t dummy_sender;
-            dummy_sender = 65535;
-
-            // TODO payload buffer must be ordered before concatenation!
             std::string dl_packet_payload;
             for (auto const& payload_buffer : dl_packet.payloadBuffer) {
                 dl_packet_payload += payload_buffer.second.c_str();
@@ -19,7 +13,7 @@ namespace sanla {
 
             return SanlaMessage(
                 dl_packet.message_id,
-                dummy_sender,
+                dl_packet.sender_id,
                 dl_packet.recipient_id,
                 payload
             );
