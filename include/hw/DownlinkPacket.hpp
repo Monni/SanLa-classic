@@ -15,6 +15,7 @@ namespace sanla {
 
             struct DownlinkPacket {
                 MessageId_t message_id;
+                SenderId_t sender_id;
                 RecipientId_t recipient_id;
                 PayloadBuffer_t payloadBuffer;
             };

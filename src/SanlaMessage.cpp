@@ -32,6 +32,7 @@ namespace sanla {
         }
 
         void SanlaPacket::copy_headers_from_message(MessageHeader message_header, PacketPayload_t body) {
+            header.flags = messaging::BRO;
             header.message_id = message_header.message_id;
             header.sender_id = message_header.sender_id;
             header.recipient_id = message_header.recipient_id;
