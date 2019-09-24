@@ -52,7 +52,7 @@ namespace sanla {
              */
             static bool sendPacket(SanlaPacket&);
 
-            void onMessage(void(*callback)(SanlaPacket));
+            void onMessage(void(*callback)(SanlaMessage&));
 
             void registerProcessor(SanlaProcessor* processor);
 
@@ -84,7 +84,7 @@ namespace sanla {
              */
             void onPacket(int packetSize);
 
-            void (*_onReceive)(SanlaPacket);
+            void (*_onReceive)(SanlaMessage&);
             
         };
 

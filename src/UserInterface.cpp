@@ -1,4 +1,5 @@
 #include "ui/UserInterface.hpp"
+#include "common/SanlaProcessor.hpp" // This can't be moved into the header.
 
 namespace sanla {
     namespace ui {
@@ -28,17 +29,28 @@ namespace sanla {
             SanlaMessage message(buildUserInputHeader(65535), payload_arr);
 
             // Send to SanlaProcessor.
-            sanla_processor_ptr->HandleMessage(message);
+            if (m_sanla_processor_ptr != nullptr) {
+                auto processor = static_cast<SanlaProcessor*>(m_sanla_processor_ptr);
+                processor->HandleMessage(message);
+            }
+            else {
+                // Throw some error here
+            }
         };
 
-        void UserInterface::displayMessage(std::string message) {
+        void UserInterface::displayMessage(SanlaMessage& message) {
+            Serial.println("");
             Serial.println("*** Incoming message into UI ***");
-            Serial.println(message.c_str());
+            Serial.print("Message ID: ");
+            Serial.println(message.GetMessageHeader().message_id);
+            Serial.print("Sender ID: ");
+            Serial.println(message.GetMessageHeader().sender_id);
+            Serial.print("Recipient ID: ");
+            Serial.println(message.GetMessageHeader().recipient_id);
+            Serial.print("Body: ");
+            Serial.println(message.GetMessageBody());
+            Serial.println("");
         };
-
-        void UserInterface::registerProcessor(SanlaProcessor* processor){
-            sanla_processor_ptr = processor;
-        }
 
     } // ui
 } // sanla
