@@ -1,5 +1,8 @@
+#ifndef SANLACLASSIC_COMMON_SANLAPROCESSOR_H_
+#define SANLACLASSIC_COMMON_SANLAPROCESSOR_H_
+
 #include <Esp.h>
-#include <HardwareSerial.h> // TODO remove after debugging not needed.
+#include <HardwareSerial.h>
 #include <Singleton.hpp>
 #include "common/SanlaPacket.hpp"
 #include "common/SanlaMessage.hpp"
@@ -8,15 +11,14 @@
 #include "hw/UplinkBuffer.hpp"
 #include "hw/MessageStore.hpp"
 #include "message/MessageParser.hpp"
-
-#ifndef SANLACLASSIC_COMMON_SANLAPROCESSOR_H_
-#define SANLACLASSIC_COMMON_SANLAPROCESSOR_H_
+#include "ui/UserInterface.hpp"
 
 using DownlinkBuffer = sanla::hw_interfaces::mq::DownlinkBuffer;
 using UplinkBuffer = sanla::hw_interfaces::mq::UplinkBuffer;
 using MessageStore = sanla::hw_interfaces::mq::MessageStore;
 using SanlaPacket = sanla::messaging::SanlaPacket;
 using SanlaMessage = sanla::messaging::SanlaMessage;
+using SanlaInterface = sanla::ui::UserInterface;
 
 namespace sanla {
 
@@ -74,15 +76,29 @@ bool ProcessPacket(SanlaPacket&);
  */
 bool messageExistsInStore(MessageId_t);
 
+/**
+ * @brief Get the Interface Ptr object for external usage.
+ * 
+ * @return SanlaInterface* 
+ */
+SanlaInterface* getInterfacePtr();
+
 
 private:
 // Only Singleton of type SanlaProcessor is able to create or delete object of this class
-SanlaProcessor(): m_dbuffer(this), m_ubuffer(), m_mstore(){};
+SanlaProcessor(): m_dbuffer(this), m_ubuffer(), m_mstore(), interface(this){};
 ~SanlaProcessor(){};
 
 DownlinkBuffer m_dbuffer;
 UplinkBuffer m_ubuffer;
 MessageStore m_mstore;
+SanlaInterface interface;
+
+/**
+ * @brief Send incoming Message into Interface.
+ * 
+ */
+void notifyInterface(SanlaMessage&);
 
 };
 

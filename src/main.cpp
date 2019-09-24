@@ -11,7 +11,7 @@ long uplinkbuffer_lastSendTime = 0;
 int uplinkbuffer_interval = 10000;
 
 sanla::lora::LoRaModule lora;
-sanla::ui::UserInterface user_interface;
+sanla::ui::UserInterface *user_interface = nullptr;
 
 namespace sanla {
     auto g_sanlaProcessor = SanlaProcessorSingleton::Instance();
@@ -30,11 +30,9 @@ void setup() {
     // Initialize customized LoRa module and register UI callback.
     lora.begin();
 
-    //lora.onMessage(user_interface.displayMessage);
-
     // Register SanLaProcessor into components for callbacks.
-    user_interface.registerProcessor(sanla::g_sanlaProcessor);
     lora.registerProcessor(sanla::g_sanlaProcessor);
+    user_interface = sanla::g_sanlaProcessor->getInterfacePtr();
 
     Serial.println("SanLa Classic ready.");
 }
@@ -48,7 +46,7 @@ void loop() {
         std::string message = "Foo walks into a bar baz qux moo, then another corge comes out of garply. But what happens when the goo is on a doo?";
 
         // TODO for testing purposes, call UI's send method here on loop.
-        user_interface.sendUserMessage(message);
+        user_interface->sendUserMessage(message);
 
         lastSendTime = millis();
     } else if (millis() - uplinkbuffer_lastSendTime > uplinkbuffer_interval) {

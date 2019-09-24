@@ -36,6 +36,11 @@ bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     // Save message to MessageStore.
     m_mstore.Put(message);
 
+    // Notify interface of a message if this node is recipient.
+    if (message.GetMessageHeader().recipient_id == 65535) { // TODO devices need to register into a group!
+        interface.displayMessage(message);
+    }
+
     // Construct broadcast packets from message and push to uplinkbuffer.
     std::vector<SanlaPacket> packet_vector(messaging::buildPacketsFromMessage(message));
     for (auto& packet : packet_vector) {
@@ -68,6 +73,14 @@ bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
 
 void SanlaProcessor::SendUplinkBuffer() {
     m_ubuffer.send();
+}
+
+void SanlaProcessor::notifyInterface(SanlaMessage& message) {
+    interface.displayMessage(message);
+}
+
+SanlaInterface* SanlaProcessor::getInterfacePtr() {
+    return &interface;
 }
 
 }

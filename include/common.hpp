@@ -8,7 +8,6 @@ namespace sanla {
     namespace common {
     // General HW definitions
     const long BAUDRATE = 115200;
-    void displayMessage(std::string message);
     };
 };
 #endif

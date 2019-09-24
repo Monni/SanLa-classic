@@ -57,7 +57,7 @@ bool LoRaModule::sendPacket(SanlaPacket &packet) {
     return false;
 }
 
-void LoRaModule::onMessage(void(*callback)(SanlaPacket)) {
+void LoRaModule::onMessage(void(*callback)(SanlaMessage&)) {
     _onReceive = callback;
 }
 

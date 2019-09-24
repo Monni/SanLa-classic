@@ -1,11 +1,11 @@
 #ifndef SANLACLASSIC_UI_USERINTERFACE_H_
 #define SANLACLASSIC_UI_USERINTERFACE_H_
 
+#include <HardwareSerial.h>
 #include <random>
 #include <time.h>
 #include "common/typedefs.hpp"
 #include "common/SanlaMessage.hpp"
-#include "common/SanlaProcessor.hpp"
 
 namespace sanla {
     namespace ui {
@@ -17,6 +17,7 @@ namespace sanla {
         class UserInterface {
         public:
             UserInterface(){};
+            UserInterface(void *processor_ptr) : m_sanla_processor_ptr(processor_ptr) {};
 
             /**
              * @brief Method for constructing a full package based on user input and sending it to MessageStore ready for broadcasting.
@@ -30,9 +31,7 @@ namespace sanla {
              * 
              * @param message Incoming message.
              */
-            static void displayMessage(std::string message);
-
-            void registerProcessor(SanlaProcessor* processor);
+            static void displayMessage(SanlaMessage&);
 
         private:
             /**
@@ -43,7 +42,8 @@ namespace sanla {
              */
             MessageHeader buildUserInputHeader(RecipientId_t);
 
-            SanlaProcessor* sanla_processor_ptr = NULL;
+            // This is later casted to SanlaProcessor
+            void* m_sanla_processor_ptr = nullptr;
         };
 
     } // ui
