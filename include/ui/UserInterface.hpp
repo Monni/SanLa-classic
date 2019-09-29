@@ -6,6 +6,7 @@
 #include <time.h>
 #include "common/typedefs.hpp"
 #include "common/SanlaMessage.hpp"
+#include "common.hpp"
 
 namespace sanla {
     namespace ui {
@@ -33,7 +34,22 @@ namespace sanla {
              */
             static void displayMessage(SanlaMessage&);
 
+            /**
+             * @brief Set the Recipient Id object.
+             * 
+             */
+            void setGroupId(RecipientId_t);
+
+            /**
+             * @brief Get the Recipient Id object
+             * 
+             * @return RecipientId_t 
+             */
+            RecipientId_t getGroupId();
+
         private:
+            RecipientId_t recipientId = 65535; // Default global channel.
+
             /**
              * @brief Build a message header based on user input.
              * 

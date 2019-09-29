@@ -35,14 +35,16 @@ bool LoRaModule::sendPacket(SanlaPacket &packet) {
     sanla::messaging::htonSanlaPacket(packet, buffer);
 
     if (LoRa.beginPacket() == 1) {
-        Serial.print("Sending packet: ");
+        Serial.print("Sending packet for message ");
+        Serial.print(packet.header.message_id);
+        Serial.print(", sequence ");
+        Serial.println(packet.header.payload_seq);
+
         for (auto const& packet_byte : buffer) {
-            Serial.print(packet_byte);
             LoRa.write(packet_byte);
         }
-        Serial.println("");
 
-        LoRa.endPacket(true);
+        LoRa.endPacket(false);
         usleep(1000);
 
         // Revert back to listening mode.
@@ -74,18 +76,13 @@ void LoRaModule::onPacket(int packetSize) {
     // TODO this probably needs some error handling.
     SanlaPacket packet = messaging::ntohSanlaPacket(serializedPacket);
 
-    Serial.println("");
-    Serial.println("Packet arrived.");
-    Serial.print("Message ID: ");
-    Serial.println(packet.header.message_id);
-    Serial.print("Sequence: ");
+    Serial.print("Received packet for message ");
+    Serial.print(packet.header.message_id);
+    Serial.print(", sequence ");
     Serial.println(packet.header.payload_seq);
-    Serial.print("Body: ");
-    Serial.println(packet.body);
-    Serial.println("");
 
     sanla_processor_ptr->ProcessPacket(packet);
-    Serial.println("Processing done!");
+    Serial.println("LoRaModule::onPacket -- Processing incoming packet done!");
 }
 
 void LoRaModule::onReceive(int packetSize) {
@@ -94,7 +91,7 @@ void LoRaModule::onReceive(int packetSize) {
     if (ptrToLoraModule)
         ptrToLoraModule->onPacket(packetSize);
     else
-        Serial.println("ptrToLoraModule is not set!");
+        Serial.println("ERROR -- ptrToLoraModule is not set! FIXME!");
 }
 
 void LoRaModule::registerProcessor(SanlaProcessor* processor){

@@ -36,8 +36,8 @@ bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     // Save message to MessageStore.
     m_mstore.Put(message);
 
-    // Notify interface of a message if this node is recipient.
-    if (message.GetMessageHeader().recipient_id == 65535) { // TODO devices need to register into a group!
+    // Notify interface of a message if this node is in the same group as a defined recipient.
+    if (message.GetMessageHeader().recipient_id == interface.getGroupId()) {
         interface.displayMessage(message);
     }
 
@@ -66,6 +66,11 @@ bool SanlaProcessor::messageExistsInStore(MessageId_t messageId) {
 }
 
 bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
+    Serial.print("Received packet request for message ");
+    Serial.print(input_packet.header.message_id);
+    Serial.print(", sequence ");
+    Serial.println(input_packet.header.payload_seq);
+
     SanlaPacket& packet = m_mstore.GetPacketBySequence(input_packet.header.message_id, input_packet.header.payload_seq);
 
     return HandlePacket(packet);
