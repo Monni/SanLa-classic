@@ -37,6 +37,8 @@ bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     m_mstore.Put(message);
 
     // Notify interface of a message if this node is in the same group as a defined recipient.
+    Serial.println(message.GetMessageHeader().recipient_id);
+    Serial.println(interface.getGroupId());
     if (message.GetMessageHeader().recipient_id == interface.getGroupId()) {
         interface.displayMessage(message);
     }

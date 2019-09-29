@@ -39,8 +39,8 @@ namespace sanla {
         };
 
         void UserInterface::displayMessage(SanlaMessage& message) {
-            std::string prefixMsg = sanla::common::SEND_MESSAGE + ":";
-            Serial.print(prefixMsg.c_str());
+            Serial.print(sanla::common::SEND_MESSAGE);
+            Serial.print(":");
             Serial.print(message.GetMessageHeader().sender_id);
             Serial.print(": ");
             Serial.println(message.GetMessageBody());
