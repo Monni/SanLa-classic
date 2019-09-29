@@ -3,6 +3,13 @@ import sys
 
 import serial
 
+SERIAL_COMMAND_SEND_MESSAGE = 'send_message'
+SERIAL_COMMAND_SET_GROUP = 'set_group'
+SERIAL_COMMAND_CHOICES = {
+    SERIAL_COMMAND_SEND_MESSAGE: '1:',
+    SERIAL_COMMAND_SET_GROUP: '2:',
+}
+
 
 def available_ports() -> list:
     """

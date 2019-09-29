@@ -1,3 +1,4 @@
+#include <stdlib_noniso.h>
 #include "LoRaModule.hpp"
 #include "common.hpp"
 #include "common/SanlaProcessor.hpp"
@@ -51,7 +52,24 @@ void loop() {
 
     serialEvent();
     if (stringComplete) {
-        user_interface->sendUserMessage(inputString);
+        std::string actionStr = inputString.substr(0, 1);
+        int action = std::atoi(actionStr.c_str());
+        std::string param = inputString.substr(2);
+
+        switch (action)
+        {
+        case sanla::common::SEND_MESSAGE:
+            user_interface->sendUserMessage(param);
+            break;
+        case sanla::common::SET_GROUP_ID:
+            user_interface->setGroupId(std::atoi(param.c_str()));
+            break;
+        
+        default:
+            Serial.print("Unknown command received: ");
+            Serial.println(inputString.c_str());
+            break;
+        }
 
         inputString = "";
         stringComplete = false;

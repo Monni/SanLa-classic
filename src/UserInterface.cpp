@@ -19,14 +19,14 @@ namespace sanla {
         };
 
         void UserInterface::sendUserMessage(std::string _input) {
-            Serial.println("UserInterface::sendUserMessage");
+            Serial.print("Sending message: ");
+            Serial.println(_input.c_str());
 
             // Build body from input for SanlaMessage.
             Payload_t payload_arr{};
             strcpy(payload_arr, _input.c_str());
             
-            // TODO get recipient id and use instead of 65535.
-            SanlaMessage message(buildUserInputHeader(65535), payload_arr);
+            SanlaMessage message(buildUserInputHeader(getGroupId()), payload_arr);
 
             // Send to SanlaProcessor.
             if (m_sanla_processor_ptr != nullptr) {
@@ -39,12 +39,23 @@ namespace sanla {
         };
 
         void UserInterface::displayMessage(SanlaMessage& message) {
-            std::string prefixMsg = "1:"; // TODO move to constants
+            std::string prefixMsg = sanla::common::SEND_MESSAGE + ":";
             Serial.print(prefixMsg.c_str());
             Serial.print(message.GetMessageHeader().sender_id);
             Serial.print(": ");
             Serial.println(message.GetMessageBody());
         };
+
+        void UserInterface::setGroupId(RecipientId_t _recipientId) {
+            Serial.print("Group set to ");
+            Serial.println(_recipientId);
+
+            recipientId = _recipientId;
+        }
+
+        RecipientId_t UserInterface::getGroupId() {
+            return recipientId;
+        }
 
     } // ui
 } // sanla

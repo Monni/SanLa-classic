@@ -51,37 +51,60 @@ class Control(tk.Frame):
         self.pack(fill='both')
         self.master = master
 
-        self.frame_control = tk.LabelFrame(master, text='Control')
-        self.frame_control.pack(fill='both')
+        self.frame_control = tk.Frame(self.master)
+        self.frame_control.pack(fill=tk.BOTH)
 
+        self.serial_control = tk.LabelFrame(self.frame_control, text='Serial control')
+        self.serial_control.grid(row=0, column=0)
         self._com()
         self._baud_rate()
         self._debug()
 
+        self._device_control()
+
+    def _device_control(self) -> None:
+        device_control = tk.LabelFrame(self.frame_control, text='SanLa Control')
+        device_control.grid(row=0, column=1, sticky='NSEW')
+
+        group_label = tk.Label(device_control, text='Group: ')
+        group_label.grid(row=0, column=0)
+
+        self.group_input = tk.Entry(device_control, width=10)
+        self.group_input.insert(0, '65535')
+        self.group_input.grid(row=0, column=1)
+
+        group_button = tk.Button(device_control, text='Set', command=self._command_set_group)
+        group_button.grid(row=0, column=2)
+
+    def _command_set_group(self) -> None:
+        message = f'{utils.SERIAL_COMMAND_CHOICES[utils.SERIAL_COMMAND_SET_GROUP]}{self.group_input.get()}\n'
+        self.master.serialPort.send(message)
+
     def _com(self) -> None:
-        label_com = tk.Label(self.frame_control, width=10, height=2, text="Port:")
+        label_com = tk.Label(self.serial_control, width=10, height=2, text="Port:")
         label_com.grid(row=0, column=0)
         label_com.config(font="bold")
         available_ports = utils.available_ports()
-        self.com_var = tk.StringVar(self.frame_control)
+        self.com_var = tk.StringVar(self.serial_control)
         self.com_var.set(available_ports[0])
-        com_edit = tk.OptionMenu(self.frame_control, self.com_var, *available_ports)
+        com_edit = tk.OptionMenu(self.serial_control, self.com_var, *available_ports)
         com_edit.grid(row=0, column=1)
         com_edit.config(font="bold")
-        self.com_button = tk.Button(self.frame_control, text="Open COM Port", width=15, command=self._command_com)
+        self.com_button = tk.Button(self.serial_control, text="Open COM Port", width=15, command=self._command_com)
         self.com_button.config(font="bold")
         self.com_button.grid(row=0, column=2)
 
     def _baud_rate(self) -> None:
-        label_baud = tk.Label(self.frame_control, width=10, height=2, text="Baud Rate:")
+        label_baud = tk.Label(self.serial_control, width=10, height=2, text="Baud Rate:")
         label_baud.grid(row=1, column=0)
-        self.baudrate_edit = tk.Entry(self.frame_control, width=10)
+        self.baudrate_edit = tk.Entry(self.serial_control, width=10)
         self.baudrate_edit.grid(row=1, column=1)
         self.baudrate_edit.insert(tk.END, "115200")
 
     def _debug(self) -> None:
         self.show_debug = tk.IntVar()
-        self.debug_button = tk.Checkbutton(self.frame_control, width=10, height=2, text='Debug', variable=self.show_debug, command=self._command_toggle_debug)
+        self.debug_button = tk.Checkbutton(self.serial_control, width=10, height=2, text='Debug',
+                                           variable=self.show_debug, command=self._command_toggle_debug)
         self.debug_button.grid(row=1, column=2)
 
     def _command_com(self) -> None:
@@ -140,18 +163,18 @@ class Messages(tk.LabelFrame):
         sub_title = tk.Label(master=sub_frame_logo, text='Written by Miika Avela and Atro Lähdemäki')
         sub_title.grid(row=1)
 
-    def _command_send_message(self):
+    def _command_send_message(self) -> None:
         message = self.message_input.get()
         if self.master.master.serialPort.is_open():
-            #message = f'{0x1:}{message}\n'
-            message = f'{message}\n'
+            message = f'{utils.SERIAL_COMMAND_CHOICES[utils.SERIAL_COMMAND_SEND_MESSAGE]}{message}\n'
 
             self.master.master.serialPort.send(message)
-            self.master.master.debug.debug_box.insert('1.0', message)
+            self.master.master.debug.debug_box.insert(tk.END, message)
             self.master.master.debug.debug_box.see(tk.END)
         else:
-            self.master.master.debug.debug_box.insert('1.0', 'Not sent - COM port is closed\r\n')
+            self.master.master.debug.debug_box.insert(tk.END, 'Not sent - COM port is closed\n')
             self.master.master.debug.debug_box.see(tk.END)
+        self.message_input.delete(0, tk.END)
 
 
 class Debug(tk.LabelFrame):

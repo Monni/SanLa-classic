@@ -36,8 +36,8 @@ bool SanlaProcessor::HandleMessage(SanlaMessage &message) {
     // Save message to MessageStore.
     m_mstore.Put(message);
 
-    // Notify interface of a message if this node is recipient.
-    if (message.GetMessageHeader().recipient_id == 65535) { // TODO devices need to register into a group!
+    // Notify interface of a message if this node is in the same group as a defined recipient.
+    if (message.GetMessageHeader().recipient_id == interface.getGroupId()) {
         interface.displayMessage(message);
     }
 
