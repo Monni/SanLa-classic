@@ -11,3 +11,5 @@ CMakeCache.txt
 # Python stuff.
 interface/venv
 interface/__pycache__
+interface/build
+interface/*.spec
