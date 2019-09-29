@@ -14,7 +14,7 @@ namespace sanla {
                    return;
                 }
                 if (messageExistsInStore(packet.header.message_id)) {
-                    Serial.println("Message exists in store. Dropping packet.");
+                    Serial.println("DownlinkBuffer::ReceivePacket -- Message exists in store. Dropping packet.");
                     (void)packet;
                     return;
                 }
@@ -36,7 +36,7 @@ namespace sanla {
                     DownlinkPacket *dl_packet = it->second;
 
                     if(dl_packet == nullptr){
-                        Serial.println("Null packet encountered! FIXME");
+                        Serial.println("ERROR -- Null packet encountered! FIXME");
                         return false;
                     }
 
@@ -53,7 +53,7 @@ namespace sanla {
 
                 // DownlinkPacket doesn't exist. Create a new one.
                 } else {
-                    Serial.println("DownlinkBuffer::StorePacket -- DownlinkPacket does not exist. Creating.");
+                    Serial.println("DownlinkBuffer::StorePacket -- Creating new DownlinkPacket.");
 
                     if (downlinkPacketBuffer.size() >= DOWNLINKBUFFER_MAX_SIZE) {
                         Serial.println("DownlinkBuffer::StorePacket -- DownlinkBuffer is full!");
@@ -159,7 +159,9 @@ namespace sanla {
                 }
         
             void DownlinkBuffer::requestMissingPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
-                Serial.print("Requesting missing packet ");
+                Serial.print("Requesting missing packet for message ");
+                Serial.print(messageId);
+                Serial.println(", sequence ");
                 Serial.println(payloadSequence);
 
                 if (m_sanla_processor_ptr != nullptr) {
