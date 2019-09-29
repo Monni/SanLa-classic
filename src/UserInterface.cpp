@@ -39,17 +39,11 @@ namespace sanla {
         };
 
         void UserInterface::displayMessage(SanlaMessage& message) {
-            Serial.println("");
-            Serial.println("*** Incoming message into UI ***");
-            Serial.print("Message ID: ");
-            Serial.println(message.GetMessageHeader().message_id);
-            Serial.print("Sender ID: ");
-            Serial.println(message.GetMessageHeader().sender_id);
-            Serial.print("Recipient ID: ");
-            Serial.println(message.GetMessageHeader().recipient_id);
-            Serial.print("Body: ");
+            std::string prefixMsg = "1:";
+            Serial.print(prefixMsg.c_str());
+            Serial.print(message.GetMessageHeader().sender_id);
+            Serial.print(": ");
             Serial.println(message.GetMessageBody());
-            Serial.println("");
         };
 
     } // ui

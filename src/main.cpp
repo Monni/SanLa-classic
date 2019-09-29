@@ -3,12 +3,12 @@
 #include "common/SanlaProcessor.hpp"
 #include "ui/UserInterface.hpp"
 
-long lastSendTime = 0;        // last send time
-int interval = 60000;          // interval between sends
-
 // Try to send packets from uplinkbuffer each 10 seconds.
 long uplinkbuffer_lastSendTime = 0;
 int uplinkbuffer_interval = 10000;
+
+std::string inputString = "";         // a String to hold incoming data
+bool stringComplete = false;  // whether the string is complete
 
 sanla::lora::LoRaModule lora;
 sanla::ui::UserInterface *user_interface = nullptr;
@@ -37,24 +37,33 @@ void setup() {
     Serial.println("SanLa Classic ready.");
 }
 
+void serialEvent() {
+    while (Serial.available()) {
+        char inChar = (char)Serial.read();
+        inputString += inChar;
+        if (inChar == '\n') {
+            stringComplete = true;
+        }
+    }
+}
+
 void loop() {
 
-    // Todo this is probably where the threading magic happens between UI and backend?
+    serialEvent();
+    if (stringComplete) {
+        user_interface->sendUserMessage(inputString);
 
-    // For testings purposes:
-    if (millis() - lastSendTime > interval) {
-        std::string message = "Foo walks into a bar baz qux moo, then another corge comes out of garply. But what happens when the goo is on a doo?";
+        inputString = "";
+        stringComplete = false;
+    }
 
-        // TODO for testing purposes, call UI's send method here on loop.
-        user_interface->sendUserMessage(message);
-
-        lastSendTime = millis();
-    } else if (millis() - uplinkbuffer_lastSendTime > uplinkbuffer_interval) {
+    if (millis() - uplinkbuffer_lastSendTime > uplinkbuffer_interval) {
         
-        // Try to clear uplinkbuffer at periods.
+        // Periodically try to clear UplinkBuffer.
         sanla::g_sanlaProcessor->SendUplinkBuffer();
 
         uplinkbuffer_lastSendTime = millis();
     }
+
 }
 

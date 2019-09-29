@@ -35,14 +35,16 @@ bool LoRaModule::sendPacket(SanlaPacket &packet) {
     sanla::messaging::htonSanlaPacket(packet, buffer);
 
     if (LoRa.beginPacket() == 1) {
-        Serial.print("Sending packet: ");
+        Serial.print("Sending packet for message ");
+        Serial.print(packet.header.message_id);
+        Serial.print(", sequence ");
+        Serial.println(packet.header.payload_seq);
+
         for (auto const& packet_byte : buffer) {
-            Serial.print(packet_byte);
             LoRa.write(packet_byte);
         }
-        Serial.println("");
 
-        LoRa.endPacket(true);
+        LoRa.endPacket(false);
         usleep(1000);
 
         // Revert back to listening mode.

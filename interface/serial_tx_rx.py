@@ -9,7 +9,7 @@ class SerialConnection:
         self.baudrate = 115200
         self.timeout = None
         self.receive_callback_func = None
-        self.is_open = False
+        self._is_open = False
         self.received_message = None
         self.serial = serial.Serial()
 
@@ -30,7 +30,7 @@ class SerialConnection:
     def serial_readline_thread(self):
         while True:
             try:
-                if self.is_open:
+                if self._is_open:
                     self.received_message = self.serial.readline()
                     if self.received_message != "":
                         self.receive_callback_func(self.received_message)
@@ -38,35 +38,35 @@ class SerialConnection:
                 print("Error reading COM port: ", sys.exc_info()[0])
 
     def is_open(self):
-        return self.is_open
+        return self._is_open
 
     def open(self, port, baudrate):
-        if not self.is_open:
+        if not self._is_open:
             self.serial.port = port
             self.serial.baudrate = baudrate
             try:
                 self.serial.open()
-                self.is_open = True
+                self._is_open = True
             except:
                 print("Error opening COM port: ", sys.exc_info()[0])
 
     def close(self):
-        if self.is_open:
+        if self._is_open:
             try:
                 self.serial.close()
-                self.is_open = False
+                self._is_open = False
             except:
                 print("Close error closing COM port: ", sys.exc_info()[0])
 
     def send(self, message):
-        if self.is_open:
+        if self._is_open:
             try:
                 # Ensure that the end of the message has both \r and \n, not just one or the other
                 new_message = message.strip()
                 new_message += '\r\n'
                 self.serial.write(new_message.encode('utf-8'))
             except:
-                print("Error sending message: ", sys.exc_info()[0] )
+                print("Error sending message: ", sys.exc_info()[0])
             else:
                 return True
         else:

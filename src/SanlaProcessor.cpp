@@ -66,6 +66,11 @@ bool SanlaProcessor::messageExistsInStore(MessageId_t messageId) {
 }
 
 bool SanlaProcessor::HandleResponse(SanlaPacket &input_packet) {
+    Serial.print("Received packet request for message ");
+    Serial.print(input_packet.header.message_id);
+    Serial.print(", sequence ");
+    Serial.println(input_packet.header.payload_seq);
+
     SanlaPacket& packet = m_mstore.GetPacketBySequence(input_packet.header.message_id, input_packet.header.payload_seq);
 
     return HandlePacket(packet);
