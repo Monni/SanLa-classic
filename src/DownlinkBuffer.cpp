@@ -83,7 +83,7 @@ namespace sanla {
                 SanlaMessage message(messaging::downlinkpacketToSanlamessage(downlinkPacket));
                 SendMessageToStore(message);
                 downlinkPacketBuffer.erase(downlinkPacket.message_id);
-                delete &downlinkPacket;
+                (void)downlinkPacket;
             }
 
             void DownlinkBuffer::SendMessageToStore(SanlaMessage &message){

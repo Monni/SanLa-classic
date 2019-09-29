@@ -7,3 +7,7 @@ CMakeFiles
 Makefile
 CMakeCache.txt
 *.cmake
+
+# Python stuff.
+interface/venv
+interface/__pycache__
