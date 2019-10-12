@@ -20,7 +20,7 @@
 #define DI0     26   // GPIO26 -- SX1278's IRQ(Interrupt Request)
 
 #define BAND        868E6
-#define TX_POWER    18      // TODO set to 20 after checking if sink needed.
+#define TX_POWER    14      // Legal max using 2.1 dBi antenna in EU is 14.
 #define S_FACTOR    12      // Supports values between 6 and 12.
 #define SIG_BNDWDTH 125E3   // Supports values 7.8E3, 10.4E3, 15.6E3, 20.8E3, 31.25E3, 41.7E3, 62.5E3, 125E3, and 250E3
 #define CODING_RATE 5       // Supports values between 5 and 8

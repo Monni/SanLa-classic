@@ -64,6 +64,7 @@ void LoRaModule::onMessage(void(*callback)(SanlaMessage&)) {
 }
 
 void LoRaModule::onPacket(int packetSize) {
+    // FIXME. DO NOT REMOVE BELOW PRINTLN! WILL LEAD TO CORE PANIC!
     Serial.println("LoRaModule::onPacket");
 
     // Read incoming packet into a single byte array.

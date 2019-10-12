@@ -4,7 +4,7 @@
 #include "common/SanlaProcessor.hpp"
 #include "ui/UserInterface.hpp"
 
-// Try to send packets from uplinkbuffer each 5 seconds.
+// Try to send packets from uplinkbuffer each second.
 long uplinkbuffer_lastSendTime = 0;
 int uplinkbuffer_interval = 5000;
 
@@ -81,4 +81,3 @@ void loop() {
     }
 
 }
-

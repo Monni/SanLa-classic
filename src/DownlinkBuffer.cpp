@@ -116,11 +116,8 @@ namespace sanla {
                 */
 
                 if (packet.header.payload_length == strlen(packet.body)) {
-                    Serial.println("DownlinkBuffer::validatePacket - true.");
                     return true;
                 }
-
-                Serial.println("DownlinkBuffer::validatePacket - false.");
                 return false;
             }
 
@@ -161,7 +158,7 @@ namespace sanla {
             void DownlinkBuffer::requestMissingPacket(MessageId_t messageId, PayloadSeq_t payloadSequence) {
                 Serial.print("Requesting missing packet for message ");
                 Serial.print(messageId);
-                Serial.println(", sequence ");
+                Serial.print(", sequence ");
                 Serial.println(payloadSequence);
 
                 if (m_sanla_processor_ptr != nullptr) {

@@ -19,9 +19,6 @@ namespace sanla {
         };
 
         void UserInterface::sendUserMessage(std::string _input) {
-            Serial.print("Sending message: ");
-            Serial.println(_input.c_str());
-
             // Build body from input for SanlaMessage.
             Payload_t payload_arr{};
             strcpy(payload_arr, _input.c_str());

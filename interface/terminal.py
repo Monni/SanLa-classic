@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 import tkinter as tk
 import tkinter.scrolledtext as tkscrolledtext
@@ -35,14 +36,17 @@ class Terminal(tk.Frame):
             action = str_message[:1]
             str_message = str_message[2:]
 
+        # Insert possible functions here.
         switcher = {
             '1': self.messages.messages_box,
-            '2': self.debug.debug_box,
         }
-        func = switcher.get(action, self.debug.debug_box)
+        func = switcher.get(action)
 
-        func.insert(tk.END, str_message)
-        func.see(tk.END)
+        if func is not None:
+            func.insert(tk.END, f'{datetime.now()} {str_message}')
+            func.see(tk.END)
+        self.debug.debug_box.insert(tk.END, f'{datetime.now()} -- {str_message}')
+        self.debug.debug_box.see(tk.END)
 
 
 class Control(tk.Frame):
