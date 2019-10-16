@@ -193,7 +193,7 @@ class Debug(tk.LabelFrame):
     def _debug_content(self) -> None:
         debug_content = tk.Frame(self)
         debug_content.pack(fill='x')
-        self.debug_box = tkscrolledtext.ScrolledText(master=debug_content, wrap='word', height=18)
+        self.debug_box = tkscrolledtext.ScrolledText(master=debug_content, wrap='word', height=30)
         self.debug_box.config(font="bold")
         self.debug_box.pack(fill='both')
 
